@@ -1,0 +1,35 @@
+<h2>Anmeldedaten bearbeiten</h2>
+
+<form action="<?php echo $filename; ?>" method="post">
+
+<div class="formular">
+
+<p>
+<label for="input_email">Die von Ihnen registrierte Adresse lautet:</label><br />
+<input type="text" name="email" id="input_email" size="38" value="<?php echo $_REQUEST['email']; ?>" class="input_text" onfocus="clearField(this);" onblur="checkField(this);" readonly="readonly" />
+</p>
+
+<p>
+Die E-Mail-Adresse kann nicht ge&auml;ndert werden.
+Wenn Sie Ihre Adresse &auml;ndern m&ouml;chten, bestellen Sie den Newsletter bitte ab und melden Sie sich
+mit Ihrer neuen E-Mail-Adresse erneut an.
+</p> 
+
+<h3><label for="input_cats">Abonierte Kategorien &auml;ndern</label></h3>
+
+<select name="cats[]" id="input_cats" size="5" multiple="multiple" class="input_select">
+	<?php echo $mailcats; ?>
+</select>
+
+<br /><br />
+
+<input type="hidden" name="action" value="changecats" />
+<input type="submit" name="send" value="Go" class="input_button" />
+
+<h3>Abonnement l&ouml;schen</h3>
+
+<p><a href="<?php echo $dellink; ?>">Klicken Sie hier um Ihre E-Mail-Adresse aus dem Newsletter zu l&ouml;schen.</a></p>
+
+</div>
+
+</form>

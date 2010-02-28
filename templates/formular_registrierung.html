@@ -1,0 +1,19 @@
+<form action="<?php echo $filename; ?>" method="post">
+<h2><label for="input_emailaddy">Ihre E-Mail-Adresse:</label></h2>
+<input type="text" name="email" id="input_emailaddy" value="<?php echo $_REQUEST['email']; ?>" size="30" class="input_text" />
+
+<br />
+
+<h2>Kategorien</h2>
+<p><label for="input_chosecats">Bitte w&auml;hlen Sie die Kategorien aus</label>, zu denen Sie regelm&auml;&szlig;ig informiert werden m&ouml;chten.</p>
+
+<select name="cats[]" id="input_chosecats" size="5" multiple="multiple" class="input_select">
+	<?php echo $mailcats; ?>
+</select>
+
+<p>Mehrere Kategorien k&ouml;nnen Sie durch das Dr&uuml;cken der <i>STRG</i>-Taste und dem Anklicken der einzelnen Kategorien
+ausw&auml;hlen.</p>
+
+<input type="submit" name="send" value="Jetzt anmelden" />
+
+</form>

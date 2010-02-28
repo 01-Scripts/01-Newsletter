@@ -1,0 +1,15 @@
+<h2>Neuen Aktivierungscode anfordern</h2>
+
+<div class="formular">
+
+<p><label for="input_emailadr">Bitte tragen Sie Ihre E-Mail-Adresse ein</label>, um einen neuen Aktivierungscode anzufordern.</p>
+
+<form action="<?php echo $filename; ?>" method="get">
+
+<input type="text" name="email" id="input_emailadr" size="38" value="E-Mail-Adresse" class="input_text" onfocus="clearField(this);" onblur="checkField(this);" />
+<input type="hidden" name="action" value="<?php echo $formaction; ?>" />
+<input type="submit" name="send" value="Go" class="input_button" />
+
+</form>
+
+</div>

@@ -1,0 +1,16 @@
+<h2>F&uuml;r Newsletter anmelden</h2>
+
+<div class="formular">
+
+<form action="<?php echo $filename; ?>" method="get">
+
+<input type="text" name="email" size="38" value="E-Mail-Adresse" class="input_text" onfocus="clearField(this);" onblur="checkField(this);" />
+<input type="submit" name="send" value="Go" class="input_button" />
+<br />
+
+<input type="radio" id="input_ein" name="action" value="add" checked="checked" /><label for="input_ein">Eintragen</label> 
+<input type="radio" id="input_aus" name="action" value="edit" /><label for="input_aus">Bearbeiten/Austragen</label>
+
+</form>
+
+</div>
