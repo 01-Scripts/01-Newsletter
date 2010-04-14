@@ -4,7 +4,7 @@
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des Artikelsystems V3
--- #fv.1001#
+-- #fv.1002#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
 -- --------------------------------------------------------
@@ -14,12 +14,12 @@ START TRANSACTION;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Neue Einstellungs-Kategorie für Modul anlegen
 -- Einstellungen importieren
--- 
+--
 
-INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES 
+INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
 ('#modul_idname#', 0, 1, 6, 'newslettersignatur', 'Signatur', 'Die Signatur wird automatisch an alle Newsletter angeh&auml;ngt.', 'textarea', '5|50', '', '', '', 0, 0),
 ('#modul_idname#', 0, 1, 1, 'newslettertitel', 'Titel des Newsletters', '', 'text', '50', '', '', '', 0, 0),
 ('#modul_idname#', 0, 2, 2, 'csscode', 'CSS-Eigenschaften', 'Nachfolgende CSS-Definitionen werden nur ber&uuml;cksichtigt, wenn <b>keine</b> URL zu einer externen CSS-Datei eingegeben wurde!', 'textarea', '18|100', '', '', '/* Äußere Box für den gesamten Bereich - DIV selber (id = _01newsletter) */\r\n#_01newsletter{\r\n	text-align:left;\r\n	}\r\n\r\n.box_out{\r\n	width: 800px;\r\n	margin: 0 auto;\r\n	text-align:left;\r\n	font-family: Verdana, Arial, Helvetica, sans-serif;\r\n	color:#000;\r\n	}\r\n\r\n/* Link-Definitionen (box_out) */\r\n.box_out a:link,.box_out a:visited  {\r\n	text-decoration: underline;\r\n	color: #000;\r\n}\r\n.box_out a:hover  {\r\n	text-decoration: none;\r\n	color: #000;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n/* DIV um das Formular zum Eintragen neuer Adressen */\r\n.formular{\r\n\r\n	}\r\n\r\n\r\n	\r\n	\r\n	\r\n\r\n\r\n\r\n	\r\n/* Aussehen von kleinem Text */\r\n.small, .small a:link,.small a:visited {\r\n	font-size:10px;\r\n	text-decoration:none;\r\n	text-transform: uppercase;\r\n	font-family: Arial, Helvetica, sans-serif;\r\n	}\r\n.small a:link,.small a:visited {\r\n	text-decoration:underline;\r\n	}\r\n.box_out a:hover  {\r\n	text-decoration: none;\r\n}\r\n	\r\n/* Hervorgehobener, wichtiger Text */\r\n.highlight {\r\n	font-weight:bold;\r\n	color:red;\r\n	}\r\n	\r\n\r\n\r\n	\r\n	\r\n\r\n\r\n\r\n/* Formular-Elemente */\r\n/* Normales Textfeld */\r\n.input_field {\r\n\r\n	}\r\n	\r\n/* Formular-Buttons */\r\n.input_button {\r\n\r\n	}\r\n	\r\n/* Dropdown-Boxen */\r\n.input_selectfield {\r\n	\r\n	}\r\n	\r\n	\r\n	\r\n	\r\n	\r\n	\r\n	\r\n/* Copyright-Hinweis */\r\n/* Sichtbare Hinweis darf ohne eine entsprechende Lizenz NICHT entfernt werden! */\r\n.copyright {\r\n	padding-top:15px;\r\n	font-size:11px;\r\n	text-decoration:none;\r\n	}', 0, 0),
@@ -35,11 +35,11 @@ INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formena
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Menüeinträge anlegen
--- 
+--
 
-INSERT INTO 01prefix_menue (name,link,modul,sicherheitslevel,rightname,rightvalue,sortorder,subof,hide) VALUES 
+INSERT INTO 01prefix_menue (name,link,modul,sicherheitslevel,rightname,rightvalue,sortorder,subof,hide) VALUES
 ('E-Mail-Adressen', '_loader.php?modul=#modul_idname#&amp;loadpage=emails', '#modul_idname#', 1, 'show_emails', '1', 3, 0, 0),
 ('Kategorien verwalten', '_loader.php?modul=#modul_idname#&amp;loadpage=cats', '#modul_idname#', 1, 'settings', '1', 4, 0, 0),
 ('Newsletter-Archiv', '_loader.php?modul=#modul_idname#&amp;action=archiv&amp;loadpage=newsletter', '#modul_idname#', 1, '#modul_idname#', '1', 2, 0, 0),
@@ -49,9 +49,9 @@ INSERT INTO 01prefix_menue (name,link,modul,sicherheitslevel,rightname,rightvalu
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Benutzerrechte und Rechte-Kategorien anlegen
--- 
+--
 
 INSERT INTO 01prefix_rights (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,nodelete,hide,in_profile) VALUES
 ('#modul_idname#', 0, 1, 1, 'show_emails', 'Darf E-Mail-Adressen einsehen?', '', 'Ja|Nein', '1|0', '', '0', 0, 0, 0),
@@ -62,45 +62,45 @@ INSERT INTO 01prefix_rights (modul,is_cat,catid,sortid,idname,name,exp,formename
 ALTER TABLE `01prefix_user` ADD `#modul_idname#_show_emails` tinyint( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `01prefix_user` ADD `#modul_idname#_vorlagen` tinyint( 1 ) NOT NULL DEFAULT '0';
 
--- 
+--
 -- Dem Benutzer, der das Modul installiert hat die entsprechenden Rechte zuweisen
--- 
+--
 
 UPDATE `01prefix_user` SET `#modul_idname#_show_emails` = '1' WHERE `01prefix_user`.`id` = #UID_ADMIN_AKT# LIMIT 1;
 UPDATE `01prefix_user` SET `#modul_idname#_vorlagen` = '1' WHERE `01prefix_user`.`id` = #UID_ADMIN_AKT# LIMIT 1;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `01prefix_emailadressen`
--- 
+--
 
 CREATE TABLE `01modulprefix_emailadressen` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `acode` varchar(32) COLLATE latin1_general_ci NOT NULL,
-  `editcode` varchar(32) COLLATE latin1_general_ci NOT NULL COMMENT 'Code zur Bestätigung von Änderungen',
-  `delcode` varchar(32) COLLATE latin1_general_ci NOT NULL,
+  `acode` varchar(32) NOT NULL,
+  `editcode` varchar(32) NOT NULL COMMENT 'Code zur Bestätigung von Änderungen',
+  `delcode` varchar(32) NOT NULL,
   `timestamp_reg` int(15) NOT NULL,
-  `email` varchar(50) COLLATE latin1_general_ci NOT NULL,
-  `catids` varchar(100) COLLATE latin1_general_ci NOT NULL,
-  `newcatids` varchar(100) COLLATE latin1_general_ci NOT NULL COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
+  `email` varchar(50) NOT NULL,
+  `catids` varchar(100) NOT NULL,
+  `newcatids` varchar(100) NOT NULL COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `01prefix_newsletterarchiv`
--- 
+--
 
 CREATE TABLE `01modulprefix_newsletterarchiv` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `art` char(1) COLLATE latin1_general_ci DEFAULT 'a',
+  `art` char(1) DEFAULT 'a',
   `timestamp` int(15) DEFAULT NULL,
   `uid` int(10) NOT NULL,
-  `betreff` varchar(250) COLLATE latin1_general_ci DEFAULT NULL,
-  `mailinhalt` text COLLATE latin1_general_ci NOT NULL,
-  `kategorien` varchar(250) COLLATE latin1_general_ci DEFAULT NULL,
+  `betreff` varchar(250) DEFAULT NULL,
+  `mailinhalt` text NOT NULL,
+  `kategorien` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
@@ -119,12 +119,10 @@ INSERT INTO `01modulprefix_newsletterarchiv` (`id`, `art`, `timestamp`, `uid`, `
 
 CREATE TABLE `01modulprefix_newslettercats` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `catname` varchar(100) COLLATE latin1_general_ci NOT NULL,
+  `catname` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 COMMIT;
-
--- 01-Newsletter Copyright 2009-2010 by Michael Lorer - 01-Scripts.de
