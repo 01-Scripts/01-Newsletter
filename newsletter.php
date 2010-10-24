@@ -229,9 +229,25 @@ if($evmenge >= 1){
 	<tr>
 		<td colspan="2" class="tra"><textarea name="mailtext" rows="15" cols="80"><?php echo stripslashes($_POST['mailtext']); ?></textarea></td>
 	</tr>
-<?php if(!empty($settings['newslettersignatur'])){ ?>	
+<?php if($settings['attachments'] == 1){ ?>	
+    <tr>
+		<td colspan="2"><h2 style="float:left; margin-right:10px;">Dateianh&auml;nge</h2><br /><a href="javascript:InsertNewAttachmentField();"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Weiteren Dateianhang hinzuf&uuml;gen" style="margin-right: 3px; margin-bottom:-3px;" />Weiteren Anhang hinzuf&uuml;gen</a></td>
+	</tr>	
 	<tr>
 		<td colspan="2" class="tra">
+			<div id="writeroot">
+			<input type="text" name="attachment1" value="" readonly="readonly" size="25" class="input_text" />
+			<input type="button" name="filebutton" value="Durchsuchen..." onclick="popup('uploader','file','post','attachment1',620,480)" class="input" />
+			<input type="button" name="empty_file" value="Anhang entfernen" onclick="javascript:post.attachment1.value='';" class="input" />
+			<br />
+			</div>
+		</td>
+	</tr>
+		
+<?php } ?>
+<?php if(!empty($settings['newslettersignatur'])){ ?>	
+	<tr>
+		<td colspan="2" class="trb">
 			<input type="checkbox" name="use_signatur" value="1" checked="checked" onclick="toggleSignatur();" /> <b>Signatur anh&auml;ngen</b>
 			<div id="signatur">
 				<?php echo nl2br($settings['newslettersignatur']); ?>
@@ -258,6 +274,8 @@ if($evmenge >= 1){
 <input type="hidden" name="entwurfid" value="x" />
 <input type="hidden" name="action" value="send" />
 </form>
+
+<input type="hidden" name="attachfieldcounter" value="1" id="attachfieldcounter" />
 
 <script type="text/javascript">
 $('signatur').slide('show');
