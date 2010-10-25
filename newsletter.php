@@ -41,20 +41,32 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		}
 	else
 		$mailinhalt = stripslashes($_POST['mailtext']);
+		
+	// Anhänge ?
+	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
+		$attachments = array();
+		for($x=1;$x<=$_POST['attachfieldcounter'];$x++){
+			if(isset($_POST['attachment'.$x]) && !empty($_POST['attachment'.$x]))
+				$attachments[] = $_POST['attachment'.$x]; 
+			}
+		$attachment_string = implode("|",$attachments);
+		}
+	else $attachment_string = "";
 	
 	// Newsletter in Archiv eintragen
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid']) && $_POST['entwurfid'] != "x"){
-		mysql_query("UPDATE ".$mysql_tables['archiv']." SET art = 'a', timestamp = '".time()."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($mailinhalt)."', kategorien = '".mysql_real_escape_string($kategorien)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
+		mysql_query("UPDATE ".$mysql_tables['archiv']." SET art = 'a', timestamp = '".time()."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($mailinhalt)."', kategorien = '".mysql_real_escape_string($kategorien)."', attachments = '".mysql_real_escape_string($attachment_string)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
 		}
 	else{
-		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien)
+		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien,attachments)
 		   		VALUES(
 				   'a',
 				   '".time()."',
 				   '".$userdata['id']."',
 				   '".mysql_real_escape_string($_POST['betreff'])."',
 				   '".mysql_real_escape_string($mailinhalt)."',
-				   '".mysql_real_escape_string($kategorien)."'
+				   '".mysql_real_escape_string($kategorien)."',
+				   '".mysql_real_escape_string($attachment_string)."'
 				   )";
 		mysql_query($sql_insert) OR die(mysql_error());
 		}
@@ -76,20 +88,33 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
    isset($_POST['entwurf']) && !empty($_POST['entwurf']) &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
    isset($_POST['betreff']) && !empty($_POST['betreff'])){
+   
+	// Anhänge ?
+	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
+		$attachments = array();
+		for($x=1;$x<=$_POST['attachfieldcounter'];$x++){
+			if(isset($_POST['attachment'.$x]) && !empty($_POST['attachment'.$x]))
+				$attachments[] = $_POST['attachment'.$x];
+			}
+		$attachment_string = implode("|",$attachments);
+		}
+	else $attachment_string = "";
+
 	// Bestehenden Entwurf aktualisieren
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid']) && $_POST['entwurfid'] != "x"){
-		mysql_query("UPDATE ".$mysql_tables['archiv']." SET timestamp = '".time()."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($_POST['mailtext'])."'  WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
+		mysql_query("UPDATE ".$mysql_tables['archiv']." SET timestamp = '".time()."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($_POST['mailtext'])."', attachments = '".mysql_real_escape_string($attachment_string)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
 		}
 	// Newsletter als neuen Entwurf speichern
 	else{
-		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien)
+		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien,attachments)
 			   		VALUES(
 					   'e',
 					   '".time()."',
 					   '".$userdata['id']."',
 					   '".mysql_real_escape_string($_POST['betreff'])."',
 					   '".mysql_real_escape_string($_POST['mailtext'])."',
-					   ''
+					   '',
+					   '".mysql_real_escape_string($attachment_string)."'
 					   )";
 		mysql_query($sql_insert) OR die(mysql_error());
 		}
@@ -104,6 +129,17 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
    (isset($_POST['vorlagenname']) && !empty($_POST['vorlagenname']) || isset($_POST['betreff']) && !empty($_POST['betreff']))){
 	
+	// Anhänge ?
+	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
+		$attachments = array();
+		for($x=1;$x<=$_POST['attachfieldcounter'];$x++){
+			if(isset($_POST['attachment'.$x]) && !empty($_POST['attachment'.$x]))
+				$attachments[] = $_POST['attachment'.$x];
+			}
+		$attachment_string = implode("|",$attachments);
+		}
+	else $attachment_string = "";	
+	    
 	if(isset($_POST['vorlagenname']) && !empty($_POST['vorlagenname']))
 		$titel = $_POST['vorlagenname'];
 	else
@@ -117,7 +153,8 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
 				   '".$userdata['id']."',
 				   '".mysql_real_escape_string($titel)."',
 				   '".mysql_real_escape_string($_POST['mailtext'])."',
-				   ''
+				   '',
+					   '".mysql_real_escape_string($attachment_string)."'
 				   )";
 	mysql_query($sql_insert) OR die(mysql_error());
 
@@ -236,10 +273,14 @@ if($evmenge >= 1){
 	<tr>
 		<td colspan="2" class="tra">
 			<div id="writeroot">
-			<input type="text" name="attachment1" value="" readonly="readonly" size="25" class="input_text" />
-			<input type="button" name="filebutton" value="Durchsuchen..." onclick="popup('uploader','file','post','attachment1',620,480)" class="input" />
-			<input type="button" name="empty_file" value="Anhang entfernen" onclick="javascript:post.attachment1.value='';" class="input" />
-			<br />
+			<?php if(!isset($_POST['attachfieldcounter']) || isset($_POST['attachfieldcounter']) && (empty($_POST['attachfieldcounter']) || $_POST['attachfieldcounter'] < 1 || !is_numeric($_POST['attachfieldcounter']))) $_POST['attachfieldcounter'] = 1; ?>
+			
+			<?php for($x=1;$x<=$_POST['attachfieldcounter'];$x++){ ?>
+				<input type="text" name="attachment<?php echo $x; ?>" value="<?php if(isset($_POST['attachment'.$x]) && !empty($_POST['attachment'.$x])){ echo $_POST['attachment'.$x]; } ?>" readonly="readonly" size="25" class="input_text" />
+				<input type="button" name="filebutton" value="Durchsuchen..." onclick="popup('uploader','file','post','attachment<?php echo $x; ?>',620,480)" class="input" />
+				<input type="button" name="empty_file" value="Anhang entfernen" onclick="javascript:post.attachment<?php echo $x; ?>.value='';" class="input" />
+				<br />
+			<?php } ?>
 			</div>
 		</td>
 	</tr>
@@ -273,9 +314,8 @@ if($evmenge >= 1){
 </table>
 <input type="hidden" name="entwurfid" value="x" />
 <input type="hidden" name="action" value="send" />
+<input type="hidden" name="attachfieldcounter" value="<?php echo $_POST['attachfieldcounter']; ?>" id="attachfieldcounter" />
 </form>
-
-<input type="hidden" name="attachfieldcounter" value="1" id="attachfieldcounter" />
 
 <script type="text/javascript">
 $('signatur').slide('show');

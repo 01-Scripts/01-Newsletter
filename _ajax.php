@@ -40,6 +40,17 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			else
 				$betreff = "document.post.entwurfid.value = 'x';";
 				
+			$attach = "";
+			if(!empty($row['attachments'])){
+				$attachments = explode("|",$row['attachments']);
+				$z = 1;
+				foreach($attachments as $attachment){
+					$attach .= "\ndocument.post.attachment".$z.".value = '".utf8_encode($attachment)."';
+					InsertNewAttachmentField();";
+					$z++;
+					}
+				}
+				
 			if($row['art'] == "e" && $row['uid'] == $userdata['id'] || $row['art'] == "v" && $userdata['vorlagen'] == 1)
 				$showdelvorlage = "show_always('delvorlage');";
 			else
@@ -48,6 +59,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			echo "<script type=\"text/javascript\">
 			".$showdelvorlage."
 			".$betreff."
+			".$attach."
 			document.post.mailtext.value = '".utf8_encode(addcslashes($row['mailinhalt'],"\n\r"))."';
 			Stop_Loading_standard();
 			</script>";

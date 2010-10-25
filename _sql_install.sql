@@ -102,6 +102,7 @@ CREATE TABLE `01modulprefix_newsletterarchiv` (
   `betreff` varchar(250) DEFAULT NULL,
   `mailinhalt` text NOT NULL,
   `kategorien` varchar(250) DEFAULT NULL,
+  `attachments` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
