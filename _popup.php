@@ -54,22 +54,31 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		}
 
 	$mail_header = _01newsletter_getMailHeader();
-
+	
 	// Newsletter-Text holen:
-	$getmail = mysql_query("SELECT betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_GET['newsletter_id'])."'");
+	$getmail = mysql_query("SELECT betreff,mailinhalt,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_GET['newsletter_id'])."'");
 	while($mailrow = mysql_fetch_assoc($getmail)){
 		$mailinhalt = stripslashes($mailrow['mailinhalt']);
 		$betreff    = stripslashes($mailrow['betreff']);
+		if(!empty($row['attachments']) && $settings['attachments'] == 1)
+			$attachments = explode("|",$row['attachments']);
 		}
-
+		
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1){
 		$mailinhalt .= "\n\n".$settings['newslettersignatur'];
 		}
 
 	include_once($modulpath.$tempdir."lang_vars.php");
 	$lang['austragen']	= "\n\n".$lang['austragen'];
+	
+	if($settings['attachments'] == 1 && isset($attachments)){
+		$boundary = strtoupper(md5(uniqid(time())));
 
-	//echo $query;
+		$header .= "\nMIME-Version: 1.0"."";
+		$header .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
+		$header .= "\n\nThis is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format";
+		}
+
 	$list = mysql_query($query);
 	while($row = mysql_fetch_assoc($list)){
 		$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);

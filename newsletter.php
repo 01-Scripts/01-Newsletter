@@ -146,7 +146,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
 		$titel = $_POST['betreff'];
 	
 	// Newsletter in Archiv eintragen
-	$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien)
+	$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien,attachments)
 		   		VALUES(
 				   'v',
 				   '".time()."',
@@ -154,7 +154,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
 				   '".mysql_real_escape_string($titel)."',
 				   '".mysql_real_escape_string($_POST['mailtext'])."',
 				   '',
-					   '".mysql_real_escape_string($attachment_string)."'
+				   '".mysql_real_escape_string($attachment_string)."'
 				   )";
 	mysql_query($sql_insert) OR die(mysql_error());
 

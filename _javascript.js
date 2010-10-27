@@ -26,7 +26,6 @@ function InsertNewAttachmentField() {
 	counter++;
 	$('attachfieldcounter').set('value',counter);
 	
-	//var DummyContent = '<input type="text" name="attachment'+counter+'" value="" readonly="readonly" size="25" class="input_text" /> <input type="button" name="filebutton" value="Durchsuchen..." onclick="popup(\'uploader\',\'file\',\'post\',\'attachment'+counter+'\',620,480)" class="input" /> <input type="button" name="empty_file" value="Anhang entfernen" onclick="javascript:post.attachment'+counter+'.value=\'\';" class="input" /><br />\n';
 	var InsertContent = '';
 	
 	for (var i = 1; i <= counter; i++){
@@ -39,7 +38,5 @@ function InsertNewAttachmentField() {
 		InsertContent = InsertContent+'<input type="text" name="attachment'+i+'" value="'+GetContent+'" readonly="readonly" size="25" class="input_text" onchange="alert(1);" /> <input type="button" name="filebutton" value="Durchsuchen..." onclick="popup(\'uploader\',\'file\',\'post\',\'attachment'+i+'\',620,480)" class="input" /> <input type="button" name="empty_file" value="Anhang entfernen" onclick="javascript:post.attachment'+i+'.value=\'\';" class="input" /><br />\n';
 		}
 	
-	//var htmlcontent = $('writeroot').get('html')+InsertContent;
-	//$('writeroot').set('html', htmlcontent);
 	$('writeroot').set('html', InsertContent);
 	}
