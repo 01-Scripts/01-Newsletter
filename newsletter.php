@@ -56,6 +56,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	// Newsletter in Archiv eintragen
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid']) && $_POST['entwurfid'] != "x"){
 		mysql_query("UPDATE ".$mysql_tables['archiv']." SET art = 'a', timestamp = '".time()."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($mailinhalt)."', kategorien = '".mysql_real_escape_string($kategorien)."', attachments = '".mysql_real_escape_string($attachment_string)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
+		$var = $_POST['entwurfid'];
 		}
 	else{
 		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien,attachments)
@@ -69,9 +70,9 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				   '".mysql_real_escape_string($attachment_string)."'
 				   )";
 		mysql_query($sql_insert) OR die(mysql_error());
+		$var = mysql_insert_id();
 		}
 	
-	$var = mysql_insert_id();
 	echo "<h1>Newsletter wird verschickt...</h1>";
 
 	if(is_array($_POST['empfcats']))
@@ -318,7 +319,9 @@ if($evmenge >= 1){
 </form>
 
 <script type="text/javascript">
+<?php if(!empty($settings['newslettersignatur'])){ ?>
 $('signatur').slide('show');
+<?php } ?>
 <?php if($userdata['vorlagen'] == 1){ ?>
 $('vorlagenname').slide('hide');
 <?php } ?>

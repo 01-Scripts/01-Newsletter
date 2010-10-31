@@ -60,7 +60,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 	while($mailrow = mysql_fetch_assoc($getmail)){
 		$mailinhalt = stripslashes($mailrow['mailinhalt']);
 		$betreff    = stripslashes($mailrow['betreff']);
-		if(!empty($row['attachments']) && $settings['attachments'] == 1)
+		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
 			$attachments = explode("|",$row['attachments']);
 		}
 		
@@ -72,18 +72,52 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 	$lang['austragen']	= "\n\n".$lang['austragen'];
 	
 	if($settings['attachments'] == 1 && isset($attachments)){
+		$cup = 0;
 		$boundary = strtoupper(md5(uniqid(time())));
 
-		$header .= "\nMIME-Version: 1.0"."";
-		$header .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
-		$header .= "\n\nThis is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format";
+		$mail_header .= "\nMIME-Version: 1.0"."";
+		$mail_header .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
+		$mail_header .= "\n\nThis is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format";
+		
+		$header_attachment = "";
+		foreach($attachments as $attachment){
+			$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
+		
+			if(file_exists($dateiname_org)){
+				// Dateinamen für E-Mail holen
+				$list = mysql_query("SELECT orgname FROM ".$mysql_tables['files']." WHERE name = '".mysql_real_escape_string($attachment)."' LIMIT 1");
+				$row = mysql_fetch_assoc($list); 
+				
+			    $file_content = fread(fopen($dateiname_org,"r"),filesize($dateiname_org));
+			    $file_content = chunk_split(base64_encode($file_content));
+		
+			    $header_attachment .= "\nContent-Type: ".mime_content_type($dateiname_org)."; name=\"".$row['name']."\"";
+			    $header_attachment .= "\nContent-Transfer-Encoding: base64";
+			    $header_attachment .= "\nContent-Disposition: attachment; filename=\"".$row['name']."\"";
+			    $header_attachment .= "\n\n".$file_content."";
+			    $header_attachment .= "\n--".$boundary."";
+			    
+			    $cup++;
+				}
+			}
 		}
 
 	$list = mysql_query($query);
 	while($row = mysql_fetch_assoc($list)){
 		$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
 
-		mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header);
+		if($settings['attachments'] == 1 && isset($attachments) && $cup > 0){
+			$header_add = "\n--".$boundary."";
+			$header_add .= "\nContent-Type: text/plain";
+			$header_add .= "\nContent-Transfer-Encoding: 8bit";
+			$header_add .= "\n\n".$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen'])."";
+			$header_add .= "\n--".$boundary."";
+			
+			mail($row['email'],$betreff,"",$mail_header.$header_add.$header_attachment);
+			}
+		else{
+			mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header);
+			}
 		}
 	$empfmenge = mysql_num_rows($list);
 
