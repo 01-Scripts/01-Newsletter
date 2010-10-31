@@ -61,7 +61,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		$mailinhalt = stripslashes($mailrow['mailinhalt']);
 		$betreff    = stripslashes($mailrow['betreff']);
 		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
-			$attachments = explode("|",$row['attachments']);
+			$attachments = explode("|",$mailrow['attachments']);
 		}
 		
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1){
@@ -71,7 +71,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 	include_once($modulpath.$tempdir."lang_vars.php");
 	$lang['austragen']	= "\n\n".$lang['austragen'];
 	
-	if($settings['attachments'] == 1 && isset($attachments)){
+	if($settings['attachments'] == 1 && isset($attachments) && is_array($attachments)){
 		$cup = 0;
 		$boundary = strtoupper(md5(uniqid(time())));
 
@@ -83,23 +83,26 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		foreach($attachments as $attachment){
 			$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
 		
-			if(file_exists($dateiname_org)){
+			if(file_exists($dateiname_org) && $dateiname_org != $attachmentuploaddir){
 				// Dateinamen für E-Mail holen
 				$list = mysql_query("SELECT orgname FROM ".$mysql_tables['files']." WHERE name = '".mysql_real_escape_string($attachment)."' LIMIT 1");
-				$row = mysql_fetch_assoc($list); 
+				$row = mysql_fetch_assoc($list);
+				
+				if(empty($row['orgname'])) $row['orgname'] = $attachment; 
 				
 			    $file_content = fread(fopen($dateiname_org,"r"),filesize($dateiname_org));
 			    $file_content = chunk_split(base64_encode($file_content));
 		
-			    $header_attachment .= "\nContent-Type: ".mime_content_type($dateiname_org)."; name=\"".$row['name']."\"";
+			    $header_attachment .= "\nContent-Type: ".mime_content_type($dateiname_org)."; name=\"".stripslashes($row['orgname'])."\"";
 			    $header_attachment .= "\nContent-Transfer-Encoding: base64";
-			    $header_attachment .= "\nContent-Disposition: attachment; filename=\"".$row['name']."\"";
+			    $header_attachment .= "\nContent-Disposition: attachment; filename=\"".stripslashes($row['orgname'])."\"";
 			    $header_attachment .= "\n\n".$file_content."";
 			    $header_attachment .= "\n--".$boundary."";
 			    
 			    $cup++;
 				}
 			}
+		if(!empty($header_attachment)) $header_attachment .= "--";
 		}
 
 	$list = mysql_query($query);

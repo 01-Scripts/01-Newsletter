@@ -78,11 +78,11 @@ function _01newsletter_getMailHeader(){
 global $settings;
 
 if(!empty($settings['versandadresse']) && !empty($settings['versand_altname']))
-	return "From:".$settings['versand_altname']."<".$settings['versandadresse'].">\n";
+	return "From:".$settings['versand_altname']."<".$settings['versandadresse'].">";
 elseif(!empty($settings['versandadresse']))
-    return "From:".$settings['versandadresse']."<".$settings['versandadresse'].">\n";
+    return "From:".$settings['versandadresse']."<".$settings['versandadresse'].">";
 else
-	return "From:".$settings['email_absender']."<".$settings['email_absender'].">\n";
+	return "From:".$settings['email_absender']."<".$settings['email_absender'].">";
 }
 }
 
