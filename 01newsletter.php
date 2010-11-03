@@ -270,9 +270,9 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 		// Kategorien anzeigen
 		else{
 			// Daten in Datenbank speichern
-			if(isset($_REQUEST['send']) && !empty($_REQUEST['send']) && isset($_REQUEST['cats'])){
+			if(isset($_REQUEST['send']) && !empty($_REQUEST['send']) && isset($_REQUEST['cats']) && !empty($_REQUEST['cats'])){
 				// Kategorien parsen:
-				if(isset($_REQUEST['cats']) && $_REQUEST['cats'] != "" && is_array($_REQUEST['cats']) && !in_array("all",$_REQUEST['cats'])){
+				if(isset($_REQUEST['cats']) && !empty($_REQUEST['cats']) && is_array($_REQUEST['cats']) && !in_array("all",$_REQUEST['cats'])){
 					$cats_string = ",";
 					$cats_string .= implode(",",$_REQUEST['cats']);
 					$cats_string .= ",";
