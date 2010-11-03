@@ -30,9 +30,10 @@
 <div class="acp_innerbox">
 	<h4>Verschickte Newsletter</h4>
 	<?php 
-	$list = mysql_query("SELECT id,betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE art='a' ORDER BY timestamp DESC LIMIT 4");
+	$list = mysql_query("SELECT id,timestamp,betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE art='a' ORDER BY timestamp DESC LIMIT 4");
 	while($row = mysql_fetch_array($list)){
 		echo "<p><b><a href=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a></b><br />
+		<span class=\"small\"><i>Verschickt am ".date("d.m.Y",$row['timestamp'])." um ".date("G:i",$row['timestamp'])."Uhr</i></span><br />
 		".substr(stripslashes(strip_tags($row['mailinhalt'])),0,100)."...
 		</p>";
 		}
