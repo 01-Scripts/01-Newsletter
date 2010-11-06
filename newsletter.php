@@ -373,9 +373,6 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 		
 		$data = getUserdatafields($row['uid'],"username");
 
-		if(strlen($row['acode']) == 32) $aktiv = "-";
-		else $aktiv = "<img src=\"images/icons/ok.gif\" alt=\"Gr&uuml;ner OK-Haken\" title=\"Adresse wurde best&auml;tigt und ist aktiv\" />";
-
 		echo "    <tr id=\"id".$row['id']."\">
 		<td class=\"".$class."\">".date("d.m.Y, H:i",$row['timestamp'])." Uhr</td>
 		<td class=\"".$class."\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['betreff'])."</td>
