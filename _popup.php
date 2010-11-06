@@ -71,6 +71,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 	include_once($modulpath.$tempdir."lang_vars.php");
 	$lang['austragen']	= "\n\n".$lang['austragen'];
 	
+	// Attachments ggf. anhängen
 	if($settings['attachments'] == 1 && isset($attachments) && is_array($attachments)){
 		$cup = 0;
 		$boundary = strtoupper(md5(uniqid(time())));
@@ -81,7 +82,10 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		
 		$header_attachment = "";
 		foreach($attachments as $attachment){
-			$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
+			if(in_array(getEndung($attachment),$picendungen))
+				$dateiname_org		= $picuploaddir.$attachment; // ggf. inkl. Pfad
+			else
+				$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
 		
 			if(file_exists($dateiname_org) && $dateiname_org != $attachmentuploaddir){
 				// Dateinamen für E-Mail holen
