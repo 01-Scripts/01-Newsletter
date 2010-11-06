@@ -13,11 +13,37 @@
 if(isset($_REQUEST['action']) && $_REQUEST['action'] == "show_letter" &&
    isset($_REQUEST['var1']) && !empty($_REQUEST['var1']) && is_numeric($_REQUEST['var1'])){
    
-	$list = mysql_query("SELECT betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_REQUEST['var1'])."'");
+	$list = mysql_query("SELECT betreff,mailinhalt,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_REQUEST['var1'])."'");
 	while($row = mysql_fetch_array($list)){
 		echo "<h2>".$row['betreff']."</h2>";
 		echo "<p>".nl2br($row['mailinhalt'])."</p>";
+		
+		if(!empty($row['attachments']))
+		    $attachments = explode("|",$row['attachments']);
 		}
+		
+	// Attachments ggf. auflisten
+	if(isset($attachments) && is_array($attachments)){
+		echo "<h3>Dateianh&auml;nge</h3>";
+		echo "<ul>";
+		foreach($attachments as $attachment){
+			if(in_array(getEndung($attachment),$picendungen))
+				$dateiname_org		= $picuploaddir.$attachment; // ggf. inkl. Pfad
+			else
+				$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
+
+			if(file_exists($dateiname_org) && $dateiname_org != $attachmentuploaddir && $dateiname_org != $picuploaddir){
+				// Echten Dateinamen holen
+				$list = mysql_query("SELECT orgname FROM ".$mysql_tables['files']." WHERE name = '".mysql_real_escape_string($attachment)."' LIMIT 1");
+				$row = mysql_fetch_assoc($list);
+
+				if(empty($row['orgname'])) $row['orgname'] = $attachment;
+				
+				echo "<li><a href=\"".$dateiname_org."\" target=\"_blank\">".$row['orgname']."</a></li>";
+				}
+			}
+		}	
+	
 	}
 	
 	
@@ -87,7 +113,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 			else
 				$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
 		
-			if(file_exists($dateiname_org) && $dateiname_org != $attachmentuploaddir){
+			if(file_exists($dateiname_org) && $dateiname_org != $attachmentuploaddir && $dateiname_org != $picuploaddir){
 				// Dateinamen für E-Mail holen
 				$list = mysql_query("SELECT orgname FROM ".$mysql_tables['files']." WHERE name = '".mysql_real_escape_string($attachment)."' LIMIT 1");
 				$row = mysql_fetch_assoc($list);
