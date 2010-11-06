@@ -278,7 +278,8 @@ if($evmenge >= 1){
 			
 			<?php for($x=1;$x<=$_POST['attachfieldcounter'];$x++){ ?>
 				<input type="text" name="attachment<?php echo $x; ?>" value="<?php if(isset($_POST['attachment'.$x]) && !empty($_POST['attachment'.$x])){ echo $_POST['attachment'.$x]; } ?>" readonly="readonly" size="25" class="input_text" />
-				<input type="button" name="filebutton" value="Durchsuchen..." onclick="popup('uploader','file','post','attachment<?php echo $x; ?>',620,480)" class="input" />
+				<input type="button" name="filebutton" value="Dateien Durchsuchen..." onclick="popup('uploader','file','post','attachment<?php echo $x; ?>',620,480)" class="input" />
+				<input type="button" name="filebutton" value="Bilder Durchsuchen..." onclick="popup('uploader','pic','post','attachment<?php echo $x; ?>',620,480)" class="input" />
 				<input type="button" name="empty_file" value="Anhang entfernen" onclick="javascript:post.attachment<?php echo $x; ?>.value='';" class="input" />
 				<br />
 			<?php } ?>
