@@ -80,6 +80,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		}
 
 	$mail_header = _01newsletter_getMailHeader();
+	$mail_body   = "";
 	
 	// Newsletter-Text holen:
 	$getmail = mysql_query("SELECT betreff,mailinhalt,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_GET['newsletter_id'])."'");
@@ -104,9 +105,12 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 
 		$mail_header .= "\nMIME-Version: 1.0"."";
 		$mail_header .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
-		$mail_header .= "\n\nThis is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format";
+
+		$mail_body .= "\nMIME-Version: 1.0"."";
+		$mail_body .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
+		$mail_body .= "\n\nThis is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format";
 		
-		$header_attachment = "";
+		$inhalt_attachment = "";
 		foreach($attachments as $attachment){
 			if(in_array(getEndung($attachment),$picendungen))
 				$dateiname_org		= $picuploaddir.$attachment; // ggf. inkl. Pfad
@@ -123,11 +127,11 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 			    $file_content = fread(fopen($dateiname_org,"r"),filesize($dateiname_org));
 			    $file_content = chunk_split(base64_encode($file_content));
 		
-			    $header_attachment .= "\nContent-Type: ".mime_content_type($dateiname_org)."; name=\"".stripslashes($row['orgname'])."\"";
-			    $header_attachment .= "\nContent-Transfer-Encoding: base64";
-			    $header_attachment .= "\nContent-Disposition: attachment; filename=\"".stripslashes($row['orgname'])."\"";
-			    $header_attachment .= "\n\n".$file_content."";
-			    $header_attachment .= "\n--".$boundary."";
+			    $inhalt_attachment .= "\nContent-Type: ".mime_content_type($dateiname_org)."; name=\"".stripslashes($row['orgname'])."\"";
+			    $inhalt_attachment .= "\nContent-Transfer-Encoding: base64";
+			    $inhalt_attachment .= "\nContent-Disposition: attachment; filename=\"".stripslashes($row['orgname'])."\"";
+			    $inhalt_attachment .= "\n\n".$file_content."";
+			    $inhalt_attachment .= "\n--".$boundary."";
 			    
 			    $cup++;
 				}
@@ -140,13 +144,13 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
 
 		if($settings['attachments'] == 1 && isset($attachments) && $cup > 0){
-			$header_add = "\n--".$boundary."";
-			$header_add .= "\nContent-Type: text/plain";
-			$header_add .= "\nContent-Transfer-Encoding: 8bit";
-			$header_add .= "\n\n".$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen'])."";
-			$header_add .= "\n--".$boundary."";
+			$inhalt_add = "\n--".$boundary."";
+			$inhalt_add .= "\nContent-Type: text/plain";
+			$inhalt_add .= "\nContent-Transfer-Encoding: 8bit";
+			$inhalt_add .= "\n\n".$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen'])."";
+			$inhalt_add .= "\n--".$boundary."";
 			
-			mail($row['email'],$betreff,"",$mail_header.$header_add.$header_attachment);
+			mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header);
 			}
 		else{
 			mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header);
