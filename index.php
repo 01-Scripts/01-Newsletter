@@ -25,6 +25,13 @@
 <?php } ?>
 	<b>E-Mail-Adressen:</b> <?PHP list($emailmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['emailadds']." WHERE acode = '0'")); echo $emailmenge; ?>
 	</p>
+	
+	<form action="_loader.php" method="get">
+		<p><input type="text" name="search" value="Archiv durchsuchen" size="20" onfocus="clearField(this);" onblur="checkField(this);" class="input_search" /> <input type="submit" value="Suchen &raquo;" class="input" />
+		<input type="hidden" name="action" value="archiv" />
+		<input type="hidden" name="modul" value="<?PHP echo $modul; ?>" />
+		<input type="hidden" name="loadpage" value="newsletter" /></p>
+	</form>
 </div>
 
 <div class="acp_innerbox">
