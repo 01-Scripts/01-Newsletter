@@ -79,13 +79,13 @@ UPDATE `01prefix_user` SET `#modul_idname#_vorlagen` = '1' WHERE `01prefix_user`
 
 CREATE TABLE `01modulprefix_emailadressen` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `acode` varchar(32) NOT NULL,
-  `editcode` varchar(32) NOT NULL COMMENT 'Code zur Bestätigung von Änderungen',
-  `delcode` varchar(32) NOT NULL,
-  `timestamp_reg` int(15) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `catids` varchar(100) NOT NULL,
-  `newcatids` varchar(100) NOT NULL COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
+  `acode` varchar(32) NOT NULL DEFAULT '0',
+  `editcode` varchar(32) NOT NULL DEFAULT '0' COMMENT 'Code zur Bestätigung von Änderungen',
+  `delcode` varchar(32) NOT NULL DEFAULT '0',
+  `timestamp_reg` int(15) NOT NULL DEFAULT '0',
+  `email` varchar(50),
+  `catids` varchar(100) NOT NULL DEFAULT '0',
+  `newcatids` varchar(100) NOT NULL DEFAULT '0' COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
@@ -99,9 +99,9 @@ CREATE TABLE `01modulprefix_newsletterarchiv` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `art` char(1) DEFAULT 'a',
   `timestamp` int(15) DEFAULT NULL,
-  `uid` int(10) NOT NULL,
+  `uid` int(10) NOT NULL DEFAULT '0',
   `betreff` varchar(250) DEFAULT NULL,
-  `mailinhalt` text NOT NULL,
+  `mailinhalt` text DEFAULT NULL,
   `kategorien` varchar(250) DEFAULT NULL,
   `attachments` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
