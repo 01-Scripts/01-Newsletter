@@ -325,10 +325,26 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 	}
 // Aktivierungscode übergeben?
 elseif(isset($_REQUEST['acode']) && !empty($_REQUEST['acode']) && strlen($_REQUEST['acode']) == 32){
+	if($settings['send_benachrichtigung'] == 1){
+		$list = mysql_query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode='".mysql_real_escape_string($_REQUEST['acode'])."' AND acode != '0' LIMIT 1");
+		$row_email = mysql_fetch_assoc($list);
+		}
+	
 	mysql_query("UPDATE ".$mysql_tables['emailadds']." SET acode = '0' WHERE acode='".mysql_real_escape_string($_REQUEST['acode'])."' AND acode != '0' LIMIT 1");
 	
 	if(mysql_affected_rows() == 1){
 		$meldung = $lang['meldung_activated'];
+		
+		// E-Mail für Neuregistrierung an Admin versenden
+		if($settings['send_benachrichtigung'] == 1)
+			mail($settings['email_absender'],$settings['sitename']." - Neue Anmeldung für Newsletter","Hallo,
+
+soeben hat sich ein neuer Benutzer für den Newsletter angemeldet.
+E-Mail-Adresse: ".$row_email['email']."
+
+---
+Webmailer",$mail_header);
+		
 		include($tempdir."meldungen.html");
 		}
 	else{
