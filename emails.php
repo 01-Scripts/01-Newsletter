@@ -6,11 +6,18 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
-	#fv.1001#
+	#fv.1100#
 */
 
 // Berechtigungsabfragen
 if($userdata['show_emails'] == 1){
+
+// Notice: Undefined index: ... beheben
+if(!isset($_GET['search'])) 	$_GET['search'] = "";
+if(!isset($_GET['sort'])) 		$_GET['sort'] = "";
+if(!isset($_GET['orderby'])) 	$_GET['orderby'] = "";
+if(!isset($_GET['site'])) 		$_GET['site'] = "";
+if(!isset($_GET['catid']))		$_GET['catid'] = "";
 
 list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
 
@@ -150,6 +157,7 @@ if($catmenge > 0){
 </form>
 <?PHP
 	}
+	$where = "";
 
 	if(isset($_GET['sort']) && $_GET['sort'] == "desc") $sortorder = "DESC";
 	else{ $sortorder = "ASC"; $_GET['sort'] = "ASC"; }
