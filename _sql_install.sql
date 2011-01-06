@@ -3,7 +3,7 @@
 -- Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 -- Modul:		01newsletter
--- Dateiinfo:	SQL-Befehle für die Erstinstallation des Artikelsystems V3
+-- Dateiinfo:	SQL-Befehle für die Erstinstallation des 01-Newsletterscripts
 -- #fv.1100#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
@@ -124,7 +124,7 @@ INSERT INTO `01modulprefix_newsletterarchiv` (`id`, `art`, `timestamp`, `uid`, `
 
 CREATE TABLE `01modulprefix_newslettercats` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `catname` varchar(100) NOT NULL,
+  `catname` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
