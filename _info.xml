@@ -3,7 +3,7 @@
 <modul>
 	<name>01newsletter</name>
 	<titel>01-Newsletterscript</titel>
-	<beschreibung>Newsletterscript mit komfortabler Verwaltung, Kategorien und Dateianh&auml;ngen.</beschreibung>
+	<beschreibung>Newsletterscript mit komfortabler Verwaltung, Kategorien und Dateianhaengen.</beschreibung>
 	<icon>images/newsletter.png</icon>
 	<version>1.1.0.0</version>
 	<need01acpv>1.2.0.0</need01acpv>
