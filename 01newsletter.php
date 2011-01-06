@@ -238,7 +238,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 	// E-Mail-Adresse noch nicht vorhanden -> Registrieren
 	else{
 		// Adresse direkt registrieren und Aktivierungsmail verschicken
-		if($settings['usecats'] == 0){
+		if($settings['usecats'] == 0 && ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']))){
 			mt_srand((double)microtime()*1000000);
 			$zahl = mt_rand(1, 9999999999999);
 			$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
@@ -270,7 +270,9 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 		// Kategorien anzeigen
 		else{
 			// Daten in Datenbank speichern
-			if(isset($_REQUEST['send']) && !empty($_REQUEST['send']) && isset($_REQUEST['cats']) && !empty($_REQUEST['cats'])){
+			if(isset($_REQUEST['send']) && !empty($_REQUEST['send']) &&
+			   ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']) ||
+			    isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] == 1)){
 				// Kategorien parsen:
 				if(isset($_REQUEST['cats']) && !empty($_REQUEST['cats']) && is_array($_REQUEST['cats']) && !in_array("all",$_REQUEST['cats'])){
 					$cats_string = ",";

@@ -4,6 +4,8 @@
 
 <br />
 
+<?php if ($settings['usecats'] == 1): ?>
+
 <h2>Kategorien</h2>
 <p><label for="input_chosecats">Bitte w&auml;hlen Sie die Kategorien aus</label>, zu denen Sie regelm&auml;&szlig;ig informiert werden m&ouml;chten.</p>
 
@@ -13,6 +15,21 @@
 
 <p>Mehrere Kategorien k&ouml;nnen Sie durch das Dr&uuml;cken der <i>STRG</i>-Taste und dem Anklicken der einzelnen Kategorien
 ausw&auml;hlen.</p>
+
+<?php endif; ?>
+
+<?php if ($settings['use_nutzungsbedingungen'] == 1 && !empty($settings['nutzungsbedingungen'])): ?>
+
+<h2>Datenschutz / Nutzungsbedingungen</h2>
+
+<textarea rows="8" cols="70" name="nutzungsbedingungen"><?php echo stripslashes($settings['nutzungsbedingungen']); ?></textarea>
+<p class="small"><input type="checkbox" name="ok_nutzungsbed" value="1" /> Ich akzeptiere die Datenschutz / Nutzungsbedingungen und abonniere den Newsletter.</p>
+
+<?php if (isset($_REQUEST['send']) && !empty($_REQUEST['send']) && isset($_REQUEST['nutzungsbedingungen']) && (!isset($_REQUEST['ok_nutzungsbed']) || isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] != 1)): ?>
+<p class="highlight">Sie m&uuml;ssen den Datenschutz / Nutzungsbedingungen zustimmen.</p>
+<?php endif; ?>
+
+<?php endif; ?>
 
 <input type="submit" name="send" value="Jetzt anmelden" />
 
