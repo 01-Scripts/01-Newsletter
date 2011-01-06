@@ -4,7 +4,7 @@
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des Artikelsystems V3
--- #fv.1002#
+-- #fv.1100#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
 -- --------------------------------------------------------

@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.1001#
+	#fv.1100#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
