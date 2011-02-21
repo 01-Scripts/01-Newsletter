@@ -90,13 +90,30 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
 			$attachments = explode("|",$mailrow['attachments']);
 		}
-		
-	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1){
-		$mailinhalt .= "\n\n".$settings['newslettersignatur'];
-		}
 
+	// Vararbeitung HTML-Mailinhalt
+	if($settings['use_html']){
+		$mailinhalt = str_replace("../01pics/",$settings['absolut_url']."01pics/",$mailinhalt);
+		$mailinhalt = str_replace("../01files/",$settings['absolut_url']."01files/",$mailinhalt);
+
+		$mailinhalt_header = "<html>
+<head>
+	<title>".$betreff."</title></head>
+
+<body>";
+		$mailinhalt_footer = "</body>
+
+</html>";
+		}
+	else{
+		$mailinhalt_header = $mailinhalt_footer = "";
+		}
+	
 	include_once($modulpath.$tempdir."lang_vars.php");
-	$lang['austragen']	= "\n\n".$lang['austragen'];
+	if($settings['use_html'])
+	    $lang['austragen']	= "<br /><br />".$lang['austragen'];
+	else
+		$lang['austragen']	= "\n\n".$lang['austragen'];
 	
 	// Attachments ggf. anhängen
 	if($settings['attachments'] == 1 && isset($attachments) && is_array($attachments)){
@@ -139,15 +156,27 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 		if(!empty($header_attachment)) $header_attachment .= "--";
 		}
 
+	if($settings['use_html'] && ($settings['attachments'] != 1 || !isset($attachments) || $cup <= 0)){
+		$mail_header .= "\nMIME-Version: 1.0"."";
+		$mail_header .= "\nContent-type: text/html; charset=iso-8859-1";
+		}
+	
 	$list = mysql_query($query);
 	while($row = mysql_fetch_assoc($list)){
-		$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
+		if($settings['use_html'])
+			$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."</a>";
+		else
+			$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
 
 		if($settings['attachments'] == 1 && isset($attachments) && $cup > 0){
 			$inhalt_add = "\n--".$boundary."";
-			$inhalt_add .= "\nContent-Type: text/plain";
+			if($settings['use_html'])
+				$inhalt_add .= "\nContent-type: text/html; charset=iso-8859-1";
+			else
+				$inhalt_add .= "\nContent-Type: text/plain";
+			
 			$inhalt_add .= "\nContent-Transfer-Encoding: 8bit";
-			$inhalt_add .= "\n\n".$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen'])."";
+			$inhalt_add .= "\n\n".$mailinhalt_header.$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']).$mailinhalt_footer."";
 			$inhalt_add .= "\n--".$boundary."";
 			
 			mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header);

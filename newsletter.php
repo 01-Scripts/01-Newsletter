@@ -37,7 +37,10 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		}
 
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1){
-		$mailinhalt = stripslashes($_POST['mailtext'])."\n\n".$settings['newslettersignatur'];
+		if($settings['use_html'])
+		    $mailinhalt = stripslashes($_POST['mailtext'])."<br /><br />".nl2br($settings['newslettersignatur']);
+		else	
+			$mailinhalt = stripslashes($_POST['mailtext'])."\n\n".$settings['newslettersignatur'];
 		}
 	else
 		$mailinhalt = stripslashes($_POST['mailtext']);
@@ -167,6 +170,9 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
    isset($_GET['action']) && $_GET['action'] == "new"){
 	if(!isset($_POST['betreff'])) $_POST['betreff'] = $settings['newslettertitel']." - ";
 	if(!isset($_POST['mailtext'])) $_POST['mailtext'] = "";
+	
+	if($settings['use_html'])
+	    echo loadTinyMCE("advanced","","","","top");
 	
 	echo "<h1>Neuen Newsletter verfassen</h1>";
 	

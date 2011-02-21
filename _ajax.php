@@ -6,7 +6,7 @@
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.1100#
+	#fv.120#
 */
 
 // Vorlage / Entwurf löschen
@@ -56,11 +56,20 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			else
 				$showdelvorlage = "hide_always('delvorlage');";				
 			
+			// Mailtext
+			if($settings['use_html'])
+			    $text = "var ed = tinyMCE.get('mailtext');
+			ed.setProgressState(1);
+			ed.setContent('".utf8_encode(addcslashes($row['mailinhalt'],"\n\r"))."');
+			ed.setProgressState(0);";
+			else
+				$text = "document.post.mailtext.value = '".utf8_encode(addcslashes($row['mailinhalt'],"\n\r"))."';";
+			
 			echo "<script type=\"text/javascript\">
 			".$showdelvorlage."
 			".$betreff."
 			".$attach."
-			document.post.mailtext.value = '".utf8_encode(addcslashes($row['mailinhalt'],"\n\r"))."';
+			".$text."
 			Stop_Loading_standard();
 			</script>";
 			}
