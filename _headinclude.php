@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2010 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.1001#
+	#fv.120#
 */
 
 // Modul-Spezifische MySQL-Tabellen
@@ -30,12 +30,7 @@ $tempdir	= "templates/";			// Template-Verzeichnis
 // Weitere Variablen
 $intervall  = 10;                   // Wie viele Mails sollen pro Schritt versendet werden?
 $deletimer	= 30;					// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
+define('CSS_CACHE_DATEI', '');
 
 
-// Variablennamen-Deklaration
-
-
-
-
-// 01-Newsletter Copyright 2009-2010 by Michael Lorer - 01-Scripts.de
 ?>
