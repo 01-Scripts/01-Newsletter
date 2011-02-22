@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Popup-Inhalt
-	#fv.1100#
+	#fv.120#
 */
 
 // Newsletter ausgeben
@@ -16,7 +16,21 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "show_letter" &&
 	$list = mysql_query("SELECT betreff,mailinhalt,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_REQUEST['var1'])."'");
 	while($row = mysql_fetch_array($list)){
 		echo "<h2>".$row['betreff']."</h2>";
-		echo "<p>".nl2br($row['mailinhalt'])."</p>";
+		
+		// HTML ggf. berücksichtigen
+		$found_html = FALSE;
+		$arr = array("</p>","</table>","</a>","<img","<br />","<hr","<ul","<b","<i","<span","<td"); 
+		foreach($arr as $search_needle){ 
+			if(stristr($row['mailinhalt'], $search_needle) != FALSE){ 
+				$found_html = TRUE;
+				break;
+				} 
+			}
+		
+		if($found_html)
+			echo $row['mailinhalt'];
+		else
+			echo "<p>".nl2br($row['mailinhalt'])."</p>";
 		
 		if(!empty($row['attachments']))
 		    $attachments = explode("|",$row['attachments']);
