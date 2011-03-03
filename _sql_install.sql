@@ -4,7 +4,7 @@
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des 01-Newsletterscripts
--- #fv.1100#
+-- #fv.111#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
 -- --------------------------------------------------------
@@ -89,7 +89,7 @@ CREATE TABLE `01modulprefix_emailadressen` (
   `catids` varchar(100) NOT NULL DEFAULT '0',
   `newcatids` varchar(100) NOT NULL DEFAULT '0' COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
   PRIMARY KEY (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -107,7 +107,7 @@ CREATE TABLE `01modulprefix_newsletterarchiv` (
   `kategorien` varchar(250) DEFAULT NULL,
   `attachments` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 --
 -- Daten für Tabelle `01prefix_newsletterarchiv`
@@ -126,7 +126,7 @@ CREATE TABLE `01modulprefix_newslettercats` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `catname` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
