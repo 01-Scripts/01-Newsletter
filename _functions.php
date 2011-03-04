@@ -44,26 +44,16 @@ if(!function_exists("_01newsletter_DeleteModul")){
 function _01newsletter_DeleteModul(){
 global $mysql_tables,$modul;
 
+$modul = mysql_real_escape_string($modul);
+
 // MySQL-Tabellen löschen
 mysql_query("DROP TABLE `".$mysql_tables['archiv']."`");
 mysql_query("DROP TABLE `".$mysql_tables['emailadds']."`");
 mysql_query("DROP TABLE `".$mysql_tables['mailcats']."`");
 
-// Modul-Eintrag entfernen
-mysql_query("DELETE FROM ".$mysql_tables['module']." WHERE idname = '".$modul."' LIMIT 1");
-
-// Menü-Einträge entfernen
-mysql_query("DELETE FROM ".$mysql_tables['menue']." WHERE modul = '".$modul."'");
-
-// Settings entfernen
-mysql_query("DELETE FROM ".$mysql_tables['settings']." WHERE modul = '".$modul."'");
-
 // Rechte entfernen
-mysql_query("DELETE FROM ".$mysql_tables['rights']." WHERE modul = '".$modul."'");
-mysql_query("DELETE FROM ".$mysql_tables['rights']." WHERE modul = '01acp' AND idname = '".$modul."' LIMIT 1");
 mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_vorlagen`");
 mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_show_emails`");
-mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `01acp_".$modul."`");
 
 return TRUE;
 }
