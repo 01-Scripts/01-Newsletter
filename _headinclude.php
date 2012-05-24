@@ -30,6 +30,7 @@ $tempdir	= "templates/";			// Template-Verzeichnis
 
 // Weitere Variablen
 $intervall  = 10;                   // Wie viele Mails sollen pro Schritt versendet werden?
+$intervall_cron = 200;				// Wie viele Mails sollen pro Cronjob-Aufruf versendet werden?
 $deletimer	= 30;					// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
 define('CSS_CACHE_DATEI', '');
 

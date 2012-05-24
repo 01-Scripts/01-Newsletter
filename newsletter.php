@@ -123,10 +123,20 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		
 		mysql_query("INSERT INTO ".$mysql_tables['temp_table']." (timestamp, message_id, email) VALUES ".$values.";") OR die(mysql_error());
 		
-		// Hier dann Unterscheidung zwischen Cronjob und sofort (ggf. Iframe)
-		echo "<h1>Newsletter wird verschickt...</h1>";
-		
-		
+		// Newsletter sofort via IFrame verschicken
+		if($settings['use_cronjob'] == 0){
+			echo "<h1>Newsletter wird verschickt...</h1>";
+			
+			echo "<iframe src=\"".$modulpath."_cronjob.php?message_id=".$var."\" width=\"90%\" height=\"300\" name=\"send_newsletter\">
+<p>Ihr Browser kann leider keine eingebetteten Frames anzeigen:
+Sie k&ouml;nnen die eingebettete Seite &uuml;ber den folgenden Verweis aufrufen: <a href=\"".$modulpath."_cronjob.php?message_id=".$var."\" target=\"_blank\">Newsletter versenden</a></p>
+</iframe>";
+			}
+		// Newsletter wird später via Cronjob verschickt
+		else
+			echo "<p class=\"meldung_erfolg\"><b>Der Newsletter wurde erfolgreich gespeichert und wird zum gew&uuml;nschten Zeitpunkt automatisch per Cronjob versendet.</b><br />
+<br />
+<a href=\"".$filename."&amp;action=new\">Einen neuen Newsletter verfassen &raquo;</a></p>";
 		}
 
 	// Meldungen ausgeben
@@ -138,17 +148,6 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	    echo "<p class=\"meldung_erfolg\"><b>Der Newsletter wurde als Vorlage gespeichert.</b><br />
 <br />
 <a href=\"".$filename."&amp;action=new\">Einen neuen Newsletter verfassen &raquo;</a></p>";
-	
-	/*
-	echo "<h1>Newsletter wird verschickt...</h1>";
-
-	if(is_array($_POST['empfcats']))
-		$_POST['empfcats'] = implode(",",$_POST['empfcats']);
-
-	echo "<iframe src=\"popups.php?modul=".$modul."&amp;action=send_letter&amp;newsletter_id=".$var."&amp;start=0&amp;empf=".stripslashes($_POST['empf'])."&amp;empfcats=".$_POST['empfcats']."&amp;sent=0\" width=\"90%\" height=\"300\" name=\"send_newsletter\">
-	<p>Ihr Browser kann leider keine eingebetteten Frames anzeigen:
-	Sie k&ouml;nnen die eingebettete Seite &uuml;ber den folgenden Verweis aufrufen: <a href=\"popups.php?modul=".$modul."&amp;action=send_letter&amp;newsletter_id=".$var."&amp;start=0&amp;empf=".stripslashes($_POST['empf'])."&amp;empfcats=".$_POST['empfcats']."&amp;sent=0\" target=\"_blank\">Newsletter versenden</a></p>
-	</iframe>";*/
 
 	}
 // Formular anzeigen
