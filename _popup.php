@@ -1,12 +1,12 @@
 <?php 
 /*
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Popup-Inhalt
-	#fv.120#
+	#fv.130#
 */
 
 // Newsletter ausgeben
@@ -178,7 +178,7 @@ if(isset($_GET['action']) && $_GET['action'] == "send_letter" &&
 	$list = mysql_query($query);
 	while($row = mysql_fetch_assoc($list)){
 		if($settings['use_html'])
-			$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."</a>";
+			$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".$lang['austragen_html']."</a>";
 		else
 			$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
 

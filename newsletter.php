@@ -1,18 +1,19 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Neuen Newsletter verfassen und absenden
-	#fv.1100#
+	#fv.130#
 */
 
 if(isset($_POST['action']) && $_POST['action'] == "send" &&
    isset($_POST['senden']) && !empty($_POST['senden']) &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
    isset($_POST['betreff']) && !empty($_POST['betreff']) &&
+   isset($_POST['send_now']) && $_POST['send_now'] == 1 &&
    isset($_POST['empf']) && ($_POST['empf'] == "all" || $_POST['empf'] == "cats" && isset($_POST['empfcats']) && !empty($_POST['empfcats']) && $settings['usecats'] == 1)){
 	
 	// Empfänger zusammenstellen
@@ -36,6 +37,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$where.")";
 		}
 
+    // Newsletter-Signatur anhängen?
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1){
 		if($settings['use_html'])
 		    $mailinhalt = stripslashes($_POST['mailtext'])."<br /><br />".nl2br($settings['newslettersignatur']);
@@ -89,10 +91,17 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	}
 // Newsletter als Entwurf speichern
 elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
-   isset($_POST['entwurf']) && !empty($_POST['entwurf']) &&
+   (isset($_POST['entwurf']) && !empty($_POST['entwurf']) || !isset($_POST['send_now']) && !isset($_POST['savevorlage'])) &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
-   isset($_POST['betreff']) && !empty($_POST['betreff'])){
+   isset($_POST['betreff']) && !empty($_POST['betreff']) &&
+   isset($_POST['send_time']) && !empty($_POST['send_time'])){
    
+	// Empfänger zusammenstellen
+	$save_empf = "all";
+	if($_POST['empf'] == "cats" && $settings['usecats'] == 1 && isset($_POST['empfcats']) && is_array($_POST['empfcats'])){
+		$save_empf = implode(",",$_POST['empfcats']);
+		}
+
 	// Anhänge ?
 	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
 		$attachments = array();
@@ -104,28 +113,57 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
 		}
 	else $attachment_string = "";
 
+	// Timestamp für zeitversetzten Versand ggf. anpassen
+	if((!isset($_POST['send_now']) || isset($_POST['send_now']) && $_POST['send_now'] != 1) && !isset($_POST['entwurf'])){
+		$send_date = explode(".",$_POST['send_time']);
+		$timestamp = mktime("0", "0", "1", $send_date[1], $send_date[0], $send_date[2]);
+		
+		$mailinhalt = stripslashes($_POST['mailtext']);
+        
+    
+        // Newsletter-Signatur anhängen?
+    	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1){
+    		if($settings['use_html'])
+                $mailinhalt = $mailinhalt."<br /><br />".nl2br($settings['newslettersignatur']);
+    		else
+    			$mailinhalt = $mailinhalt."\n\n".$settings['newslettersignatur'];
+    		}
+			
+		}
+	else{
+		$timestamp = "";
+		$mailinhalt = $_POST['mailtext'];
+		}
+
 	// Bestehenden Entwurf aktualisieren
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid']) && $_POST['entwurfid'] != "x"){
-		mysql_query("UPDATE ".$mysql_tables['archiv']." SET timestamp = '".time()."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($_POST['mailtext'])."', attachments = '".mysql_real_escape_string($attachment_string)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
+		mysql_query("UPDATE ".$mysql_tables['archiv']." SET timestamp = '".$timestamp."', betreff = '".mysql_real_escape_string($_POST['betreff'])."', mailinhalt = '".mysql_real_escape_string($_POST['mailtext'])."', kategorien = '".mysql_real_escape_string($save_empf)."', attachments = '".mysql_real_escape_string($attachment_string)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
 		}
 	// Newsletter als neuen Entwurf speichern
 	else{
 		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien,attachments)
 			   		VALUES(
 					   'e',
-					   '".time()."',
+					   '".$timestamp."',
 					   '".$userdata['id']."',
 					   '".mysql_real_escape_string($_POST['betreff'])."',
-					   '".mysql_real_escape_string($_POST['mailtext'])."',
-					   '',
+					   '".mysql_real_escape_string($mailinhalt)."',
+					   '".mysql_real_escape_string($save_empf)."',
 					   '".mysql_real_escape_string($attachment_string)."'
 					   )";
 		mysql_query($sql_insert) OR die(mysql_error());
 		}
 
-	echo "<p class=\"meldung_erfolg\"><b>Der Newsletter wurde als Entwurf gespeichert.</b><br />
-	<br />
-	<a href=\"".$filename."&amp;action=new\">Einen neuen Newsletter verfassen &raquo;</a></p>";
+	if((!isset($_POST['send_now']) || isset($_POST['send_now']) && $_POST['send_now'] != 1) && !isset($_POST['entwurf'])){
+		echo "<p class=\"meldung_erfolg\">Der Newsletter wird am <b>".$_POST['send_time']."</b> automatisch versendet werden.<br />
+		<br />
+		<a href=\"".$filename."&amp;action=new\">Einen neuen Newsletter verfassen &raquo;</a></p>";
+		}
+	else
+		echo "<p class=\"meldung_erfolg\"><b>Der Newsletter wurde als Entwurf gespeichert.</b><br />
+		<br />
+		<a href=\"".$filename."&amp;action=new\">Einen neuen Newsletter verfassen &raquo;</a></p>";
+
 	}
 // Newsletter als Vorlage speichern
 elseif(isset($_POST['action']) && $_POST['action'] == "send" &&
@@ -244,6 +282,7 @@ if($evmenge >= 1){
 			$c = 2;
 			}
 		
+		if($row['timestamp'] == 0) $row['timestamp'] = time();
 		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['timestamp'])." - ".stripslashes($row['betreff'])."</option>\n";
 		}
 ?>
@@ -294,6 +333,16 @@ if($evmenge >= 1){
 	</tr>
 		
 <?php } ?>
+    <tr>
+		<td colspan="2"><h2 style="float:left; margin-right:10px;">Weitere Optionen</h2></td>
+	</tr>
+	
+	<tr>
+		<td colspan="2" class="tra">
+			<input type="text" name="send_time" class="DatePicker" size="10" value="<?php if(isset($_POST['send_time']) && !empty($_POST['send_time'])){ echo $_POST['send_time']; }else{ echo date("d.m.Y"); } ?>" /> <b>Versanddatum ausw&auml;hlen</b>
+			oder <input type="checkbox" name="send_now" value="1" /> Newsletter sofort versenden
+		</td>
+	</tr>
 <?php if(!empty($settings['newslettersignatur'])){ ?>	
 	<tr>
 		<td colspan="2" class="trb">
@@ -316,7 +365,7 @@ if($evmenge >= 1){
 <?php } ?>
 	<tr id="savetr">
 		<td class="tra"><input type="submit" name="entwurf" value="Als Entwurf speichern" class="input" id="button1" /></td>
-		<td class="tra" align="right"><input type="submit" name="senden" value="Newsletter jetzt versenden" class="input" id="button2" /></td>
+		<td class="tra" align="right"><input type="submit" name="senden" value="Newsletter versenden / F&uuml;r den Versand speichern" class="input" id="button2" /></td>
 	</tr>
 
 </table>

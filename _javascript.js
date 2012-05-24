@@ -5,13 +5,16 @@
 	
 	Modul:		01newsletter
 	Dateiinfo:	JavaScript-Funktionen
-	#fv.1100#
+	#fv.130#
 */
 
 function toggleSignatur(){
 $('signatur').slide('toggle');
 }
 
+function toggleSendLater(){
+$('select_time').slide('toggle');
+}
 
 function alsVorlage(){
 $('button1').slide('toggle');

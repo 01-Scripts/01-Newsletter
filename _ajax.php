@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.120#
+	#fv.130#
 */
 
 // Vorlage / Entwurf löschen
@@ -34,9 +34,37 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 	while($row = mysql_fetch_assoc($list)){
 		// Sicherheitsabfrage
 		if($row['art'] == "e" && $row['uid'] == $userdata['id'] || $row['art'] == "v"){
-			if($row['art'] == "e")
+			if($row['timestamp'] == 0) $row['timestamp'] = time();
+			    
+			if($row['art'] == "e"){
 				$betreff = "document.post.betreff.value = '".utf8_encode(addcslashes($row['betreff'],"\n\r"))."';
-				document.post.entwurfid.value = '".$row['id']."';";
+				document.post.entwurfid.value = '".$row['id']."';
+				document.post.send_time.value = '".date("d.m.Y",$row['timestamp'])."';\n";
+				
+				list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
+				if($row['kategorien'] == "all" && $settings['usecats'] == 1 && $catmenge > 1)
+				    $betreff .= "document.post.empf[0].checked = true;";
+				elseif(!empty($row['kategorien']) && $settings['usecats'] == 1 && $catmenge > 1){
+					$cats = explode(",",$row['kategorien']);
+					$betreff .= "document.post.empf[1].checked = true;\n";
+					$betreff .= "var selObjArr = document.getElementsByName('empfcats[]');
+					var selObj = selObjArr[0];
+					var i;
+					var count = 0;
+					for(i=0; i<selObj.options.length; i++){
+						selObj.options[i].selected = false;
+						}\n";
+					foreach($cats as $cat){
+						$betreff .= "count = 0;
+					for(i=0; i<selObj.options.length; i++){
+						if(selObj.options[i].value == '".$cat."'){
+					    	selObj.options[i].selected = true;
+					    	}
+						count++;
+						}";
+						}
+					}
+				}
 			else
 				$betreff = "document.post.entwurfid.value = 'x';";
 				

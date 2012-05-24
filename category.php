@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Newsletter-Kategorieverwaltung
-	#fv.1000#
+	#fv.130#
 */
 
 // Berechtigungsabfragen
@@ -84,7 +84,7 @@ while($row = mysql_fetch_array($list)){
     }
 if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 echo "<tr>
-	<td align=\"center\" class=\"".$class."\" colspan=\"2\"><input type=\"submit\" name=\"save\" value=\"&Auml;nderungen speichern\" class=\"input\" /></td>
+	<td align=\"center\" class=\"".$class."\" colspan=\"3\"><input type=\"submit\" name=\"save\" value=\"&Auml;nderungen speichern\" class=\"input\" /></td>
 </tr>";
 ?>
 </table>

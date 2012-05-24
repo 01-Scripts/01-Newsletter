@@ -58,6 +58,7 @@ Ihr Bestätigungscode lautet:
 Wenn Sie Ihre E-Mail-Adresse nicht löschen möchten, können Sie diese E-Mail ignorieren.
 Ihr Newsletter-Abonnement bleibt weiterhin aktiv.";
 $lang['allcats']			= "Alle Kategorien abonnieren";
-$lang['austragen']			= "Klicken Sie hier, um sich vom Newsletter abzumelden:
+$lang['austragen_html']		= "Klicken Sie hier, um sich vom Newsletter abzumelden";
+$lang['austragen']			= "Sie k&ouml;nnen sich jederzeit &uuml;ber nachfolgenden Link abmelden:
 #abmeldelink#";
 ?>
