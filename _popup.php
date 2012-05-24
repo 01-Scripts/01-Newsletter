@@ -42,7 +42,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "show_letter" &&
 		echo "<ul>";
 		foreach($attachments as $attachment){
 			if(in_array(getEndung($attachment),$picendungen))
-				$dateiname_org		= $picuploaddir.$attachment; // ggf. inkl. Pfad
+				$dateiname_org		= $picuploaddir.$attachment;		// ggf. inkl. Pfad
 			else
 				$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
 
