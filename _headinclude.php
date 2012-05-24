@@ -13,6 +13,7 @@
 $mysql_tables['archiv'] 	= "01_".$instnr."_".$module[$modul]['nr']."_newsletterarchiv";
 $mysql_tables['emailadds']	= "01_".$instnr."_".$module[$modul]['nr']."_emailadressen";
 $mysql_tables['mailcats']	= "01_".$instnr."_".$module[$modul]['nr']."_newslettercats";
+$mysql_tables['temp_table']	= "01_".$instnr."_".$module[$modul]['nr']."_send_newsletter_temp";
 
 $addJSFile 	= "_javascript.js";			// Zusätzliche modulspezifische JS-Datei (im Modulverzeichnis!)
 $addCSSFile = "";						// Zusätzliche modulspezifische CSS-Datei (im Modulverzeichnis!)
@@ -31,6 +32,5 @@ $tempdir	= "templates/";			// Template-Verzeichnis
 $intervall  = 10;                   // Wie viele Mails sollen pro Schritt versendet werden?
 $deletimer	= 30;					// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
 define('CSS_CACHE_DATEI', '');
-
 
 ?>
