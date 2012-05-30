@@ -1,6 +1,41 @@
 <?PHP
+// 1.2.0 --> 1.3.0
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
+	
+	// Neue Einstellungen anlegen:
+	$sql_insert = "INSERT INTO `".$mysql_tables['settings']."` (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
+				('".mysql_real_escape_string($modul)."','0','1','9','use_cronjob','Newsletter per Cronjob versenden?','Legen Sie dazu einen regelm&auml;&szlig;igen Cronjob auf die Datei <i>01scripts/01module/01newsletter/_cronjob.php</i> an.<br /><a href=\"http://cronjob.01-scripts.de\" target=\"_blank\">Weitere Informationen zum Thema</a>','Ja|Nein','1|0','','0','0','0','0');";
+	mysql_query($sql_insert) OR die(mysql_error());
+	
+	// Setting-Reihenfolge aktualisieren
+	mysql_query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '10' WHERE `idname` = 'newslettersignatur' AND `modul` = '".mysql_real_escape_string($modul)."' LIMIT 1");
+	mysql_query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '11' WHERE `idname` = 'use_nutzungsbedingungen' AND `modul` = '".mysql_real_escape_string($modul)."' LIMIT 1");
+	mysql_query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '12' WHERE `idname` = 'nutzungsbedingungen' AND `modul` = '".mysql_real_escape_string($modul)."' LIMIT 1");
+	
+	// Neue Datenbanktabelle für Versand per _cronjob.php
+	mysql_query("CREATE TABLE IF NOT EXISTS `".$mysql_tables['temp_table']."` (
+	  `id` int(10) NOT NULL AUTO_INCREMENT,
+	  `timestamp` int(10) NOT NULL,
+	  `message_id` int(10) NOT NULL,
+	  `email` varchar(50) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+	mysql_query("UPDATE ".$mysql_tables['module']." SET version = '1.3.0' WHERE idname = '".mysql_real_escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 1.2.0 nach 1.3.0</h2>
+
+<p class="meldung_erfolg">
+	Das Update von Version 1.2.0 auf Version 1.3.0 wurde erfolgreich durchgef&uuml;hrt.<br /><br />
+	Ab sofort k&ouml;nnen Newsletter nun auch per Cronjob verschickt werden!<br />
+	Beachten Sie dazu auch die <a href="settings.php?action=settings&modul=<?php echo $modul; ?>">neue Einstellung</a>!<br />
+	<br />
+	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
+</p>
+<?PHP
+	}
 // 1.1.0.0 --> 1.2.0
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "1100_zu_120"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "1100_zu_120"){
 	// Setting-Reihenfolge aktualisieren
 	mysql_query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '9' WHERE `idname` = 'newslettersignatur' AND `modul` = '".mysql_real_escape_string($modul)."' LIMIT 1");
 	mysql_query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '10' WHERE `idname` = 'use_nutzungsbedingungen' AND `modul` = '".mysql_real_escape_string($modul)."' LIMIT 1");

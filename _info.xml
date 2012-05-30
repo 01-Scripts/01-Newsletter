@@ -5,9 +5,9 @@
 	<titel>01-Newsletterscript</titel>
 	<beschreibung>Newsletterscript mit komfortabler Verwaltung, Kategorien, Dateianhaengen und HTML-Versand.</beschreibung>
 	<icon>images/newsletter.png</icon>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<need01acpv>1.2.1</need01acpv>
-	<datum>08.06.2011</datum>
+	<datum>30.05.2012</datum>
 	<includeinfo><![CDATA[
 Verwenden Sie folgenden PHP-Code um das 01-Newsletterscript <b>in Ihre Seite einzubinden</b>.
 Auf dieser Seite kann der Benutzer bei der Anmeldung beispielsweise die gew&#252;nschten Kategorien
@@ -58,6 +58,11 @@ kompletten Pfad zu der PHP-Datei ersetzen, in die Sie den oberen PHP-Code eingeb
 			<zielv>1.2.0</zielv>
 			<action>1100_zu_120</action>
 		</v1100_v120>
+		<v120_v130>
+			<startv>1.2.0</startv>
+			<zielv>1.3.0</zielv>
+			<action>120_zu_130</action>
+		</v120_v130>
 	</updates>	
 
 </modul>

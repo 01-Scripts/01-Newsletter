@@ -143,10 +143,10 @@ while($msgids = mysql_fetch_assoc($getmessage_ids)){
 				$inhalt_add .= "\n\n".$mailinhalt_header.$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']).$mailinhalt_footer."";
 				$inhalt_add .= "\n--".$boundary."";
 	
-				//mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header);
+				mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header);
 				}
-			//else
-				//mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header);
+			else
+				mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header);
 
 			// Nach Versand Eintrag aus Tabelle löschen:
 			mysql_query("DELETE FROM ".$mysql_tables['temp_table']." WHERE id = '".$row['id']."' LIMIT 1");
@@ -158,7 +158,7 @@ while($msgids = mysql_fetch_assoc($getmessage_ids)){
 		
 	// Automatische Weiterleitung
 	if(!$is_cronjob){
-    	//echo "<script type=\"text/javascript\">redirect(\"_cronjob.php?message_id=".$msgids['message_id']."\");</script>";
+    	echo "<script type=\"text/javascript\">function redirect(){ window.location='_cronjob.php?message_id=".$msgids['message_id']."'; } redirect();</script>";
 		echo "<a href=\"_cronjob.php?message_id=".$msgids['message_id']."\">Weiter</a>";
 		}
 	}

@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.1100#
+	#fv.130#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -379,6 +379,10 @@ elseif(isset($_REQUEST['ecode']) && !empty($_REQUEST['ecode']) && strlen($_REQUE
 	}
 // Löschcode übergeben?
 elseif(isset($_REQUEST['dcode']) && !empty($_REQUEST['dcode']) && strlen($_REQUEST['dcode']) == 32 && $_REQUEST['dcode'] != 0){
+	$list = mysql_query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE delcode='".mysql_real_escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
+	$row_email = mysql_fetch_assoc($list);
+	
+	mysql_query("DELETE FROM ".$mysql_tables['temp_table']." WHERE email = '".mysql_real_escape_string($row_email['email'])."' AND email != ''");
 	mysql_query("DELETE FROM ".$mysql_tables['emailadds']." WHERE delcode='".mysql_real_escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
 
 	if(mysql_affected_rows() == 1){
@@ -411,5 +415,4 @@ else{
 // Main_Bottom einfügen
 include($tempdir."main_bottom.html");
 
-// 01-Newslettersystem Copyright 2009 by Michael Lorer - 01-Scripts.de
 ?>

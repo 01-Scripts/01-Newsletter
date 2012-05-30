@@ -38,8 +38,9 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			    
 			if($row['art'] == "e"){
 				$betreff = "document.post.betreff.value = '".utf8_encode(addcslashes($row['betreff'],"\n\r"))."';
-				document.post.entwurfid.value = '".$row['id']."';
-				document.post.send_time.value = '".date("d.m.Y",$row['timestamp'])."';\n";
+				document.post.entwurfid.value = '".$row['id']."';\n";
+				if($settings['use_cronjob'] == 1)
+				$betreff .= "document.post.send_time.value = '".date("d.m.Y",$row['timestamp'])."';\n";
 				
 				list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
 				if($row['kategorien'] == "all" && $settings['usecats'] == 1 && $catmenge > 1)
@@ -145,7 +146,12 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
 // E-Mail-Adresse löschen
 elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailaddy" &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
-   	mysql_query("DELETE FROM ".$mysql_tables['emailadds']." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."' LIMIT 1");
+   	$list = mysql_query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."' LIMIT 1");
+	$row_email = mysql_fetch_assoc($list);
+
+	mysql_query("DELETE FROM ".$mysql_tables['temp_table']." WHERE email = '".mysql_real_escape_string($row_email['email'])."' AND email != ''");
+	   
+	mysql_query("DELETE FROM ".$mysql_tables['emailadds']." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."' LIMIT 1");
    	
    	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
