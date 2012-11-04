@@ -9,6 +9,9 @@
 	#fv.130#
 */
 
+// Security: Only allow calls from _ajaxloader.php!
+ if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
+
 // Vorlage / Entwurf löschen
 if(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "del_vorlage" &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id']) &&
