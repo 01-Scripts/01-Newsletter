@@ -1,10 +1,11 @@
 /* 
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
-	Dateiinfo:	JavaScript-Funktionen
+	Dateiinfo:	JavaScript-Funktionen des 01-Newsletterscripts (stehen nur innerhalb des 01ACP zur Verfügung)
+	Unkomprimierte Version der Datei: https://github.com/01-Scripts/01-Newsletter/blob/V1.3.0/01newsletter/_javascript.js
 	#fv.130#
 */
 
