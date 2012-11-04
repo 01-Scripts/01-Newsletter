@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
-	#fv.1100#
+	#fv.130#
 */
 
 // Berechtigungsabfragen
@@ -86,7 +86,7 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 		<a href=\"javascript:history.back();\">&laquo; Bitte gehen Sie zur&uuml;ck</a></p>";
 	}
 elseif(isset($_POST['action']) && $_POST['action'] == "doadd")
-	echo "<p class=\"meldung_error\"><b>Sie haben nicht alle ben&ouml;tigten Felder ausgef&uuml;llt.</b><br />
+	echo "<p class=\"meldung_error\"><b>Sie haben nicht alle ben&ouml;tigten Felder ausgef&uuml;llt oder eine falsche E-Mail-Adresse eingegeben.</b><br />
 	<br />
 	<a href=\"javascript:history.back();\">&laquo; Bitte gehen Sie zur&uuml;ck</a></p>";
 
