@@ -5,7 +5,7 @@
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
-	Dateiinfo: 	Programmcode für Modul-Popup-Fensterasd
+	Dateiinfo: 	Programmcode für Modul-Popup-Fenster
 	#fv.130#
 */
 
