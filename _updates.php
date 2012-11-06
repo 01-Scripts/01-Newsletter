@@ -28,7 +28,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
 <p class="meldung_erfolg">
 	Das Update von Version 1.2.0 auf Version 1.3.0 wurde erfolgreich durchgef&uuml;hrt.<br /><br />
 	Ab sofort k&ouml;nnen Newsletter nun auch per Cronjob verschickt werden!<br />
-	Beachten Sie dazu auch die <a href="settings.php?action=settings&modul=<?php echo $modul; ?>">neue Einstellung</a>!<br />
+	Beachten Sie dazu auch die <a href="settings.php?action=settings&amp;modul=<?php echo $modul; ?>">neue Einstellung</a>!<br />
 	<br />
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </p>
@@ -53,7 +53,7 @@ elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "1100_zu_120"){
 <p class="meldung_erfolg">
 	Das Update von Version 1.1.0.0 auf Version 1.2.0 wurde erfolgreich durchgef&uuml;hrt.<br /><br />
 	Ab sofort k&ouml;nnen auch Newsletter mit HTML verschickt werden!<br />
-	Beachten Sie dazu auch die <a href="settings.php?action=settings&modul=<?php echo $modul; ?>">neue Einstellung</a>!<br />
+	Beachten Sie dazu auch die <a href="settings.php?action=settings&amp;modul=<?php echo $modul; ?>">neue Einstellung</a>!<br />
 	<br />
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </p>
@@ -95,7 +95,7 @@ elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "1001_zu_1100"){
 <p class="meldung_erfolg">
 	Das Update von Version 1.0.0.1 auf Version 1.1.0.0 wurde erfolgreich durchgef&uuml;hrt.<br /><br />
 	Ab sofort k&ouml;nnen mit Newslettern auch Dateianh&auml;nge verschickt werden!<br />
-	Beachten Sie dazu auch die <a href="settings.php?action=settings&modul=<?php echo $modul; ?>">neuen Einstellungen</a>!<br />
+	Beachten Sie dazu auch die <a href="settings.php?action=settings&amp;modul=<?php echo $modul; ?>">neuen Einstellungen</a>!<br />
 	<br />
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </p>
@@ -119,7 +119,7 @@ elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "1000_zu_1001"){
 
 <p class="meldung_erfolg">
 	Das Update von Version 1.0.0.0 auf Version 1.0.0.1 wurde erfolgreich durchgef&uuml;hrt.<br /><br />
-	Es sind <a href="settings.php?action=settings&modul=<?php echo $modul; ?>">neue Einstellungen vorhanden</a>!<br />
+	Es sind <a href="settings.php?action=settings&amp;modul=<?php echo $modul; ?>">neue Einstellungen vorhanden</a>!<br />
 	<br />
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </p>
