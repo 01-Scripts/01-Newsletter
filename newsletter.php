@@ -13,13 +13,13 @@
 if(isset($_POST['action']) && $_POST['action'] == "send" &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
    (isset($_POST['vorlagenname']) && !empty($_POST['vorlagenname']) && isset($_POST['savevorlage']) && !empty($_POST['savevorlage']) && $userdata['vorlagen'] == 1 || isset($_POST['betreff']) && !empty($_POST['betreff'])) &&
-   isset($_POST['empf']) && ($_POST['empf'] == "all" || $_POST['empf'] == "cats" && isset($_POST['empfcats']) && !empty($_POST['empfcats']) && $settings['usecats'] == 1)){
+   isset($_POST['empf']) && ($_POST['empf'] == "all" || $_POST['empf'] == "test" && !empty($_POST['testempf']) || $_POST['empf'] == "cats" && isset($_POST['empfcats']) && !empty($_POST['empfcats']) && $settings['usecats'] == 1)){
 	
 	// Empfänger zusammenstellen (zum Speichern bei Entwürfen)
 	$save_cat = "all";
 	if($_POST['empf'] == "cats" && $settings['usecats'] == 1 && isset($_POST['empfcats']) && is_array($_POST['empfcats']))
 		$save_cat = implode(",",$_POST['empfcats']);
-		
+
 	// Empfänger zusammenstellen (zur Ermittlung der betreffenden E-Mail-Adressen und zum Speichern im Klartext beim Versand im Archiv)
 	if(isset($_POST['senden']) && !empty($_POST['senden'])){
 		$save_cat = "";
@@ -40,6 +40,12 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				}
 	
 			$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$where.")";
+			}
+		elseif($_POST['empf'] == "test"){
+			if(!check_mail(trim($_POST['testempf'])))
+				$row['email'] = explode(",", trim($_POST['testempf']));
+			else
+				$row['email'][0] = trim($_POST['testempf']);
 			}
 		}
 	// bei Vorlagen
@@ -114,19 +120,33 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	// Bei Versand: Empfänger in temporäre Tabelle übertragen
 	if(isset($_POST['senden']) && !empty($_POST['senden'])){
 		$x = 0; $values = "";
-		$list = mysql_query($query);
-		while($row = mysql_fetch_assoc($list)){
-			if($x > 0) $values .= ",\n";
-			
-			$values .= "('".$timestamp."','".$var."','".$row['email']."')";
-			
-			$x++;
+		if($_POST['empf'] == "test"){
+			foreach($row['email'] as $email){
+				if(check_mail(trim($email))){
+					if($x > 0) $values .= ",\n";
+
+					$values .= "('".$timestamp."','".$var."','".mysql_real_escape_string(trim($email))."')";
+
+					$x++;
+				}
 			}
+		}
+		else{
+			$list = mysql_query($query);
+			while($row = mysql_fetch_assoc($list)){
+				if($x > 0) $values .= ",\n";
+				
+				$values .= "('".$timestamp."','".$var."','".$row['email']."')";
+				
+				$x++;
+				}
+		}
 		
-		mysql_query("INSERT INTO ".$mysql_tables['temp_table']." (timestamp, message_id, email) VALUES ".$values.";") OR die(mysql_error());
+		if($values != "")
+			mysql_query("INSERT INTO ".$mysql_tables['temp_table']." (timestamp, message_id, email) VALUES ".$values.";") OR die(mysql_error());
 		
 		// Newsletter sofort via IFrame verschicken
-		if($settings['use_cronjob'] == 0){
+		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !mysql_error()){
 			echo "<h1>Newsletter wird verschickt...</h1>";
 			
 			echo "<iframe src=\"".$modulpath."_cronjob.php?message_id=".$var."\" width=\"90%\" height=\"300\" name=\"send_newsletter\">
@@ -134,6 +154,9 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 Sie k&ouml;nnen die eingebettete Seite &uuml;ber den folgenden Verweis aufrufen: <a href=\"".$modulpath."_cronjob.php?message_id=".$var."\" target=\"_blank\">Newsletter versenden</a></p>
 </iframe>";
 			}
+		// Fehlermeldung, wenn die eingegebene Test-E-Mail-Adresse fehlerhaft ist
+		elseif($_POST['empf'] == "test")
+			echo "<p class=\"meldung_error\"><b>Der Test-Newsletter konnte nicht versendet werden, da keine gültige E-Mail-Adresse eingegeben wurde.</b></p>";			
 		// Newsletter wird später via Cronjob verschickt
 		else
 			echo "<p class=\"meldung_erfolg\"><b>Der Newsletter wurde erfolgreich gespeichert und wird zum gew&uuml;nschten Zeitpunkt automatisch per Cronjob versendet.</b><br />
@@ -174,17 +197,16 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 
 <?php 
 list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
-if($settings['usecats'] == 1 && $catmenge > 1){
 ?>
     <tr>
 		<td colspan="2"><h2>Empf&auml;nger w&auml;hlen</h2></td>
 	</tr>
 
 	<tr>
-        <td class="trb" align="center"><input type="radio" name="empf" value="all"<?php if(isset($_POST['empf']) && $_POST['empf'] == "all") echo " checked=\"checked\""; ?> /></td>
+        <td class="trb" align="center"><input type="radio" name="empf" value="all"<?php if(isset($_POST['empf']) && $_POST['empf'] == "all" || $settings['usecats'] != 1 || $catmenge < 1) echo " checked=\"checked\""; ?> /></td>
         <td class="trb"><b>Newsletter an alle registrierten E-Mail-Adressen senden</b></td>
     </tr>
-    
+<?php if($settings['usecats'] == 1 && $catmenge > 1){ ?>    
     <tr>
         <td class="trb" align="center"><input type="radio" name="empf" value="cats"<?php if(isset($_POST['empf']) && $_POST['empf'] == "cats") echo " checked=\"checked\""; ?> /></td>
         <td class="trb"><b>Newsletter an bestimmte Kategorien versenden:</b><br />
@@ -201,16 +223,12 @@ if($settings['usecats'] == 1 && $catmenge > 1){
 		</select> <span class="small">Halten Sie die STRG-Taste gedr&uuml;ckt um mehrere Kategorien auszuw&auml;hlen.</span>
 		</td>
     </tr>
-<?php }else{ ?>
-    <tr>
-		<td colspan="2"><h2>Empf&auml;nger</h2></td>
-	</tr>
-
-	<tr>
-        <td class="trb" align="center"><input type="hidden" name="empf" value="all" /></td>
-        <td class="trb"><b>Newsletter wird an alle registrierten E-Mail-Adressen gesendet</b></td>
-    </tr>
 <?php } ?>
+	<tr>
+        <td class="tra" align="center"><input type="radio" name="empf" value="test"<?php if(isset($_POST['empf']) && $_POST['empf'] == "test") echo " checked=\"checked\""; ?> /></td>
+        <td class="tra"><b>Test-Newsletter an folgende Adressen senden:</b> <input type="text" size="35" name="testempf" class="input_text"> <span class="small">(kommasepariert)</span></td>
+    </tr>
+
     <tr>
 		<td colspan="2"><h2>Nachrichtentext</h2></td>
 	</tr>
