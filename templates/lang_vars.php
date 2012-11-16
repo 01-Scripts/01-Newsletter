@@ -1,12 +1,12 @@
 <?php 
 /*
-	01-Newsletter - Copyright 2009 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Sprachvariablen
-	#fv.1001#
+	#fv.130#
 	
 Die Sprachvariablen in dieser Datei können von Ihnen verändert werden.
 */
@@ -24,6 +24,11 @@ Falls Sie den Link nicht anklicken können, kopieren Sie Ihn bitte manuell in Ihr
 Ihr Aktivierungscode lautet:
 #acode#";
 $lang['meldung_registriert']= "Ihre E-Mail-Adresse wurde soeben erfolgreich f&uuml;r den Newsletter angemeldet. Sie erhalten in K&uuml;rze eine Best&auml;tigungsemail an Ihre Adresse geschickt!<br />Sie finden in dieser E-Mail einen Link um zu best&auml;tigen, dass Sie der Eigent&uuml;mer dieser Adresse sind.<br /><br />Klicken Sie hier, falls Sie keine E-Mail bekommen haben:";
+$lang['neue_reg_betreff']	= "Neue Newsletter-Anmeldung auf Ihrer Seite";
+$lang['neue_reg_body']		= "Hallo,
+
+soeben hat sich ein neuer Benutzer für den Newsletter angemeldet.
+E-Mail-Adresse: ";
 $lang['meldung_newacode']	= "Ein neuer Aktivierungscode wurden Ihnen soeben an Ihre E-Mail-Adresse geschickt.";
 $lang['meldung_falschemail']= "Fehler: Es wurde keine g&uuml;ltige E-Mail-Adresse eingegeben.";
 $lang['meldung_activated']	= "Ihre E-Mail-Adresse wurde erfolgreich bestätigt und aktiviert.";

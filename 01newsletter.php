@@ -134,7 +134,6 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					else
 						$cats_string = 0;
 	
-					mt_srand((double)microtime()*1000000);
 					$zahl = mt_rand(1, 9999999999999);
 					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 					
@@ -153,7 +152,6 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					}
 				// Neuen Edit-Code versenden
 				elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "newecode"){
-					mt_srand((double)microtime()*1000000);
 					$zahl = mt_rand(1, 9999999999999);
 					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 
@@ -172,7 +170,6 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					}
 				// Lösch-Wunsch eintragen
 				elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "delabo"){
-					mt_srand((double)microtime()*1000000);
 					$zahl = mt_rand(1, 9999999999999);
 					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 
@@ -191,14 +188,13 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					}
 				// Neuen Lösch-Code versenden
 				elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "newdcode"){
-					mt_srand((double)microtime()*1000000);
 					$zahl = mt_rand(1, 9999999999999);
 					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 
-					mysql_query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$ecode."' WHERE email='".mysql_real_escape_string($row['email'])."' LIMIT 1");
+					mysql_query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".mysql_real_escape_string($row['email'])."' LIMIT 1");
 
 					$mail_inhalt = str_replace("#dcodelink#",addParameter2Link($settings['formzieladdr'],"dcode=".$dcode),$lang['mailinhalt_ecode']);
-					$mail_inhalt = str_replace("#dcode#",$ecode,$mail_inhalt);
+					$mail_inhalt = str_replace("#dcode#",$dcode,$mail_inhalt);
 
 					mail($row['email'],$lang['mail_dcode'],$mail_inhalt,$mail_header);
 
@@ -239,7 +235,6 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 	else{
 		// Adresse direkt registrieren und Aktivierungsmail verschicken
 		if($settings['usecats'] == 0 && ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']))){
-			mt_srand((double)microtime()*1000000);
 			$zahl = mt_rand(1, 9999999999999);
 			$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 			
@@ -282,7 +277,6 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 				else
 					$cats_string = 0;
 					
-				mt_srand((double)microtime()*1000000);
 				$zahl = mt_rand(1, 9999999999999);
 				$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 				
@@ -339,10 +333,7 @@ elseif(isset($_REQUEST['acode']) && !empty($_REQUEST['acode']) && strlen($_REQUE
 		
 		// E-Mail für Neuregistrierung an Admin versenden
 		if($settings['send_benachrichtigung'] == 1)
-			mail($settings['email_absender'],$settings['sitename']." - Neue Anmeldung für Newsletter","Hallo,
-
-soeben hat sich ein neuer Benutzer für den Newsletter angemeldet.
-E-Mail-Adresse: ".$row_email['email']."
+			mail($settings['email_absender'],$settings['sitename']." - ".$lang['neue_reg_betreff'],$lang['neue_reg_body'].$row_email['email']."
 
 ---
 Webmailer",$mail_header);
