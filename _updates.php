@@ -25,13 +25,13 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
 ?>
 <h2>Update Version 1.2.0 nach 1.3.0</h2>
 
-<p class="meldung_erfolg">
+<div class="meldung_erfolg">
 	Das Update von Version 1.2.0 auf Version 1.3.0 wurde erfolgreich durchgef&uuml;hrt.<br /><br />
-	Ab sofort k&ouml;nnen Newsletter nun auch per Cronjob verschickt werden!<br />
+	Ab sofort k&ouml;nnen Newsletter nun auch automatisiert per Cronjob verschickt werden!<br />
 	Beachten Sie dazu auch die <a href="settings.php?action=settings&amp;modul=<?php echo $modul; ?>">neue Einstellung</a>!<br />
 	<br />
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
-</p>
+</div>
 <?PHP
 	}
 // 1.1.0.0 --> 1.2.0

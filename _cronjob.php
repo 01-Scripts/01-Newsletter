@@ -64,6 +64,7 @@ while($msgids = mysql_fetch_assoc($getmessage_ids)){
 		if($settings['use_html']){
 			$mailinhalt = str_replace("../01pics/",$settings['absolut_url']."01pics/",$mailinhalt);
 			$mailinhalt = str_replace("../01files/",$settings['absolut_url']."01files/",$mailinhalt);
+			$mailinhalt .= "<br /><br />";		// To add space before the link to unsubscribe
 	
 			$mailinhalt_header = "<html>
 		<head>
@@ -76,6 +77,7 @@ while($msgids = mysql_fetch_assoc($getmessage_ids)){
 			}
 		else{
 			$mailinhalt_header = $mailinhalt_footer = "";
+			$mailinhalt .= "\n\n";		// To add space before the link to unsubscribe
 			}
 	
 		// Attachments ggf. anhängen

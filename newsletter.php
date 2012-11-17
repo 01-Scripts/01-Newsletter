@@ -12,8 +12,13 @@
 // Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
 if(isset($_POST['action']) && $_POST['action'] == "send" &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
-   (isset($_POST['vorlagenname']) && !empty($_POST['vorlagenname']) && isset($_POST['savevorlage']) && !empty($_POST['savevorlage']) && $userdata['vorlagen'] == 1 || isset($_POST['betreff']) && !empty($_POST['betreff'])) &&
-   isset($_POST['empf']) && ($_POST['empf'] == "all" || $_POST['empf'] == "test" && !empty($_POST['testempf']) || $_POST['empf'] == "cats" && isset($_POST['empfcats']) && !empty($_POST['empfcats']) && $settings['usecats'] == 1)){
+   (
+   		(isset($_POST['vorlagenname']) && !empty($_POST['vorlagenname']) && isset($_POST['savevorlage']) && !empty($_POST['savevorlage']) && $userdata['vorlagen'] == 1) || 
+
+   		isset($_POST['betreff']) && !empty($_POST['betreff']) &&
+   		isset($_POST['empf']) && ($_POST['empf'] == "all" || $_POST['empf'] == "test" && !empty($_POST['testempf']) || $_POST['empf'] == "cats" && isset($_POST['empfcats']) && !empty($_POST['empfcats']) && $settings['usecats'] == 1)
+   )
+   		){
 	
 	// Empfänger zusammenstellen (zum Speichern bei Entwürfen)
 	$save_cat = "all";
@@ -225,8 +230,8 @@ list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_t
     </tr>
 <?php } ?>
 	<tr>
-        <td class="tra" align="center"><input type="radio" name="empf" value="test"<?php if(isset($_POST['empf']) && $_POST['empf'] == "test") echo " checked=\"checked\""; ?> /></td>
-        <td class="tra"><b>Test-Newsletter an folgende Adressen senden:</b> <input type="text" size="35" name="testempf" class="input_text"> <span class="small">(kommasepariert)</span></td>
+        <td class="trb" align="center"><input type="radio" name="empf" value="test"<?php if(isset($_POST['empf']) && $_POST['empf'] == "test") echo " checked=\"checked\""; ?> /></td>
+        <td class="trb"><b>Test-Newsletter an folgende Adressen senden:</b> <input type="text" size="35" name="testempf" value="<?php if(isset($_POST['testempf'])){ echo $_POST['testempf']; } ?>" class="input_text"> <span class="small">(kommasepariert)</span></td>
     </tr>
 
     <tr>

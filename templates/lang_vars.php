@@ -64,6 +64,6 @@ Wenn Sie Ihre E-Mail-Adresse nicht löschen möchten, können Sie diese E-Mail igno
 Ihr Newsletter-Abonnement bleibt weiterhin aktiv.";
 $lang['allcats']			= "Alle Kategorien abonnieren";
 $lang['austragen_html']		= "Klicken Sie hier, um sich vom Newsletter abzumelden";
-$lang['austragen']			= "Sie k&ouml;nnen sich jederzeit &uuml;ber nachfolgenden Link abmelden:
+$lang['austragen']			= "Sie koennen sich jederzeit ueber nachfolgenden Link abmelden:
 #abmeldelink#";
 ?>
