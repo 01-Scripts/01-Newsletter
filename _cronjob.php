@@ -127,6 +127,7 @@ while($msgids = mysql_fetch_assoc($getmessage_ids)){
 			}
 	
 		// Mails verschicken
+		$errors = array();
 		$list = mysql_query("SELECT id,email FROM ".$mysql_tables['temp_table']." WHERE timestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".mysql_real_escape_string($limit)."");
 		while($row = mysql_fetch_assoc($list)){
 			if($settings['use_html'])
@@ -145,17 +146,37 @@ while($msgids = mysql_fetch_assoc($getmessage_ids)){
 				$inhalt_add .= "\n\n".$mailinhalt_header.$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']).$mailinhalt_footer."";
 				$inhalt_add .= "\n--".$boundary."";
 	
-				mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header);
+				if(mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header))
+					$c++;
+				else
+					$errors[] = $row['email'];
 				}
 			else
-				mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header);
+				if(mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header))
+					$c++;
+				else
+					$errors[] = $row['email'];	
 
 			// Nach Versand Eintrag aus Tabelle löschen:
 			mysql_query("DELETE FROM ".$mysql_tables['temp_table']." WHERE id = '".$row['id']."' LIMIT 1");
-			$c++;
 			
 			if($c == $limit) break;
 			}
+
+			// Traten Fehler auf?
+			if(is_array($errors) && !empty($errors) && count($errors) > 0){
+				mail($settings['email_absender'],"Fehler beim Newsletter-Versand","Guten Tag,
+
+an folgende Adressaten konnte leider ihr Newsletter ".$betreff." nicht versendet werden:
+".implode(",", $errors)."
+
+Bitte überprüfen Sie die Adressen und entfernen Sie sie ggf. aus den Empfängerlisten.
+
+---
+Webmailer (01-Newsletterscript)
+".$settings['absolut_url']."01acp/",$mail_header);
+			}
+
 		}
 		
 	// Automatische Weiterleitung
