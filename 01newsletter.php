@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.130#
+	#fv.131#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -61,7 +61,7 @@ $meldung = "";
 if(!isset($_REQUEST['email']))		$_REQUEST['email'] = "";
 if(!isset($_REQUEST['action']))		$_REQUEST['action'] = "";
 if(!isset($_REQUEST['cats']))		$_REQUEST['cats'] = "";
-if(!isset($_REQUEST['send']))		$_REQUEST['send'] = "";
+if(!isset($_REQUEST['sendregform']))$_REQUEST['sendregform'] = "";
 if(!isset($_REQUEST['acode']))		$_REQUEST['acode'] = "";
 if(!isset($_REQUEST['ecode']))		$_REQUEST['ecode'] = "";
 if(!isset($_REQUEST['dcode']))		$_REQUEST['dcode'] = "";
@@ -265,7 +265,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 		// Kategorien anzeigen
 		else{
 			// Daten in Datenbank speichern
-			if(isset($_REQUEST['send']) && !empty($_REQUEST['send']) &&
+			if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
 			   ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']) ||
 			    isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] == 1)){
 				// Kategorien parsen:

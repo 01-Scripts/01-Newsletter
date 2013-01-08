@@ -25,7 +25,7 @@ ausw&auml;hlen.</p>
 <textarea rows="8" cols="70" name="nutzungsbedingungen"><?php echo htmlentities(stripslashes($settings['nutzungsbedingungen'])); ?></textarea>
 <p class="small"><input type="checkbox" name="ok_nutzungsbed" value="1" /> Ich akzeptiere die Datenschutz / Nutzungsbedingungen und abonniere den Newsletter.</p>
 
-<?php if (isset($_REQUEST['send']) && !empty($_REQUEST['send']) && isset($_REQUEST['nutzungsbedingungen']) && (!isset($_REQUEST['ok_nutzungsbed']) || isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] != 1)): ?>
+<?php if (isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) && isset($_REQUEST['nutzungsbedingungen']) && (!isset($_REQUEST['ok_nutzungsbed']) || isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] != 1)): ?>
 <p class="highlight">Sie m&uuml;ssen den Datenschutz / Nutzungsbedingungen zustimmen.</p>
 <?php endif; ?>
 
