@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.131#
+	#fv.132#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -220,7 +220,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 						if($sel1 == "" && in_array($rowcats['id'],$cats_reg)) $sel2 = " selected=\"selected\"";
 						else $sel2 = "";
 						
-						$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities(stripslashes($rowcats['catname']))."</option>\n";
+						$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities(stripslashes($rowcats['catname']),$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 						}
 					
 					$dellink = addParameter2Link($filename,"action=delabo");
@@ -310,7 +310,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 				
 				$list = mysql_query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
 				while($row = mysql_fetch_assoc($list)){
-					$mailcats .= "<option value=\"".$row['id']."\">".htmlentities(stripslashes($row['catname']))."</option>\n";
+					$mailcats .= "<option value=\"".$row['id']."\">".htmlentities(stripslashes($row['catname']),$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 					}
 				
 				include($tempdir."formular_registrierung.html");

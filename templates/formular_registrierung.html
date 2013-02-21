@@ -22,7 +22,7 @@ ausw&auml;hlen.</p>
 
 <h2>Datenschutz / Nutzungsbedingungen</h2>
 
-<textarea rows="8" cols="70" name="nutzungsbedingungen"><?php echo htmlentities(stripslashes($settings['nutzungsbedingungen'])); ?></textarea>
+<textarea rows="8" cols="70" name="nutzungsbedingungen"><?php echo htmlentities(stripslashes($settings['nutzungsbedingungen']),$htmlent_flags,$htmlent_encoding_acp); ?></textarea>
 <p class="small"><input type="checkbox" name="ok_nutzungsbed" value="1" /> Ich akzeptiere die Datenschutz / Nutzungsbedingungen und abonniere den Newsletter.</p>
 
 <?php if (isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) && isset($_REQUEST['nutzungsbedingungen']) && (!isset($_REQUEST['ok_nutzungsbed']) || isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] != 1)): ?>
