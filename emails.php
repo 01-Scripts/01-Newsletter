@@ -93,11 +93,11 @@ if(isset($_GET['action']) && $_GET['action'] == "addemail"){
 	echo "<h1>E-Mail-Adresse hinzuf&uuml;gen</h1>";
 ?>
 <form action="<?PHP echo $filename; ?>" method="post" name="post">
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
 
 	<tr>
-        <td class="tra" width="30%"><b>E-Mail-Adresse:</b></td>
-        <td class="tra"><input type="text" name="email" value="" size="50" class="input_text" /></td>
+        <td width="30%"><b>E-Mail-Adresse:</b></td>
+        <td><input type="text" name="email" value="" size="50" class="input_text" /></td>
     </tr>
 <?php 
 if($settings['usecats'] == 1 && $catmenge > 1){
@@ -110,18 +110,18 @@ if($settings['usecats'] == 1 && $catmenge > 1){
 		}
 ?>
 	<tr>
-        <td class="tra"><b>Kategorien w&auml;hlen:</b></td>
-        <td class="tra"><select name="cats[]" multiple="multiple" class="input_select" size="5"><?php echo $mailcats; ?></select></td>
+        <td><b>Kategorien w&auml;hlen:</b></td>
+        <td><select name="cats[]" multiple="multiple" class="input_select" size="5"><?php echo $mailcats; ?></select></td>
     </tr>
 <?php } ?>
 	<tr>
-        <td class="trb"><b>Aktivierungscode verschicken?</b></td>
-        <td class="trb"><input type="checkbox" name="acode" value="1" /></td>
+        <td><b>Aktivierungscode verschicken?</b></td>
+        <td><input type="checkbox" name="acode" value="1" /></td>
     </tr>
 
 	<tr>
-        <td class="tra"><input type="hidden" name="action" value="doadd" /></td>
-        <td class="tra" align="right"><input type="submit" value="Hinzuf&uuml;gen &raquo;" class="input" /></td>
+        <td><input type="hidden" name="action" value="doadd" /></td>
+        <td align="right"><input type="submit" value="Hinzuf&uuml;gen &raquo;" class="input" /></td>
     </tr>
 
 </table>
@@ -179,36 +179,34 @@ if($catmenge > 0){
 	$query = makepages($query,$sites,"site",ACP_PER_PAGE);
 ?>
 
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
     <tr>
-		<td class="tra" width="35" align="center"><b>ID</b></td>
-        <td class="tra"><b>E-Mail-Adresse</b>
+		<td width="35" align="center"><b>ID</b></td>
+        <td><b>E-Mail-Adresse</b>
 			<a href="<?PHP echo $filename; ?>&amp;sort=asc"><img src="images/icons/sort_asc.gif" alt="Icon: Pfeil nach oben" title="Aufsteigend sortieren" /></a>
 			<a href="<?PHP echo $filename; ?>&amp;sort=desc"><img src="images/icons/sort_desc.gif" alt="Icon: Pfeil nach unten" title="Absteigend sortieren (DESC)" /></a>
 		</td>
-		<td class="tra"><b>Registriert am</b>
+		<td><b>Registriert am</b>
 			<a href="<?PHP echo $filename; ?>&amp;sort=asc&amp;orderby=timestamp"><img src="images/icons/sort_asc.gif" alt="Icon: Pfeil nach oben" title="Aufsteigend sortieren" /></a>
 			<a href="<?PHP echo $filename; ?>&amp;sort=desc&amp;orderby=timestamp"><img src="images/icons/sort_desc.gif" alt="Icon: Pfeil nach unten" title="Absteigend sortieren (DESC)" /></a>
 		</td>
-		<td class="tra" width="100" align="center"><b>Aktiv?</b></td>
-		<td class="tra nosort" width="25" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
+		<td width="100" align="center"><b>Aktiv?</b></td>
+		<td class="nosort" width="25" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
 	// Ausgabe der Datensätze (Liste) aus DB
-	$count = 0;
 	$list = $mysqli->query($query);
 	while($row = $list->fetch_assoc()){
-		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 		
 		if(strlen($row['acode']) == 32) $aktiv = "-";
 		else $aktiv = "<img src=\"images/icons/ok.gif\" alt=\"Gr&uuml;ner OK-Haken\" title=\"Adresse wurde best&auml;tigt und ist aktiv\" />";
 		
 		echo "    <tr id=\"id".$row['id']."\">
-		<td class=\"".$class."\" align=\"center\">".$row['id']."</td>
-		<td class=\"".$class."\">".stripslashes($row['email'])."</td>
-		<td class=\"".$class."\">".date("d.m.Y",$row['timestamp_reg'])."</td>
-		<td class=\"".$class."\" align=\"center\">".$aktiv."</td>
-		<td class=\"".$class."\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Adresse l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delemailaddy&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
+		<td align=\"center\">".$row['id']."</td>
+		<td>".stripslashes($row['email'])."</td>
+		<td>".date("d.m.Y",$row['timestamp_reg'])."</td>
+		<td align=\"center\">".$aktiv."</td>
+		<td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Adresse l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delemailaddy&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 	</tr>";
 		}
 ?>
@@ -217,7 +215,6 @@ if($catmenge > 0){
 
 <?php 
 echo echopages($sites,"80%","site","search=".$_GET['search']."&amp;catid=".$_GET['catid']."&amp;sort=".$_GET['sort']."&amp;orderby=".$_GET['orderby']."");
-	
 	}
 
 }else $flag_loginerror = true;

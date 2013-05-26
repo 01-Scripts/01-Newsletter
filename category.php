@@ -32,16 +32,16 @@ elseif(isset($_POST['action']) && $_POST['action'] == "newcat"){
 ?>
 
 <form action="<?PHP echo $filename; ?>" method="post">
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
 
     <tr>
-        <td width="30%" class="tra"><b>Bitte Kategoriename eingeben</b></td>
-        <td width="20%" class="tra">&nbsp;</td>
+        <td width="30%"><b>Bitte Kategoriename eingeben</b></td>
+        <td width="20%">&nbsp;</td>
     </tr>
 
     <tr>
-        <td class="trb"><input type="text" name="catname" size="30" class="input_text" /></td>
-        <td class="trb" align="right"><input type="submit" value="Anlegen &raquo;" class="input" /><input type="hidden" name="action" value="newcat" /></td>
+        <td><input type="text" name="catname" size="30" class="input_text" /></td>
+        <td align="right"><input type="submit" value="Anlegen &raquo;" class="input" /><input type="hidden" name="action" value="newcat" /></td>
     </tr>
 </table>
 </form>
@@ -61,30 +61,26 @@ if(isset($_POST['action']) && $_POST['action'] == "rename_cats"){
 ?>
 
 <form action="<?PHP echo $filename; ?>" method="post">
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
 
     <tr>
-        <td class="tra"><b>Kategoriename</b></td>
-        <td class="tra" align="center"><b>Eingetragene Adressen</b></td>
-        <td width="30" class="tra" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Kategorie l&ouml;schen" /></td>
+        <td><b>Kategoriename</b></td>
+        <td align="center"><b>Eingetragene Adressen</b></td>
+        <td width="30" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Kategorie l&ouml;schen" /></td>
     </tr>
 
 <?PHP
-$count = 0;
 $list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
 while($row = $list->fetch_assoc()){
-    if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
-
     $listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE catids = '0' OR catids = ',0,' OR catids LIKE '%,".$row['id'].",%'");
 	echo "<tr id=\"id".$row['id']."\">
-              <td align=\"left\" class=\"".$class."\"><input type=\"text\" name=\"catname_".$row['id']."\" value=\"".stripslashes($row['catname'])."\" size=\"40\" class=\"input_text\" /></td>
-			  <td align=\"center\" class=\"".$class."\">".$listcats->num_rows."</td>
-			  <td class=\"".$class."\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Eintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delcat&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
+              <td align=\"left\"><input type=\"text\" name=\"catname_".$row['id']."\" value=\"".stripslashes($row['catname'])."\" size=\"40\" class=\"input_text\" /></td>
+			  <td align=\"center\">".$listcats->num_rows."</td>
+			  <td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Eintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delcat&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
           </tr>";
     }
-if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 echo "<tr>
-	<td align=\"center\" class=\"".$class."\" colspan=\"3\"><input type=\"submit\" name=\"save\" value=\"&Auml;nderungen speichern\" class=\"input\" /></td>
+	<td align=\"center\" colspan=\"3\"><input type=\"submit\" name=\"save\" value=\"&Auml;nderungen speichern\" class=\"input\" /></td>
 </tr>";
 ?>
 </table>
@@ -94,5 +90,6 @@ echo "<tr>
 
 
 <?PHP
-}else $flag_loginerror = true;
+}else $flag_loginerror = TRUE;
+
 ?>

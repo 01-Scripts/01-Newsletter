@@ -197,7 +197,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 ?>
 
 <form action="<?PHP echo $filename; ?>" method="post" name="post">
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
 
 <?php 
 list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats']."")->fetch_array(MYSQLI_NUM);
@@ -207,13 +207,13 @@ list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats
 	</tr>
 
 	<tr>
-        <td class="trb" align="center"><input type="radio" name="empf" value="all"<?php if(isset($_POST['empf']) && $_POST['empf'] == "all" || $settings['usecats'] != 1 || $catmenge < 1) echo " checked=\"checked\""; ?> /></td>
-        <td class="trb"><b>Newsletter an alle registrierten E-Mail-Adressen senden</b></td>
+        <td align="center"><input type="radio" name="empf" value="all"<?php if(isset($_POST['empf']) && $_POST['empf'] == "all" || $settings['usecats'] != 1 || $catmenge < 1) echo " checked=\"checked\""; ?> /></td>
+        <td><b>Newsletter an alle registrierten E-Mail-Adressen senden</b></td>
     </tr>
 <?php if($settings['usecats'] == 1 && $catmenge > 1){ ?>    
     <tr>
-        <td class="trb" align="center"><input type="radio" name="empf" value="cats"<?php if(isset($_POST['empf']) && $_POST['empf'] == "cats") echo " checked=\"checked\""; ?> /></td>
-        <td class="trb"><b>Newsletter an bestimmte Kategorien versenden:</b><br />
+        <td align="center"><input type="radio" name="empf" value="cats"<?php if(isset($_POST['empf']) && $_POST['empf'] == "cats") echo " checked=\"checked\""; ?> /></td>
+        <td><b>Newsletter an bestimmte Kategorien versenden:</b><br />
 		<select name="empfcats[]" size="5" multiple="multiple" class="input_select">
 			<?php 
 			$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
@@ -229,8 +229,8 @@ list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats
     </tr>
 <?php } ?>
 	<tr>
-        <td class="trb" align="center"><input type="radio" name="empf" value="test"<?php if(isset($_POST['empf']) && $_POST['empf'] == "test") echo " checked=\"checked\""; ?> /></td>
-        <td class="trb"><b>Test-Newsletter an folgende Adressen senden:</b> <input type="text" size="35" name="testempf" value="<?php if(isset($_POST['testempf'])){ echo $_POST['testempf']; } ?>" class="input_text"> <span class="small">(kommasepariert)</span></td>
+        <td align="center"><input type="radio" name="empf" value="test"<?php if(isset($_POST['empf']) && $_POST['empf'] == "test") echo " checked=\"checked\""; ?> /></td>
+        <td><b>Test-Newsletter an folgende Adressen senden:</b> <input type="text" size="35" name="testempf" value="<?php if(isset($_POST['testempf'])){ echo $_POST['testempf']; } ?>" class="input_text"> <span class="small">(kommasepariert)</span></td>
     </tr>
 
     <tr>
@@ -258,8 +258,8 @@ if($evmenge >= 1){
 		}
 ?>
     <tr>
-        <td class="trb"><b>Entwurf / Vorlage</b></td>
-        <td class="trb">
+        <td><b>Entwurf / Vorlage</b></td>
+        <td>
 			<select name="vorlage" size="1" class="input_select" style="float: left;" onchange="Start_Loading_standard(); AjaxRequest.send('modul=<?php echo $modul; ?>&ajaxaction=load_vorlage&id='+this.options[this.selectedIndex].value+'');">
 				<?php echo $seloptions; ?>
 			</select>
@@ -270,25 +270,25 @@ if($evmenge >= 1){
 		</td>
     </tr>
     <tr>
-        <td class="trb" colspan="2"><span class="small">Ihr momentan eingegebener Text wird ggf. durch den Entwurf / die Vorlage ersetzt!</span></td>
+        <td colspan="2"><span class="small">Ihr momentan eingegebener Text wird ggf. durch den Entwurf / die Vorlage ersetzt!</span></td>
     </tr>
 <?php 
 	}
 ?>
     <tr>
-        <td class="tra" style="width:120px"><b>Betreff</b></td>
-        <td class="tra"><input type="text" name="betreff" value="<?php echo stripslashes($_POST['betreff']); ?>" size="70" class="input_text" /></td>
+        <td style="width:120px"><b>Betreff</b></td>
+        <td><input type="text" name="betreff" value="<?php echo stripslashes($_POST['betreff']); ?>" size="70" class="input_text" /></td>
     </tr>
     
 	<tr>
-		<td colspan="2" class="tra"><textarea name="mailtext" rows="15" cols="80"><?php echo stripslashes($_POST['mailtext']); ?></textarea></td>
+		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo stripslashes($_POST['mailtext']); ?></textarea></td>
 	</tr>
 <?php if($settings['attachments'] == 1){ ?>	
     <tr>
 		<td colspan="2"><h2 style="float:left; margin-right:10px;">Dateianh&auml;nge</h2><br /><a href="javascript:InsertNewAttachmentField();"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Weiteren Dateianhang hinzuf&uuml;gen" style="margin-right: 3px; margin-bottom:-3px;" />Weiteren Anhang hinzuf&uuml;gen</a></td>
 	</tr>	
 	<tr>
-		<td colspan="2" class="tra">
+		<td colspan="2">
 			<div id="writeroot">
 			<?php if(!isset($_POST['attachfieldcounter']) || isset($_POST['attachfieldcounter']) && (empty($_POST['attachfieldcounter']) || $_POST['attachfieldcounter'] < 1 || !is_numeric($_POST['attachfieldcounter']))) $_POST['attachfieldcounter'] = 1; ?>
 			
@@ -309,14 +309,14 @@ if($evmenge >= 1){
 	</tr>
 <?php if($settings['use_cronjob'] == 1){ ?>	
 	<tr>
-		<td colspan="2" class="tra">
+		<td colspan="2">
 			<input type="text" name="send_time" class="DatePicker" size="10" value="<?php if(isset($_POST['send_time']) && !empty($_POST['send_time'])){ echo $_POST['send_time']; }else{ echo date("d.m.Y"); } ?>" /> <div style="float:left; margin-right:5px;"><b>Versanddatum ausw&auml;hlen:</b></div>
 		</td>
 	</tr>
 <?php } ?>
 <?php if(!empty($settings['newslettersignatur'])){ ?>	
 	<tr>
-		<td colspan="2" class="trb">
+		<td colspan="2">
 			<input type="checkbox" name="use_signatur" value="1" checked="checked" onclick="toggleSignatur();" /> <b>Signatur anh&auml;ngen</b>
 			<div id="signatur">
 				<?php echo nl2br($settings['newslettersignatur']); ?>
@@ -326,7 +326,7 @@ if($evmenge >= 1){
 <?php } ?>
 <?php if($userdata['vorlagen'] == 1){ ?>
 	<tr>
-		<td colspan="2" class="tra">
+		<td colspan="2">
 			<input type="checkbox" name="als_vorlage" value="1" onclick="alsVorlage();" /> <b>Newsletter als Vorlage speichern</b>
 			<div id="vorlagenname">
 				Vorlage speichern als: <input type="text" name="vorlagenname" size="70" class="input_text" /> <input type="submit" name="savevorlage" value="Speichern" class="input" />
@@ -335,8 +335,8 @@ if($evmenge >= 1){
 	</tr>
 <?php } ?>
 	<tr id="savetr">
-		<td class="tra"><input type="submit" name="entwurf" value="Als Entwurf speichern" class="input" id="button1" /></td>
-		<td class="tra" align="right"><input type="submit" name="senden" value="Newsletter versenden / F&uuml;r den Versand speichern" class="input" id="button2" /></td>
+		<td><input type="submit" name="entwurf" value="Als Entwurf speichern" class="input" id="button1" /></td>
+		<td align="right"><input type="submit" name="senden" value="Newsletter versenden / F&uuml;r den Versand speichern" class="input" id="button2" /></td>
 	</tr>
 
 </table>
@@ -378,33 +378,31 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 
 <table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
     <tr>
-		<td class="tra" style="width:120px"><b>Versanddatum</b></td>
-        <td class="tra" style="width:400px"><b>Betreff</b></td>
-		<td class="tra"><b>An folgende Kategorien versand</b></td>
-		<td class="tra"><b>Verschickt von</b></td>
-		<td class="tra nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
+		<td style="width:120px"><b>Versanddatum</b></td>
+        <td style="width:400px"><b>Betreff</b></td>
+		<td><b>An folgende Kategorien versand</b></td>
+		<td><b>Verschickt von</b></td>
+		<td class="nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
 	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " AND (betreff LIKE '%".$mysqli->escape_string($_GET['search'])."%' OR mailinhalt LIKE '%".$mysqli->escape_string($_GET['search'])."%' OR kategorien LIKE '%".$mysqli->escape_string($_GET['search'])."%')";
 	else $where = "";
 	
 	// Ausgabe der Datensätze (Liste) aus DB
-	$count = 0;
 	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a'".$where." ORDER BY timestamp DESC";
 	$query = makepages($query,$sites,"site",ACP_PER_PAGE);
 	
 	$list = $mysqli->query($query);
 	while($row = $list->fetch_assoc()){
-		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 		
 		$data = getUserdatafields($row['uid'],"username");
 
 		echo "    <tr id=\"id".$row['id']."\">
-		<td class=\"".$class."\">".date("d.m.Y, H:i",$row['timestamp'])." Uhr</td>
-		<td class=\"".$class."\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['betreff'])."</td>
-		<td class=\"".$class."\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['kategorien'])."</td>
-		<td class=\"".$class."\">".$data['username']."</td>
-		<td class=\"".$class."\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
+		<td>".date("d.m.Y, H:i",$row['timestamp'])." Uhr</td>
+		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['betreff'])."</td>
+		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['kategorien'])."</td>
+		<td>".$data['username']."</td>
+		<td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 	</tr>";
 		}
 ?>
