@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Neuen Newsletter verfassen (Formular) und absenden
-	#fv.130#
+	#fv.131#
 */
 
 // Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
@@ -33,8 +33,8 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		elseif($_POST['empf'] == "cats" && $settings['usecats'] == 1){
 			// Vorhandene Kategorien in Array einlesen
 			$chosencats = array();
-			$listcats = mysql_query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
-			while($rowcats = mysql_fetch_assoc($listcats)){
+			$listcats = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
+			while($rowcats = $listcats->fetch_assoc()){
 				$chosencats[$rowcats['id']] = stripslashes($rowcats['catname']);
 				}
 	
@@ -104,7 +104,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	
 	// Newsletter in MySQL-Tabelle eintragen
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid'])){
-		mysql_query("UPDATE ".$mysql_tables['archiv']." SET art = '".$art."', timestamp = '".$timestamp."', betreff = '".mysql_real_escape_string($titel)."', mailinhalt = '".mysql_real_escape_string($mailinhalt)."', kategorien = '".mysql_real_escape_string($save_cat)."', attachments = '".mysql_real_escape_string($attachment_string)."' WHERE id='".mysql_real_escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
+		$mysqli->query("UPDATE ".$mysql_tables['archiv']." SET art = '".$art."', timestamp = '".$timestamp."', betreff = '".$mysqli->escape_string($titel)."', mailinhalt = '".$mysqli->escape_string($mailinhalt)."', kategorien = '".$mysqli->escape_string($save_cat)."', attachments = '".$mysqli->escape_string($attachment_string)."' WHERE id='".$mysqli->escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
 		$var = $_POST['entwurfid'];
 		}
 	else{
@@ -113,13 +113,13 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				   '".$art."',
 				   '".$timestamp."',
 				   '".$userdata['id']."',
-				   '".mysql_real_escape_string($titel)."',
-				   '".mysql_real_escape_string($mailinhalt)."',
-				   '".mysql_real_escape_string($save_cat)."',
-				   '".mysql_real_escape_string($attachment_string)."'
+				   '".$mysqli->escape_string($titel)."',
+				   '".$mysqli->escape_string($mailinhalt)."',
+				   '".$mysqli->escape_string($save_cat)."',
+				   '".$mysqli->escape_string($attachment_string)."'
 				   )";
-		mysql_query($sql_insert) OR die(mysql_error());
-		$var = mysql_insert_id();
+		$mysqli->query($sql_insert) OR die($mysqli->error);
+		$var = $mysqli->insert_id;
 		}
 	
 	// Bei Versand: Empfänger in temporäre Tabelle übertragen
@@ -130,15 +130,14 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				if(check_mail(trim($email))){
 					if($x > 0) $values .= ",\n";
 
-					$values .= "('".$timestamp."','".$var."','".mysql_real_escape_string(trim($email))."')";
+					$values .= "('".$timestamp."','".$var."','".$mysqli->escape_string(trim($email))."')";
 
 					$x++;
 				}
 			}
 		}
 		else{
-			$list = mysql_query($query);
-			while($row = mysql_fetch_assoc($list)){
+			while($row = $mysqli->query($query)->fetch_assoc()){
 				if($x > 0) $values .= ",\n";
 				
 				$values .= "('".$timestamp."','".$var."','".$row['email']."')";
@@ -148,7 +147,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		}
 		
 		if($values != "")
-			mysql_query("INSERT INTO ".$mysql_tables['temp_table']." (timestamp, message_id, email) VALUES ".$values.";") OR die(mysql_error());
+			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (timestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
 		
 		// Newsletter sofort via IFrame verschicken
 		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !mysql_error()){
@@ -201,7 +200,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 <table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
 
 <?php 
-list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
+list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats']."")->fetch_array(MYSQLI_NUM);
 ?>
     <tr>
 		<td colspan="2"><h2>Empf&auml;nger w&auml;hlen</h2></td>
@@ -217,8 +216,8 @@ list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_t
         <td class="trb"><b>Newsletter an bestimmte Kategorien versenden:</b><br />
 		<select name="empfcats[]" size="5" multiple="multiple" class="input_select">
 			<?php 
-			$list = mysql_query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-			while($row = mysql_fetch_assoc($list)){
+			$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+			while($row = $list->fetch_assoc()){
 				if(isset($_POST['empfcats']) && is_array($_POST['empfcats']) && in_array($row['id'],$_POST['empfcats'])) $sel = " selected=\"selcted\"";
 				else $sel = "";
 				
@@ -238,13 +237,13 @@ list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_t
 		<td colspan="2"><h2>Nachrichtentext</h2></td>
 	</tr>
 <?php
-list($evmenge) = @mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['archiv']." WHERE art = 'e' AND uid = '".$userdata['id']."' OR art = 'v'"));
+list($evmenge) = @$mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['archiv']." WHERE art = 'e' AND uid = '".$userdata['id']."' OR art = 'v'")->fetch_array(MYSQLI_NUM);
 if($evmenge >= 1){
 
 	$c = 0;
 	$seloptions = "";
-	$list = mysql_query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'e' AND uid = '".$userdata['id']."' OR art = 'v' ORDER BY art,timestamp DESC");
-	while($row = mysql_fetch_assoc($list)){
+	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'e' AND uid = '".$userdata['id']."' OR art = 'v' ORDER BY art,timestamp DESC");
+	while($row = $list->fetch_assoc()){
 		if($c == 0 && $row['art'] == "e"){
 			$seloptions = "<option value=\"x\" style=\"background-color: #282858; color:#FFF;\">Gespeicherten Entwurf laden:</option>\n";
 			$c = 1;
@@ -386,7 +385,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 		<td class="tra nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
-	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " AND (betreff LIKE '%".mysql_real_escape_string($_GET['search'])."%' OR mailinhalt LIKE '%".mysql_real_escape_string($_GET['search'])."%' OR kategorien LIKE '%".mysql_real_escape_string($_GET['search'])."%')";
+	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " AND (betreff LIKE '%".$mysqli->escape_string($_GET['search'])."%' OR mailinhalt LIKE '%".$mysqli->escape_string($_GET['search'])."%' OR kategorien LIKE '%".$mysqli->escape_string($_GET['search'])."%')";
 	else $where = "";
 	
 	// Ausgabe der Datensätze (Liste) aus DB
@@ -394,8 +393,8 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a'".$where." ORDER BY timestamp DESC";
 	$query = makepages($query,$sites,"site",ACP_PER_PAGE);
 	
-	$list = mysql_query($query);
-	while($row = mysql_fetch_assoc($list)){
+	$list = $mysqli->query($query);
+	while($row = $list->fetch_assoc()){
 		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 		
 		$data = getUserdatafields($row['uid'],"username");

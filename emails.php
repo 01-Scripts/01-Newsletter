@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
-	#fv.130#
+	#fv.131#
 */
 
 // Berechtigungsabfragen
@@ -19,7 +19,7 @@ if(!isset($_GET['orderby'])) 	$_GET['orderby'] = "";
 if(!isset($_GET['site'])) 		$_GET['site'] = "";
 if(!isset($_GET['catid']))		$_GET['catid'] = "";
 
-list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
+list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats']."")->fetch_array(MYSQLI_NUM);
 
 if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
    isset($_POST['email']) && !empty($_POST['email']) && check_mail($_POST['email']) &&
@@ -36,7 +36,6 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 		$cats_string = 0;
 
 	if(isset($_POST['acode']) && $_POST['acode'] == 1){
-		mt_srand((double)microtime()*1000000);
 		$zahl = mt_rand(1, 9999999999999);
 		$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_POST['email']);
 		}
@@ -44,8 +43,8 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 		$acode = "0";
 		
 	// E-Mail-Adresse bereits vorhanden?
-	$list = mysql_query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".mysql_real_escape_string($_POST['email'])."' LIMIT 1");
-	if(mysql_num_rows($list) == 0){
+	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".$mysqli->escape_string($_POST['email'])."' LIMIT 1");
+	if($list->num_rows == 0){
 	
 		$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids,newcatids)
 				   		VALUES(
@@ -53,11 +52,11 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 						   '0',
 						   '0',
 						   '".time()."',
-						   '".mysql_real_escape_string($_POST['email'])."',
-						   '".mysql_real_escape_string($cats_string)."',
+						   '".$mysqli->escape_string($_POST['email'])."',
+						   '".$mysqli->escape_string($cats_string)."',
 						   '0'
 						   )";
-		mysql_query($sql_insert) OR die(mysql_error());
+		$mysqli->query($sql_insert) OR die($mysqli->error);
 		
 		if(isset($_POST['acode']) && $_POST['acode'] == 1){
 			// Sprachvariablen einfügen
@@ -105,8 +104,8 @@ if($settings['usecats'] == 1 && $catmenge > 1){
 
 	$mailcats = "<option value=\"all\" selected=\"selected\">Alle Kategorien</option>\n";
 	
-	$list = mysql_query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-	while($row = mysql_fetch_assoc($list)){
+	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+	while($row = $list->fetch_assoc()){
 		$mailcats .= "<option value=\"".$row['id']."\">".stripslashes($row['catname'])."</option>\n";
 		}
 ?>
@@ -144,7 +143,7 @@ else{
 </form>
 <?PHP
 // Kategorien zählen um ggf. auszublenden
-list($catmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats'].""));
+list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats']."")->fetch_array(MYSQLI_NUM);
 if($catmenge > 0){
 ?>
 <form action="<?PHP echo $filename; ?>" method="get">
@@ -162,8 +161,8 @@ if($catmenge > 0){
 	if(isset($_GET['sort']) && $_GET['sort'] == "desc") $sortorder = "DESC";
 	else{ $sortorder = "ASC"; $_GET['sort'] = "ASC"; }
 	
-	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " WHERE email LIKE '%".mysql_real_escape_string($_GET['search'])."%'";
-	elseif(isset($_GET['catid']) && !empty($_GET['catid']) && is_numeric($_GET['catid'])) $where = " WHERE catids LIKE '%,".mysql_real_escape_string($_GET['catid']).",%' ";
+	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " WHERE email LIKE '%".$mysqli->escape_string($_GET['search'])."%'";
+	elseif(isset($_GET['catid']) && !empty($_GET['catid']) && is_numeric($_GET['catid'])) $where = " WHERE catids LIKE '%,".$mysqli->escape_string($_GET['catid']).",%' ";
 
 	if(!isset($_GET['orderby'])) $_GET['orderby'] = "";
 	switch($_GET['orderby']){
@@ -197,8 +196,8 @@ if($catmenge > 0){
 <?PHP
 	// Ausgabe der Datensätze (Liste) aus DB
 	$count = 0;
-	$list = mysql_query($query);
-	while($row = mysql_fetch_assoc($list)){
+	$list = $mysqli->query($query);
+	while($row = $list->fetch_assoc()){
 		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 		
 		if(strlen($row['acode']) == 32) $aktiv = "-";

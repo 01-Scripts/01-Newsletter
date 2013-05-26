@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Newsletter - Copyright 2009-2011 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.111#
+	#fv.131#
 */
 
 /* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
@@ -28,11 +28,9 @@ RETURN: TRUE/FALSE
 */
 if(!function_exists("_01newsletter_DeleteUser")){
 function _01newsletter_DeleteUser($userid,$username,$mail){
-global $mysql_tables;
-
-
 
 return TRUE;
+
 }
 }
 
@@ -42,18 +40,18 @@ RETURN: TRUE
 */
 if(!function_exists("_01newsletter_DeleteModul")){
 function _01newsletter_DeleteModul(){
-global $mysql_tables,$modul;
+global $mysqli,$mysql_tables,$modul;
 
 $modul = mysql_real_escape_string($modul);
 
 // MySQL-Tabellen löschen
-mysql_query("DROP TABLE `".$mysql_tables['archiv']."`");
-mysql_query("DROP TABLE `".$mysql_tables['emailadds']."`");
-mysql_query("DROP TABLE `".$mysql_tables['mailcats']."`");
+$mysqli->query("DROP TABLE `".$mysql_tables['archiv']."`");
+$mysqli->query("DROP TABLE `".$mysql_tables['emailadds']."`");
+$mysqli->query("DROP TABLE `".$mysql_tables['mailcats']."`");
 
 // Rechte entfernen
-mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_vorlagen`");
-mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_show_emails`");
+$mysqli->query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_vorlagen`");
+$mysqli->query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_show_emails`");
 
 return TRUE;
 }
@@ -72,10 +70,10 @@ RETURN: Option-Elemente für Select-Formularelement
 */
 if(!function_exists("_01newsletter_CatDropDown")){
 function _01newsletter_CatDropDown($sel){
-global $mysql_tables;
+global $mysqli,$mysql_tables;
 
-$list = mysql_query("SELECT id,catname FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-while($row = mysql_fetch_assoc($list)){
+$list = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+while($row = $list->fetch_assoc()){
 	if(isset($sel) && !empty($sel) && is_numeric($sel) && $sel == $row['id']) $select = " selected=\"selected\"";
 	else $select = "";
 	
@@ -128,11 +126,11 @@ RETURN: Array(
   */
 if(!function_exists("_01newsletter_getUserstats")){
 function _01newsletter_getUserstats($userid){
-global $mysql_tables,$modul,$module;
+global $mysqli,$mysql_tables,$modul,$module;
 
 if(isset($userid) && is_integer(intval($userid))){
 	$newslettermenge = 0;
-	list($newslettermenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND uid = '".mysql_real_escape_string($userid)."'"));
+	list($newslettermenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND uid = '".mysql_real_escape_string($userid)."'")->fetch_array(MYSQLI_NUM);
 	
 	$ustats[] = array("statcat"	=> "Versendete Newsletter (".$module[$modul]['instname']."):",
 					  "statvalue"	=> $newslettermenge);
@@ -140,7 +138,7 @@ if(isset($userid) && is_integer(intval($userid))){
 	}
 else
 	return false;
-return false;
+
 }
 }
 

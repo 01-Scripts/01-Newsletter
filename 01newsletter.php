@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.132#
+	#fv.131#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -93,11 +93,11 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 	// Überprüfen, ob E-Mail-Adresse bereits registriert ist
 	// Ja ->	Bearbeiten-Seite anzeigen (Account löschen / Kategorien ggf. ändern)
 	// Nein ->	E-Mail-Adresse neu registrieren bzw. Kategorie-Auswahl anzeigen
-	$list = mysql_query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".mysql_real_escape_string($_REQUEST['email'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".$mysqli->escape_string($_REQUEST['email'])."' LIMIT 1");
 	
 	// E-Mail-Adresse bereits vorhanden?
-	if(mysql_num_rows($list) > 0){
-		while($row = mysql_fetch_assoc($list)){
+	if($list->num_rows > 0){
+		while($row = $list->fetch_assoc()){
 			// E-Mail-Adresse wurde bereits registriert aber noch nicht aktiviert
 			if(strlen($row['acode']) == 32){
 				// Neuen Aktivierungscode verschicken
@@ -137,7 +137,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					$zahl = mt_rand(1, 9999999999999);
 					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 					
-					mysql_query("UPDATE ".$mysql_tables['emailadds']." SET newcatids = '".mysql_real_escape_string($cats_string)."', editcode='".$ecode."' WHERE email='".mysql_real_escape_string($row['email'])."' LIMIT 1");
+					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET newcatids = '".$mysqli->escape_string($cats_string)."', editcode='".$ecode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 					
 					$mail_inhalt = str_replace("#ecodelink#",addParameter2Link($settings['formzieladdr'],"ecode=".$ecode),$lang['mailinhalt_ecode']);
 					$mail_inhalt = str_replace("#ecode#",$ecode,$mail_inhalt);
@@ -155,7 +155,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					$zahl = mt_rand(1, 9999999999999);
 					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 
-					mysql_query("UPDATE ".$mysql_tables['emailadds']." SET editcode='".$ecode."' WHERE email='".mysql_real_escape_string($row['email'])."' LIMIT 1");
+					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET editcode='".$ecode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 
 					$mail_inhalt = str_replace("#ecodelink#",addParameter2Link($settings['formzieladdr'],"ecode=".$ecode),$lang['mailinhalt_ecode']);
 					$mail_inhalt = str_replace("#ecode#",$ecode,$mail_inhalt);
@@ -173,7 +173,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					$zahl = mt_rand(1, 9999999999999);
 					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 
-					mysql_query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".mysql_real_escape_string($row['email'])."' LIMIT 1");
+					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 
 					$mail_inhalt = str_replace("#dcodelink#",addParameter2Link($settings['formzieladdr'],"dcode=".$dcode),$lang['mailinhalt_dcode']);
 					$mail_inhalt = str_replace("#dcode#",$dcode,$mail_inhalt);
@@ -191,7 +191,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					$zahl = mt_rand(1, 9999999999999);
 					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
 
-					mysql_query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".mysql_real_escape_string($row['email'])."' LIMIT 1");
+					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 
 					$mail_inhalt = str_replace("#dcodelink#",addParameter2Link($settings['formzieladdr'],"dcode=".$dcode),$lang['mailinhalt_ecode']);
 					$mail_inhalt = str_replace("#dcode#",$dcode,$mail_inhalt);
@@ -215,8 +215,8 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 						
 					$mailcats = "<option value=\"all\"".$sel1.">".$lang['allcats']."</option>\n";
 
-					$listcats = mysql_query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-					while($rowcats = mysql_fetch_assoc($listcats)){
+					$listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+					while($rowcats = $listcats->fetch_assoc()){
 						if($sel1 == "" && in_array($rowcats['id'],$cats_reg)) $sel2 = " selected=\"selected\"";
 						else $sel2 = "";
 						
@@ -244,11 +244,11 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 						   '0',
 						   '0',
 						   '".time()."',
-						   '".mysql_real_escape_string($_REQUEST['email'])."',
+						   '".$mysqli->escape_string($_REQUEST['email'])."',
 						   '0',
 						   '0'
 						   )";
-			mysql_query($sql_insert) OR die(mysql_error());
+			$mysqli->query($sql_insert) OR die(mysql_error());
 			
 			$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 			$mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
@@ -286,11 +286,11 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 						   '0',
 						   '0',
 						   '".time()."',
-						   '".mysql_real_escape_string($_REQUEST['email'])."',
-						   '".mysql_real_escape_string($cats_string)."',
+						   '".$mysqli->escape_string($_REQUEST['email'])."',
+						   '".$mysqli->escape_string($cats_string)."',
 						   '0'
 						   )";
-				mysql_query($sql_insert) OR die(mysql_error());
+				$mysqli->query($sql_insert) OR die($mysqli->error);
 				
 				$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 				$mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
@@ -308,8 +308,8 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 			else{
 				$mailcats = "<option value=\"all\" selected=\"selected\">".$lang['allcats']."</option>\n";
 				
-				$list = mysql_query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-				while($row = mysql_fetch_assoc($list)){
+				$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+				while($row = $list->fetch_assoc()){
 					$mailcats .= "<option value=\"".$row['id']."\">".htmlentities(stripslashes($row['catname']),$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 					}
 				
@@ -322,13 +322,13 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 // Aktivierungscode übergeben?
 elseif(isset($_REQUEST['acode']) && !empty($_REQUEST['acode']) && strlen($_REQUEST['acode']) == 32){
 	if($settings['send_benachrichtigung'] == 1){
-		$list = mysql_query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode='".mysql_real_escape_string($_REQUEST['acode'])."' AND acode != '0' LIMIT 1");
-		$row_email = mysql_fetch_assoc($list);
+		$list = $mysqli->query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode='".$mysqli->escape_string($_REQUEST['acode'])."' AND acode != '0' LIMIT 1");
+		$row_email = $list->fetch_assoc();
 		}
 	
-	mysql_query("UPDATE ".$mysql_tables['emailadds']." SET acode = '0' WHERE acode='".mysql_real_escape_string($_REQUEST['acode'])."' AND acode != '0' LIMIT 1");
+	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET acode = '0' WHERE acode='".$mysqli->escape_string($_REQUEST['acode'])."' AND acode != '0' LIMIT 1");
 	
-	if(mysql_affected_rows() == 1){
+	if($mysqli->affected_rows == 1){
 		$meldung = $lang['meldung_activated'];
 		
 		// E-Mail für Neuregistrierung an Admin versenden
@@ -352,9 +352,9 @@ Webmailer",$mail_header);
 	}
 // Bearbeitungscode übergeben?
 elseif(isset($_REQUEST['ecode']) && !empty($_REQUEST['ecode']) && strlen($_REQUEST['ecode']) == 32){
-	mysql_query("UPDATE ".$mysql_tables['emailadds']." SET catids = newcatids, newcatids = '0', editcode='0' WHERE editcode='".mysql_real_escape_string($_REQUEST['ecode'])."' AND editcode != '0' LIMIT 1");
+	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET catids = newcatids, newcatids = '0', editcode='0' WHERE editcode='".$mysqli->escape_string($_REQUEST['ecode'])."' AND editcode != '0' LIMIT 1");
 
-	if(mysql_affected_rows() == 1){
+	if($mysqli->affected_rows == 1){
 		$meldung = $lang['meldung_changes'];
 		include($tempdir."meldungen.html");
 		}
@@ -370,13 +370,13 @@ elseif(isset($_REQUEST['ecode']) && !empty($_REQUEST['ecode']) && strlen($_REQUE
 	}
 // Löschcode übergeben?
 elseif(isset($_REQUEST['dcode']) && !empty($_REQUEST['dcode']) && strlen($_REQUEST['dcode']) == 32 && $_REQUEST['dcode'] != 0){
-	$list = mysql_query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE delcode='".mysql_real_escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
+	$list = $mysqli->query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE delcode='".$mysqli->escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
 	$row_email = mysql_fetch_assoc($list);
 	
-	mysql_query("DELETE FROM ".$mysql_tables['temp_table']." WHERE email = '".mysql_real_escape_string($row_email['email'])."' AND email != ''");
-	mysql_query("DELETE FROM ".$mysql_tables['emailadds']." WHERE delcode='".mysql_real_escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
+	$mysqli->query("DELETE FROM ".$mysql_tables['temp_table']." WHERE email = '".$mysqli->escape_string($row_email['email'])."' AND email != ''");
+	$mysqli->query("DELETE FROM ".$mysql_tables['emailadds']." WHERE delcode='".$mysqli->escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
 
-	if(mysql_affected_rows() == 1){
+	if($mysqli->affected_rows == 1){
 		$meldung = $lang['meldung_deleted'];
 		include($tempdir."meldungen.html");
 		}

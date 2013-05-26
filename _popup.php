@@ -1,20 +1,20 @@
 <?php 
 /*
-	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Programmcode für Modul-Popup-Fenster
-	#fv.130#
+	#fv.131#
 */
 
 // Newsletter ausgeben
 if(isset($_REQUEST['action']) && $_REQUEST['action'] == "show_letter" &&
    isset($_REQUEST['var1']) && !empty($_REQUEST['var1']) && is_numeric($_REQUEST['var1'])){
    
-	$list = mysql_query("SELECT betreff,mailinhalt,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".mysql_real_escape_string($_REQUEST['var1'])."'");
-	while($row = mysql_fetch_array($list)){
+	$list = $mysqli->query("SELECT betreff,mailinhalt,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".$mysqli->escape_string($_REQUEST['var1'])."'");
+	while($row = $list->fetch_assoc()){
 		echo "<h2>".$row['betreff']."</h2>";
 		
 		// HTML ggf. berücksichtigen
@@ -48,8 +48,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "show_letter" &&
 
 			if(file_exists($dateiname_org) && $dateiname_org != $attachmentuploaddir && $dateiname_org != $picuploaddir){
 				// Echten Dateinamen holen
-				$list = mysql_query("SELECT orgname FROM ".$mysql_tables['files']." WHERE name = '".mysql_real_escape_string($attachment)."' LIMIT 1");
-				$row = mysql_fetch_assoc($list);
+				$list = $mysqli->query("SELECT orgname FROM ".$mysql_tables['files']." WHERE name = '".$mysqli->escape_string($attachment)."' LIMIT 1");
+				$row = $list->fetch_assoc();
 
 				if(empty($row['orgname'])) $row['orgname'] = $attachment;
 				
