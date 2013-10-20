@@ -42,7 +42,7 @@ if(!function_exists("_01newsletter_DeleteModul")){
 function _01newsletter_DeleteModul(){
 global $mysqli,$mysql_tables,$modul;
 
-$modul = mysql_real_escape_string($modul);
+$modul = $mysqli->escape_string($modul);
 
 // MySQL-Tabellen löschen
 $mysqli->query("DROP TABLE `".$mysql_tables['archiv']."`");
@@ -130,7 +130,7 @@ global $mysqli,$mysql_tables,$modul,$module;
 
 if(isset($userid) && is_integer(intval($userid))){
 	$newslettermenge = 0;
-	list($newslettermenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND uid = '".mysql_real_escape_string($userid)."'")->fetch_array(MYSQLI_NUM);
+	list($newslettermenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND uid = '".$mysqli->escape_string($userid)."'")->fetch_array(MYSQLI_NUM);
 	
 	$ustats[] = array("statcat"	=> "Versendete Newsletter (".$module[$modul]['instname']."):",
 					  "statvalue"	=> $newslettermenge);
