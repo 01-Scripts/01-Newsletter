@@ -9,7 +9,7 @@
 	<need01acpv>1.2.1</need01acpv>
 	<datum>18.11.2012</datum>
 	<includeinfo><![CDATA[
-Verwenden Sie folgenden PHP-Code um das 01-Newsletterscript <b>in Ihre Seite einzubinden</b>.
+<p>Verwenden Sie folgenden PHP-Code um das 01-Newsletterscript <b>in Ihre Seite einzubinden</b>.
 Auf dieser Seite kann der Benutzer bei der Anmeldung beispielsweise die gew&#252;nschten Kategorien
 ausw&#228;hlen und sp&#228;ter seine Anmeldedaten bearbeiten und sich wieder vom Newsletter abmelden:<br />
 <code>
@@ -17,21 +17,17 @@ ausw&#228;hlen und sp&#228;ter seine Anmeldedaten bearbeiten und sich wieder vom
 $subfolder		= "01scripts/"; // Unterverzeichnis<br />
 $modul			= "01newsletter"; // Modul- und Verzeichnisname (ID-Name), ggf. &#228;ndern<br />
 <br />
-// ->>An dieser Stelle k&#246;nnen weitere, optionale Parameter eingef&#252;gt werden<<-<br />
-<br />
 include($subfolder."01module/".$modul."/01newsletter.php");<br />
-?&gt;<br />
-<br />
-Optionale Parameter sind:<br />
-$flag_nocss     = FALSE; // Setzen Sie $flag_nocss = TRUE; wenn kein CSS eingebunden werden soll<br />
-</code><br />
-<b class="red">Der Pfad zur Datei, in die Sie obigen PHP-Code eingegeben haben, muss in den Einstellungen
-eingetragen werden!</b><br />
+?&gt;
+</code></p>
+<p class="meldung_hinweis"><b class="red">Der Pfad zu der Datei, in die Sie obigen PHP-Code eingeben, muss in den Einstellungen
+im ACP eingetragen werden!</b></p>
 <hr />
-Mit folgendem HTML-Code k&#246;nnen Sie ein einfaches <b>Formular zum An- und Abmelden</b> vom Newsletter
+<p>Mit folgendem HTML-Code k&#246;nnen Sie ein einfaches <b>Formular zum An- und Abmelden</b> vom Newsletter
 an jeder beliebigen Stelle Ihres Internetauftritts einbinden.<br />
 <b class="red">Bitte beachten Sie, dass Sie in der ersten Zeile <i>ZIELADRESSE</i> durch den 
 kompletten Pfad zu der PHP-Datei ersetzen, in die Sie den oberen PHP-Code eingebunden haben!</b><br />
+<br />
 <code>
 &lt;form action="ZIELADRESSE" method="get"&gt;<br />
 &lt;input type="text" name="email" size="38" value="E-Mail-Adresse" class="input_text" /&gt;<br />
@@ -39,7 +35,7 @@ kompletten Pfad zu der PHP-Datei ersetzen, in die Sie den oberen PHP-Code eingeb
 &lt;br /&gt;<br />
 &lt;input type="radio" name="action" value="add" checked="checked" /&gt;Eintragen<br /> 
 &lt;input type="radio" name="action" value="edit" /&gt;Bearbeiten/Austragen<br />
-&lt;/form&gt;</code>
+&lt;/form&gt;</code></p>
 	]]></includeinfo>
 	
 	<updates>
