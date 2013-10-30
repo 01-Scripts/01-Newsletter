@@ -1,12 +1,13 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2012 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
-	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.130#
+	Dateiinfo: 	Modulspezifische Grundeinstellungen, Variablendefinitionen etc.
+				Wird automatisch am Anfang jeden Modulaufrufs automatisch includiert.
+	#fv.131#
 */
 
 // Modul-Spezifische MySQL-Tabellen
@@ -32,6 +33,5 @@ $tempdir	= "templates/";			// Template-Verzeichnis
 $intervall  = 10;                   // Wie viele Mails sollen pro Schritt versendet werden?
 $intervall_cron = 200;				// Wie viele Mails sollen pro Cronjob-Aufruf versendet werden?
 $deletimer	= 30;					// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
-define('CSS_CACHE_DATEI', '');
 
 ?>
