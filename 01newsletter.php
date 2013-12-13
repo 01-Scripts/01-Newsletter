@@ -369,9 +369,9 @@ elseif(isset($_REQUEST['ecode']) && !empty($_REQUEST['ecode']) && strlen($_REQUE
 		}
 	}
 // Löschcode übergeben?
-elseif(isset($_REQUEST['dcode']) && !empty($_REQUEST['dcode']) && strlen($_REQUEST['dcode']) == 32 && $_REQUEST['dcode'] != 0){
+elseif(isset($_REQUEST['dcode']) && !empty($_REQUEST['dcode']) && strlen($_REQUEST['dcode']) == 32){
 	$list = $mysqli->query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE delcode='".$mysqli->escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
-	$row_email = mysql_fetch_assoc($list);
+	$row_email = $list->fetch_assoc();
 	
 	$mysqli->query("DELETE FROM ".$mysql_tables['temp_table']." WHERE email = '".$mysqli->escape_string($row_email['email'])."' AND email != ''");
 	$mysqli->query("DELETE FROM ".$mysql_tables['emailadds']." WHERE delcode='".$mysqli->escape_string($_REQUEST['dcode'])."' AND delcode != '0' LIMIT 1");
