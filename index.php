@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -37,10 +37,10 @@
 <div class="acp_innerbox">
 	<h4>Verschickte Newsletter</h4>
 	<?php 
-	$list = $mysqli->query("SELECT id,timestamp,betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE art='a' ORDER BY timestamp DESC LIMIT 4");
+	$list = $mysqli->query("SELECT id,utimestamp,betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE art='a' ORDER BY utimestamp DESC LIMIT 4");
 	while($row = $list->fetch_assoc()){
 		echo "<p><b><a href=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a></b><br />
-		<span class=\"small\"><i>Verschickt am ".date("d.m.Y",$row['timestamp'])." um ".date("G:i",$row['timestamp'])."Uhr</i></span><br />
+		<span class=\"small\"><i>Verschickt am ".date("d.m.Y",$row['utimestamp'])." um ".date("G:i",$row['utimestamp'])."Uhr</i></span><br />
 		".substr(stripslashes(strip_tags($row['mailinhalt'])),0,100)."...
 		</p>";
 		}

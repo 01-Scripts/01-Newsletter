@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -38,7 +38,7 @@ if($is_cronjob && $settings['use_cronjob'] == 0){
     }
 
 // Message_ids für zutreffende Newsletter holen
-$getmessage_ids = $mysqli->query("SELECT message_id FROM ".$mysql_tables['temp_table']." WHERE timestamp <= '".time()."'".$where." GROUP BY message_id ORDER BY timestamp");
+$getmessage_ids = $mysqli->query("SELECT message_id FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."'".$where." GROUP BY message_id ORDER BY utimestamp");
 while($msgids = $getmessage_ids->fetch_assoc()){
 	if($c == $limit) break;
 	
@@ -46,7 +46,7 @@ while($msgids = $getmessage_ids->fetch_assoc()){
     	echo "<p>Newsletter werden versendet. Bitte warten...</p>";
 	
 	// Newsletter-Text & Inhalte holen:
-	$getmail = $mysqli->query("SELECT id,timestamp,betreff,mailinhalt,kategorien,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".$msgids['message_id']."' LIMIT 1");
+	$getmail = $mysqli->query("SELECT id,utimestamp,betreff,mailinhalt,kategorien,attachments FROM ".$mysql_tables['archiv']." WHERE id = '".$msgids['message_id']."' LIMIT 1");
 	while($mailrow = $getmail->fetch_assoc()){
 		if($c == $limit) break;
 		
@@ -128,7 +128,7 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 	
 		// Mails verschicken
 		$errors = array();
-		$list = $mysqli->query("SELECT id,email FROM ".$mysql_tables['temp_table']." WHERE timestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".$mysqli->escape_string($limit)."");
+		$list = $mysqli->query("SELECT id,email FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".$mysqli->escape_string($limit)."");
 		while($row = $list->fetch_assoc()){
 			if($settings['use_html'])
 				$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".$lang['austragen_html']."</a>";

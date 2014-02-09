@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -104,11 +104,11 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	
 	// Newsletter in MySQL-Tabelle eintragen
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid'])){
-		$mysqli->query("UPDATE ".$mysql_tables['archiv']." SET art = '".$art."', timestamp = '".$timestamp."', betreff = '".$mysqli->escape_string($titel)."', mailinhalt = '".$mysqli->escape_string($mailinhalt)."', kategorien = '".$mysqli->escape_string($save_cat)."', attachments = '".$mysqli->escape_string($attachment_string)."' WHERE id='".$mysqli->escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
+		$mysqli->query("UPDATE ".$mysql_tables['archiv']." SET art = '".$art."', utimestamp = '".$timestamp."', betreff = '".$mysqli->escape_string($titel)."', mailinhalt = '".$mysqli->escape_string($mailinhalt)."', kategorien = '".$mysqli->escape_string($save_cat)."', attachments = '".$mysqli->escape_string($attachment_string)."' WHERE id='".$mysqli->escape_string($_POST['entwurfid'])."' AND uid = '".$userdata['id']."' LIMIT 1");
 		$var = $_POST['entwurfid'];
 		}
 	else{
-		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,timestamp,uid,betreff,mailinhalt,kategorien,attachments)
+		$sql_insert = "INSERT INTO ".$mysql_tables['archiv']." (art,utimestamp,uid,betreff,mailinhalt,kategorien,attachments)
 		   		VALUES(
 				   '".$art."',
 				   '".$timestamp."',
@@ -147,7 +147,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		}
 		
 		if($values != "")
-			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (timestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
+			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
 		
 		// Newsletter sofort via IFrame verschicken
 		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !mysql_error()){
@@ -242,7 +242,7 @@ if($evmenge >= 1){
 
 	$c = 0;
 	$seloptions = "";
-	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'e' AND uid = '".$userdata['id']."' OR art = 'v' ORDER BY art,timestamp DESC");
+	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'e' AND uid = '".$userdata['id']."' OR art = 'v' ORDER BY art,utimestamp DESC");
 	while($row = $list->fetch_assoc()){
 		if($c == 0 && $row['art'] == "e"){
 			$seloptions = "<option value=\"x\" style=\"background-color: #282858; color:#FFF;\">Gespeicherten Entwurf laden:</option>\n";
@@ -253,8 +253,8 @@ if($evmenge >= 1){
 			$c = 2;
 			}
 		
-		if($row['timestamp'] == 0) $row['timestamp'] = time();
-		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['timestamp'])." - ".stripslashes($row['betreff'])."</option>\n";
+		if($row['utimestamp'] == 0) $row['utimestamp'] = time();
+		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['utimestamp'])." - ".stripslashes($row['betreff'])."</option>\n";
 		}
 ?>
     <tr>
@@ -389,7 +389,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 	else $where = "";
 	
 	// Ausgabe der Datensätze (Liste) aus DB
-	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a'".$where." ORDER BY timestamp DESC";
+	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a'".$where." ORDER BY utimestamp DESC";
 	$query = makepages($query,$sites,"site",ACP_PER_PAGE);
 	
 	$list = $mysqli->query($query);
@@ -398,7 +398,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 		$data = getUserdatafields($row['uid'],"username");
 
 		echo "    <tr id=\"id".$row['id']."\">
-		<td>".date("d.m.Y, H:i",$row['timestamp'])." Uhr</td>
+		<td>".date("d.m.Y, H:i",$row['utimestamp'])." Uhr</td>
 		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['betreff'])."</td>
 		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['kategorien'])."</td>
 		<td>".$data['username']."</td>
