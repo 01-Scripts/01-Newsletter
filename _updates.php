@@ -1,4 +1,23 @@
 <?PHP
+// 1.3.0 --> 1.3.1
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
+
+	// Spaltenname 'timestamp' umbenennen in 'utimestamp' #694
+	$mysqli->query("ALTER TABLE ".$mysql_tables['archiv']." CHANGE `timestamp` `utimestamp` INT( 15 ) NULL DEFAULT NULL");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['temp_table']." CHANGE `timestamp` `utimestamp` INT( 15 ) NULL DEFAULT NULL");
+
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.3.1' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 1.3.0 nach 1.3.1</h2>
+
+<div class="meldung_erfolg">
+	Das Update von Version 1.3.0 auf Version 1.3.1 wurde erfolgreich durchgef&uuml;hrt.<br />
+	<br />
+	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
+</div>
+<?PHP
+}
 // 1.2.0 --> 1.3.0
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
 	
