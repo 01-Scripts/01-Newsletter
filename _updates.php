@@ -3,8 +3,8 @@
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 
 	// Spaltenname 'timestamp' umbenennen in 'utimestamp' #694
-	$mysqli->query("ALTER TABLE ".$mysql_tables['archiv']." CHANGE `timestamp` `utimestamp` INT( 15 ) NOT NULL DEFAULT '0");
-	$mysqli->query("ALTER TABLE ".$mysql_tables['temp_table']." CHANGE `timestamp` `utimestamp` INT( 15 ) NOT NULL DEFAULT '0");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['archiv']." CHANGE `timestamp` `utimestamp` INT( 15 ) NOT NULL DEFAULT '0'");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['temp_table']." CHANGE `timestamp` `utimestamp` INT( 15 ) NOT NULL DEFAULT '0'");
 
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.3.1' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");

@@ -101,7 +101,7 @@ CREATE TABLE `01modulprefix_emailadressen` (
 
 CREATE TABLE `01modulprefix_newsletterarchiv` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `art` char(1) DEFAULT 'a',
+  `art` char(1) NOT NULL DEFAULT 'a',
   `utimestamp` int(15) NOT NULL DEFAULT '0',
   `uid` int(10) NOT NULL DEFAULT '0',
   `betreff` varchar(250) DEFAULT NULL,
