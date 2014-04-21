@@ -102,7 +102,7 @@ CREATE TABLE `01modulprefix_emailadressen` (
 CREATE TABLE `01modulprefix_newsletterarchiv` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `art` char(1) DEFAULT 'a',
-  `utimestamp` int(15) NULL DEFAULT NULL,
+  `utimestamp` int(15) NOT NULL DEFAULT '0',
   `uid` int(10) NOT NULL DEFAULT '0',
   `betreff` varchar(250) DEFAULT NULL,
   `mailinhalt` text DEFAULT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE `01modulprefix_newsletterarchiv` (
 --
 
 INSERT INTO `01modulprefix_newsletterarchiv` (`id`, `art`, `utimestamp`, `uid`, `betreff`, `mailinhalt`, `kategorien`) VALUES
-(1, 'a', 1230764401, 1, '01-Scripts.de - Testeintrag', 'Das 01-Newsletter-Modul wurde erfolgreich installiert.\nDieser Eintrag kann nun gel&ouml;scht werden.', '');
+(1, 'a', 1398074400, 1, '01-Scripts.de - Testeintrag', 'Das 01-Newsletter-Modul wurde erfolgreich installiert.\nDieser Eintrag kann nun gel&ouml;scht werden.', '');
 
 -- --------------------------------------------------------
 
@@ -139,7 +139,7 @@ CREATE TABLE `01modulprefix_newslettercats` (
 
 CREATE TABLE IF NOT EXISTS `01modulprefix_send_newsletter_temp` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `utimestamp` int(15) NULL DEFAULT NULL,
+  `utimestamp` int(15) NOT NULL DEFAULT '0',
   `message_id` int(10) NOT NULL,
   `email` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
