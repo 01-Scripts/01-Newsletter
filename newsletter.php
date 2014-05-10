@@ -137,7 +137,8 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 			}
 		}
 		else{
-			while($row = $mysqli->query($query)->fetch_assoc()){
+			$list = $mysqli->query($query);
+			while($row = $list->fetch_assoc()){
 				if($x > 0) $values .= ",\n";
 				
 				$values .= "('".$timestamp."','".$var."','".$row['email']."')";
