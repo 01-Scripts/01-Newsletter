@@ -1,0 +1,39 @@
+01ACP - Copyright 2008-2014 by Michael Lorer - 01-Scripts.de
+Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+=========================================================
+
+Neuinstallation:
+================
+Informationen zur Neuinstallation des 01-Newsletter in beiliegender Installationsanleitung.pdf oder online:
+http://www.01-scripts.de/01newsletter.php?install
+
+
+Update:	01-Newsletter V 1.3.0 nach V 1.3.1
+==========================================
+
+!!! ACHTUNG !!!
+Voraussetzung für dieses Update ist die Version 1.3.0 oder größer des 01ACP!
+Sie können diese Version hier herunterladen: http://www.01-scripts.de/01acp.php
+!!! ACHTUNG !!!
+
+- Legen Sie ein Backup ihrer Datenbank an!
+- Legen Sie ein Backup ihrer Daten via FTP-Programm an!
+
+- Markieren Sie alle im Verzeichnis 01newsletter/ enthaltenen Dateien und Unterverzeichnisse und
+  laden Sie sie per FTP-Programm in das entsprechende Modul-Verzeichnis (01scripts/01module/.....) auf Ihren Webspace hoch.
+  Überschreiben Sie dabei alle bereits existierende Dateien.
+
+- Loggen Sie sich in den Administrationsbereich ein und wählen Sie auf der Startseite im linken Menü
+  den Punkt "Module verwalten".
+  Starten Sie den Update-Vorgang für den 01-Newsletter durch einen Klick auf das Zahnrad-Symbol.
+
+
+
+01-Newsletter - 1.3.1
+=====================
+- 0000694: [Global (Modul)] 	Der Spaltenname 'timestamp' ist ein reserviertes MySQL-Schlüsselwort.
+- 0000671: [Backend (Modul)] 	CSS-Code überarbeiten
+- 0000685: [Frontend (Modul)] 	Benutzer konnten sich nicht selbst vom Newsletter abmelden
+- 0000668: [Global (Modul)] 	Replace all deprecated mysql_-functions
+- 0000649: [Frontend (Modul)] 	Keine Anzeige der Kategorie-Auswahl bei Newsletter-Anmeldung
