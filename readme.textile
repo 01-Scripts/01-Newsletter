@@ -1,8 +1,8 @@
 h1. 01-Newsletter
 
-Mit dem "_01-Newsletter_":http://www.01-scripts.de/01newsletter.php haben Sie die Möglichkeit schnell, einfach und sicher für ihre Besucher oder Kunden einen eigenen Newsletter anzubieten. Dabei müssen Sie die Daten Ihrer Abonnenten nicht mehr aus der Hand geben - alle E-Mail-Adressen bleiben auf Ihrem eigenen Server gespeichert und können nicht von Dritten eingesehen werden.
-Sie können mit dem Script Newsletter sowohl im HTML- als auch im Text-Format versenden und können Kategorien und Dateianhänge verwenden.
-"Weitere Informationen...":http://www.01-scripts.de/01gbook.php
+Mit dem "_01-Newsletter_":http://www.01-scripts.de/01newsletter.php haben Sie die MÃ¶glichkeit schnell, einfach und sicher fÃ¼r ihre Besucher oder Kunden einen eigenen Newsletter anzubieten. Dabei mÃ¼ssen Sie die Daten Ihrer Abonnenten nicht mehr aus der Hand geben - alle E-Mail-Adressen bleiben auf Ihrem eigenen Server gespeichert und kÃ¶nnen nicht von Dritten eingesehen werden.
+Sie kÃ¶nnen mit dem Script Newsletter sowohl im HTML- als auch im Text-Format versenden und kÃ¶nnen Kategorien und DateianhÃ¤nge verwenden.
+"Weitere Informationen...":http://www.01-scripts.de/01newsletter.php
 
 h2. Download
 
@@ -12,17 +12,17 @@ heruntergeladen werden.
 
 h2. Repository
 
-Das vorliegende Github-Repository enthält den aktuellen Entwicklungsstand des Moduls.
+Das vorliegende Github-Repository enthÃ¤lt den aktuellen Entwicklungsstand des Moduls.
 
 h2. Lizenz
 
-Das 01-Newsletter-Script ist unter "CC BY-NC-SA":http://www.01-scripts.de/lizenz.php -Lizenz veröffentlicht:
+Das 01-Newsletter-Script ist unter "CC BY-NC-SA":http://www.01-scripts.de/lizenz.php -Lizenz verÃ¶ffentlicht:
 
 *Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland*
 
-* Alle PHP-Scripte von "01-Scripts.de":http://www.01-scripts.de können für den privaten, nicht-kommerziellen Einsatz kostenlos genutzt werden. 
-* Für die kommerzielle Nutzung (darunter fällt auch der Einsatz auf Firmenseiten!) können Sie eine Lizenz zur kommerziellen Nutzung erwerben.
-* Wenn Sie den sichtbaren Urheberrechtshinweis entfernen möchten, erwerben Sie bitte eine Non-Copyright-Lizenz.
+* Alle PHP-Scripte von "01-Scripts.de":http://www.01-scripts.de kÃ¶nnen fÃ¼r den privaten, nicht-kommerziellen Einsatz kostenlos genutzt werden. 
+* FÃ¼r die kommerzielle Nutzung (darunter fÃ¤llt auch der Einsatz auf Firmenseiten!) kÃ¶nnen Sie eine Lizenz zur kommerziellen Nutzung erwerben.
+* Wenn Sie den sichtbaren Urheberrechtshinweis entfernen mÃ¶chten, erwerben Sie bitte eine Non-Copyright-Lizenz.
 
-Lizenzen können hier erworben werden:
+Lizenzen kÃ¶nnen hier erworben werden:
 "http://www.01-scripts.de/shop.php":http://www.01-scripts.de/shop.php
