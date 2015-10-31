@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2015 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Neuen Newsletter verfassen (Formular) und absenden
-	#fv.131#
+	#fv.132#
 */
 
 // Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
@@ -188,6 +188,16 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 	
 	if($settings['use_html'])
 	    echo loadTinyMCE("advanced","","","","top");
+
+	// Inhalt von archiviertem Newsletter laden?
+	if(isset($_GET['copyid']) && is_numeric($_GET['copyid']) && $_GET['copyid'] > 0){
+		$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND id = '".$mysqli->escape_string($_GET['copyid'])."' LIMIT 1");
+		$row = $list->fetch_assoc();
+		if(isset($row['betreff']) && !empty($row['betreff'])){
+			$_POST['betreff'] = $row['betreff'];
+			$_POST['mailtext'] = $row['mailinhalt'];
+		}
+	}
 	
 	echo "<h1>Neuen Newsletter verfassen</h1>";
 	
@@ -368,7 +378,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 <h1>Newsletter</h1>
 
 <p>
-<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=newsletter&amp;action=new" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neue E-Mail-Adresse hinzuf&uuml;gen" style="border:0; margin-right:10px;" />Newsletter schreiben</a>
+<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=newsletter&amp;action=new" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neuen Newsletter schreiben" style="border:0; margin-right:10px;" />Newsletter schreiben</a>
 </p>
 
 <form action="<?PHP echo $filename; ?>" method="get" style="float:left; margin-right:20px;">
@@ -377,12 +387,12 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 	<input type="hidden" name="loadpage" value="newsletter" />
 </form>
 
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
     <tr>
 		<td style="width:120px"><b>Versanddatum</b></td>
         <td style="width:400px"><b>Betreff</b></td>
-		<td><b>An folgende Kategorien versand</b></td>
-		<td><b>Verschickt von</b></td>
+		<td><b>Kategorien</b></td>
+		<td><b>Absender</b></td>
 		<td class="nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
@@ -399,11 +409,11 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 		$data = getUserdatafields($row['uid'],"username");
 
 		echo "    <tr id=\"id".$row['id']."\">
-		<td>".date("d.m.Y, H:i",$row['utimestamp'])." Uhr</td>
-		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['betreff'])."</td>
-		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['kategorien'])."</td>
-		<td>".$data['username']."</td>
-		<td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
+		<td valign=\"bottom\">".date("d.m.Y, H:i",$row['utimestamp'])." Uhr</td>
+		<td onmouseover=\"fade_element('copyid_".$row['id']."')\" onmouseout=\"fade_element('copyid_".$row['id']."')\"><a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a> <div class=\"moo_inlinehide\" id=\"copyid_".$row['id']."\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=newsletter&amp;action=new&amp;copyid=".$row['id']."\"><img src=\"".$modulpath."images/icon_copy.gif\" alt=\"Symbol: Kopieren\" title=\"Inhalt in einen neuen Newsletter übernehmen\" /></a></div></td>
+		<td valign=\"bottom\">".stripslashes($row['kategorien'])."</td>
+		<td valign=\"bottom\">".$data['username']."</td>
+		<td valign=\"bottom\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 	</tr>";
 		}
 ?>
