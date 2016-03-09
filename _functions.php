@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.131#
+	#fv.132#
 */
 
 /* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
@@ -58,12 +58,6 @@ return TRUE;
 }
 
 
-
-
-
-
-
-
 // Dropdown-Box aus angelegten Kategorien generieren (ohne Select-Tag)
 /*
 RETURN: Option-Elemente für Select-Formularelement
@@ -85,10 +79,6 @@ return $return;
 }
 
 
-
-
-
-
 // Passenden $mail_header zurückgeben
 /*
 
@@ -106,14 +96,6 @@ else
 	return "From:".$settings['email_absender']."<".$settings['email_absender'].">";
 }
 }
-
-
-
-
-
-
-
-
 
 
 // Userstatistiken holen
@@ -141,14 +123,6 @@ else
 
 }
 }
-
-
-
-
-
-
-
-
 
 
 // Mime-Typen von Dateien bestimmen
@@ -230,5 +204,54 @@ if(!function_exists('mime_content_type')) {
             return 'application/octet-stream';
         }
     }
+}
+
+
+// PHPMailer-Instanz mit Defaultwerten konfigurieren
+/*$mail     Zu konfigurierende PHPMailer-Instanz
+
+RETURN: -
+*/
+if(!function_exists("_01newsletter_configurePHPMailer")){
+function _01newsletter_configurePHPMailer(&$mail){
+    global $settings,$SMTPSecurity,$SMTPAuth;
+
+    // Versand soll per SMTP erfolgen
+    if($settings['smtp_nl'] == "smtp_01newsletter" && !empty($settings['smtp_nl_host'])){
+        //$mail->SMTPDebug = 3;                               // Enable verbose debug output
+
+        $mail->isSMTP();                                      // Set mailer to use SMTP
+        $mail->Host = $settings['smtp_nl_host'];
+        $mail->SMTPAuth = $SMTPAuth;                          // Enable SMTP authentication
+        $mail->Username = $settings['smtp_nl_username'];
+        $mail->Password = $settings['smtp_nl_password'];
+        $mail->SMTPSecure = $SMTPSecurity;                    // Enable TLS encryption, `ssl` also accepted
+        $mail->Port = (!empty($settings['smtp_nl_port'])) ? $settings['smtp_nl_port'] : 587;
+    }
+    elseif($settings['smtp_nl'] == "smtp_01acp" && !empty($settings['smtp_host'])){
+        //$mail->SMTPDebug = 3;                               // Enable verbose debug output
+
+        $mail->isSMTP();                                      // Set mailer to use SMTP
+        $mail->Host = $settings['smtp_host'];
+        $mail->SMTPAuth = true;                               // Enable SMTP authentication
+        $mail->Username = $settings['smtp_username'];
+        $mail->Password = $settings['smtp_password'];
+        $mail->SMTPSecure = "tls";                            // Enable TLS encryption, `ssl` also accepted
+        $mail->Port = (!empty($settings['smtp_port'])) ? $settings['smtp_port'] : 587;
+    }
+
+    if(!empty($settings['versandadresse']) && !empty($settings['versand_altname'])){
+        $mail->From = $settings['versandadresse'];
+        $mail->FromName = $settings['versand_altname'];
+    }
+    elseif(!empty($settings['versandadresse'])){
+        $mail->From = $settings['versandadresse'];
+        $mail->FromName = $settings['versandadresse'];
+    }
+    else{
+        $mail->From = $settings['email_absender'];
+        $mail->FromName = $settings['email_absender'];
+    }
+}
 }
 ?>

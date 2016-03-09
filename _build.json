@@ -16,6 +16,9 @@
     "templates/style.css",
     "_info.xml",
     "_updates.php",
+    "_headinclude.php",
+    "_functions.php",
+    "01newsletter.php",
     "newsletter.php"
   ]
 }
