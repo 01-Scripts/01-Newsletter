@@ -12,7 +12,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 	$sql_insert = "INSERT INTO ".$mysql_tables['settings']." (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide)
 	            VALUES 
 	            ('".$mysqli->escape_string($modul)."', 1, 3, 5, 'smtp_nl_settings', 'Newsletter Versandeinstellungen', NULL , NULL , NULL , NULL , NULL , NULL ,0,0),
-	            ('".$mysqli->escape_string($modul)."', 0, 3, 1, 'smtp_nl', 'Wie möchten Sie ausgehende Newsletter versenden?','','Standardversand per PHP mail()-Befehl|SMTP-Versand (SMTP-Server aus 01ACP Einstellungen)|SMTP-Versand (Nachfolgend angegebener SMTP-Server)','php|smtp_01acp|smtp_01newsletter','','php','php',0,0),
+	            ('".$mysqli->escape_string($modul)."', 0, 3, 1, 'smtp_nl', 'Wie m&ouml;chten Sie ausgehende Newsletter versenden?','','Standardversand per PHP mail()-Befehl|SMTP-Versand (SMTP-Server aus 01ACP Einstellungen)|SMTP-Versand (Nachfolgend angegebener SMTP-Server)','php|smtp_01acp|smtp_01newsletter','','php','php',0,0),
 	            ('".$mysqli->escape_string($modul)."', 0, 3, 2, 'smtp_nl_host', 'SMTP-Server','','text','50','','','',0,0),
 	            ('".$mysqli->escape_string($modul)."', 0, 3, 3, 'smtp_nl_port', 'SMTP-Server TCP Port','','text','50','','587','587',0,0),
 	            ('".$mysqli->escape_string($modul)."', 0, 3, 4, 'smtp_nl_username', 'SMTP Username','','text','50','','','',0,0),
