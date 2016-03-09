@@ -27,6 +27,18 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 <div class="meldung_erfolg">
 	Das Update von Version 1.3.1 auf Version 1.3.2 wurde erfolgreich durchgef&uuml;hrt.<br />
 	<br />
+	<b>Achtung:</b><br />
+	Mit diesem Update wurde der CSS-Code zur Gestaltung des 01-Newsletter in eine separate Datei ausgelagert
+	und kann nicht mehr im 01ACP in den Einstellungen direkt bearbeitet werden.<br />
+	Der CSS-Code befindet sich nun in der Datei <i>01module/01newsletter/templates/style.css</i> und kann
+	dort bearbeitet werden.<br />
+	<br />
+
+	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<ul>
+		<li></li>
+		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01gallery_changelog.txt" target="_blank">changelog.txt</a></li>
+	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </div>
 <?PHP
