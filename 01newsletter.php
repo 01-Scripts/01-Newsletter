@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -73,12 +73,10 @@ $system_link = addParameter2Link($filename,"email=".$_REQUEST['email']);
 
 
 // externe CSS-Datei / CSS-Eigenschaften?
-if(isset($settings['extern_css']) && !empty($settings['extern_css']) && $settings['extern_css'] != "http://" && !$flag_nocss)
+if(isset($settings['extern_css']) && !empty($settings['extern_css']) && filter_var($settings['extern_css'], FILTER_VALIDATE_URL) !== FALSE && !$flag_nocss)
 	$echo_css = "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$settings['extern_css']."\" />";
-elseif(isset($settings['csscode']) && !empty($settings['csscode']) && !$flag_nocss)
-	$echo_css = "<style type=\"text/css\">
-".$settings['csscode']."
-</style>";
+elseif(!$flag_nocss)
+	$echo_css = "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$tempdir."style.css\" />";
 else $echo_css = "";
 
 // Main_Top einfügen
