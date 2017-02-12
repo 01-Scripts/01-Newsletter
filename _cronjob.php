@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Datei für den Versand aller Newsletter. Kann auch über einen Cronjob angesprochen werden
-	#fv.131#
+	#fv.132#
 */
 
 // Variablen definieren
@@ -17,6 +17,7 @@ $modul = substr(strrchr($pfad_info['dirname'],"/"),1);
 
 // Config-Dateien einbinden
 include($subfolder."01acp/system/headinclude.php");
+include($subfolder."01acp/system/includes/PHPMailerAutoload.php");
 include_once($modulpath.$tempdir."lang_vars.php");
 
 $c			= 0;
@@ -37,6 +38,11 @@ if($is_cronjob && $settings['use_cronjob'] == 0){
     exit;
     }
 
+// Mail-Header
+$mail = new PHPMailer;
+_01newsletter_configurePHPMailer($mail);
+$mail->SMTPKeepAlive = true; // SMTP connection will not close after each email sent, reduces SMTP overhead
+
 // Message_ids für zutreffende Newsletter holen
 $getmessage_ids = $mysqli->query("SELECT message_id FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."'".$where." GROUP BY message_id ORDER BY utimestamp");
 while($msgids = $getmessage_ids->fetch_assoc()){
@@ -50,52 +56,29 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 	while($mailrow = $getmail->fetch_assoc()){
 		if($c == $limit) break;
 		
-		$betreff				= stripslashes($mailrow['betreff']);
-		$mailinhalt				= stripslashes($mailrow['mailinhalt']);
-		$catarray				= explode(",",stripslashes($mailrow['kategorien']));
+		$mailinhalt				= $mailrow['mailinhalt'];
 		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
 			$attachments = explode("|",$mailrow['attachments']);
 	
-		// Mail-Header
-		$mail_header = _01newsletter_getMailHeader();
-		$mail_body   = "";
+		$mail->Subject = $mailrow['betreff'];
 	
 		// Vararbeitung HTML-Mailinhalt
 		if($settings['use_html']){
+			$mail->isHTML(true);
+
 			$mailinhalt = str_replace("../01pics/",$settings['absolut_url']."01pics/",$mailinhalt);
 			$mailinhalt = str_replace("../01files/",$settings['absolut_url']."01files/",$mailinhalt);
 			$mailinhalt .= "<br /><br />";		// To add space before the link to unsubscribe
-	
-			$mailinhalt_header = "<html>
-		<head>
-		<title>".$betreff."</title></head>
-	
-		<body>";
-			$mailinhalt_footer = "</body>
-	
-		</html>";
 			}
 		else{
-			$mailinhalt_header = $mailinhalt_footer = "";
 			$mailinhalt .= "\n\n";		// To add space before the link to unsubscribe
 			}
 	
 		// Attachments ggf. anhängen
 		if($settings['attachments'] == 1 && isset($attachments) && is_array($attachments)){
-			$cup = 0;
-			$boundary = strtoupper(md5(uniqid(time())));
-	
-			$mail_header .= "\nMIME-Version: 1.0"."";
-			$mail_header .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
-	
-			$mail_body .= "\nMIME-Version: 1.0"."";
-			$mail_body .= "\nContent-Type: multipart/mixed;  boundary=\"".$boundary."\"";
-			$mail_body .= "\n\nThis is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format";
-	
-			$inhalt_attachment = "";
 			foreach($attachments as $attachment){
 				if(in_array(getEndung($attachment),$picendungen))
-					$dateiname_org		= $picuploaddir.$attachment; // ggf. inkl. Pfad
+					$dateiname_org		= $picuploaddir.$attachment; 		// ggf. inkl. Pfad
 				else
 					$dateiname_org		= $attachmentuploaddir.$attachment; // ggf. inkl. Pfad
 	
@@ -105,25 +88,10 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 					$row = $list->fetch_assoc();
 	
 					if(empty($row['orgname'])) $row['orgname'] = $attachment;
-	
-				    $file_content = fread(fopen($dateiname_org,"r"),filesize($dateiname_org));
-				    $file_content = chunk_split(base64_encode($file_content));
-	
-				    $inhalt_attachment .= "\nContent-Type: ".mime_content_type($dateiname_org)."; name=\"".stripslashes($row['orgname'])."\"";
-				    $inhalt_attachment .= "\nContent-Transfer-Encoding: base64";
-				    $inhalt_attachment .= "\nContent-Disposition: attachment; filename=\"".stripslashes($row['orgname'])."\"";
-				    $inhalt_attachment .= "\n\n".$file_content."";
-				    $inhalt_attachment .= "\n--".$boundary."";
-	
-				    $cup++;
+
+					$mail->addAttachment($dateiname_org, $row['orgname']);
 					}
 				}
-			if(!empty($header_attachment)) $header_attachment .= "--";
-			}
-	
-		if($settings['use_html'] && ($settings['attachments'] != 1 || !isset($attachments) || $cup <= 0)){
-			$mail_header .= "\nMIME-Version: 1.0"."";
-			$mail_header .= "\nContent-type: text/html; charset=iso-8859-1";
 			}
 	
 		// Mails verschicken
@@ -135,56 +103,56 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 			else
 				$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
 	
-			if($settings['attachments'] == 1 && isset($attachments) && $cup > 0){
-				$inhalt_add = "\n--".$boundary."";
-				if($settings['use_html'])
-					$inhalt_add .= "\nContent-type: text/html; charset=iso-8859-1";
-				else
-					$inhalt_add .= "\nContent-Type: text/plain";
-	
-				$inhalt_add .= "\nContent-Transfer-Encoding: 8bit";
-				$inhalt_add .= "\n\n".$mailinhalt_header.$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']).$mailinhalt_footer."";
-				$inhalt_add .= "\n--".$boundary."";
-	
-				if(mail($row['email'],$betreff,$mail_body.$inhalt_add.$inhalt_attachment,$mail_header))
-					$c++;
-				else
-					$errors[] = $row['email'];
-				}
+			$mailinhalt .= str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']);
+			if($settings['use_html'])
+				$mail->msgHTML($mailinhalt, dirname(__FILE__));
 			else
-				if(mail($row['email'],$betreff,$mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']),$mail_header))
-					$c++;
-				else
-					$errors[] = $row['email'];	
+				$mail->Body = $mailinhalt;
+
+			$mail->addAddress($row['email']);
+			if(!$mail->send())
+				$errors[] = $row['email'];
+			else
+				$c++;
 
 			// Nach Versand Eintrag aus Tabelle löschen:
 			$mysqli->query("DELETE FROM ".$mysql_tables['temp_table']." WHERE id = '".$row['id']."' LIMIT 1");
+			$mail->clearAddresses();
 			
 			if($c == $limit) break;
-			}
+		}
 
-			// Traten Fehler auf?
-			if(is_array($errors) && !empty($errors) && count($errors) > 0){
-				mail($settings['email_absender'],"Fehler beim Newsletter-Versand","Guten Tag,
+		// Statusmail bei Fehlern währen des Newsletter-Versands
+		if(is_array($errors) && !empty($errors) && count($errors) > 0){
+			$statusmailtext = "Guten Tag,
 
-an folgende Adressaten konnte leider ihr Newsletter ".$betreff." nicht versendet werden:
+an folgende Adressaten konnte leider ihr Newsletter ".$mailrow['betreff']." nicht versendet werden:
 ".implode(",", $errors)."
 
 Bitte überprüfen Sie die Adressen und entfernen Sie sie ggf. aus den Empfängerlisten.
 
 ---
 Webmailer (01-Newsletterscript)
-".$settings['absolut_url']."01acp/",$mail_header);
-			}
+".$settings['absolut_url']."01acp/";
 
+			$statusmail = new PHPMailer;
+			_01newsletter_configurePHPMailer($statusmail);
+			$statusmail->addAddress($settings['email_absender']);
+			$statusmail->Subject = "Fehler beim Newsletter-Versand";
+			$statusmail->Body    = $statusmailtext;
+			$statusmail->send();
 		}
+
+		$mail->clearAttachments();
+		unset($attachments);
+	}
 		
 	// Automatische Weiterleitung
 	if(!$is_cronjob){
     	echo "<script type=\"text/javascript\">function redirect(){ window.location='_cronjob.php?message_id=".$msgids['message_id']."'; } redirect();</script>";
 		echo "<a href=\"_cronjob.php?message_id=".$msgids['message_id']."\">Weiter</a>";
 		}
-	}
+}
 	
 $menge = $getmessage_ids->num_rows;
 if(!$is_cronjob && $menge == 0)

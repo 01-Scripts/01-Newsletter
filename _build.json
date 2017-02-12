@@ -14,11 +14,13 @@
   "Files4Update": [
     "images/icon_copy.gif",
     "templates/style.css",
+    "01newsletter.php",
     "_info.xml",
     "_updates.php",
-    "_headinclude.php",
     "_functions.php",
-    "01newsletter.php",
+    "_cronjob.php",
+    "_headinclude.php",
+    "emails.php",
     "newsletter.php"
   ]
 }

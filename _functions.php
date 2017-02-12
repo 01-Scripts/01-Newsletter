@@ -1,20 +1,12 @@
 <?PHP
 /* 
-	01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Funktionen
 	#fv.132#
-*/
-
-/* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
-	_ModulName_beliebigerFunktionsname()
-	Beispiel: 
-	if(!function_exists("_example_TolleFunktion")){
-		_example_TolleFunktion($parameter){ ... }
-		}
 */
 
 // Globale Funktionen - nötig!
@@ -71,29 +63,10 @@ while($row = $list->fetch_assoc()){
 	if(isset($sel) && !empty($sel) && is_numeric($sel) && $sel == $row['id']) $select = " selected=\"selected\"";
 	else $select = "";
 	
-	$return .= "<option value=\"".$row['id']."\"".$select.">".stripslashes($row['catname'])."</option>\n";
+	$return .= "<option value=\"".$row['id']."\"".$select.">".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 	}
 
 return $return;
-}
-}
-
-
-// Passenden $mail_header zurückgeben
-/*
-
-RETURN: Mailheader
-*/
-if(!function_exists("_01newsletter_getMailHeader")){
-function _01newsletter_getMailHeader(){
-global $settings;
-
-if(!empty($settings['versandadresse']) && !empty($settings['versand_altname']))
-	return "From:".$settings['versand_altname']."<".$settings['versandadresse'].">";
-elseif(!empty($settings['versandadresse']))
-    return "From:".$settings['versandadresse']."<".$settings['versandadresse'].">";
-else
-	return "From:".$settings['email_absender']."<".$settings['email_absender'].">";
 }
 }
 
