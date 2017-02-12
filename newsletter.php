@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2015 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -35,7 +35,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 			$chosencats = array();
 			$listcats = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
 			while($rowcats = $listcats->fetch_assoc()){
-				$chosencats[$rowcats['id']] = stripslashes($rowcats['catname']);
+				$chosencats[$rowcats['id']] = $rowcats['catname'];
 				}
 	
 			$where = "catids = '0' OR catids = ',0,'";
@@ -60,12 +60,12 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
     // Newsletter-Signatur anhängen (nur bei Versand)
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1 && isset($_POST['senden']) && !empty($_POST['senden'])){
 		if($settings['use_html'])
-		    $mailinhalt = stripslashes($_POST['mailtext'])."<br /><br />".nl2br($settings['newslettersignatur']);
+		    $mailinhalt = $_POST['mailtext']."<br /><br />".nl2br($settings['newslettersignatur']);
 		else	
-			$mailinhalt = stripslashes($_POST['mailtext'])."\n\n".$settings['newslettersignatur'];
+			$mailinhalt = $_POST['mailtext']."\n\n".$settings['newslettersignatur'];
 		}
 	else
-		$mailinhalt = stripslashes($_POST['mailtext']);
+		$mailinhalt = $_POST['mailtext'];
 		
 	// Anhänge
 	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
@@ -221,7 +221,7 @@ list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats
         <td align="center"><input type="radio" name="empf" value="all"<?php if(isset($_POST['empf']) && $_POST['empf'] == "all" || $settings['usecats'] != 1 || $catmenge < 1) echo " checked=\"checked\""; ?> /></td>
         <td><b>Newsletter an alle registrierten E-Mail-Adressen senden</b></td>
     </tr>
-<?php if($settings['usecats'] == 1 && $catmenge > 1){ ?>    
+<?php if($settings['usecats'] == 1 && $catmenge >= 1){ ?>    
     <tr>
         <td align="center"><input type="radio" name="empf" value="cats"<?php if(isset($_POST['empf']) && $_POST['empf'] == "cats") echo " checked=\"checked\""; ?> /></td>
         <td><b>Newsletter an bestimmte Kategorien versenden:</b><br />
@@ -232,7 +232,7 @@ list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats
 				if(isset($_POST['empfcats']) && is_array($_POST['empfcats']) && in_array($row['id'],$_POST['empfcats'])) $sel = " selected=\"selcted\"";
 				else $sel = "";
 				
-				echo "<option value=\"".$row['id']."\"".$sel.">".stripslashes($row['catname'])."</option>\n";
+				echo "<option value=\"".$row['id']."\"".$sel.">".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 				}
 			?>
 		</select> <span class="small">Halten Sie die STRG-Taste gedr&uuml;ckt um mehrere Kategorien auszuw&auml;hlen.</span>
@@ -265,7 +265,7 @@ if($evmenge >= 1){
 			}
 		
 		if($row['utimestamp'] == 0) $row['utimestamp'] = time();
-		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['utimestamp'])." - ".stripslashes($row['betreff'])."</option>\n";
+		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['utimestamp'])." - ".$row['betreff']."</option>\n";
 		}
 ?>
     <tr>
@@ -288,11 +288,11 @@ if($evmenge >= 1){
 ?>
     <tr>
         <td style="width:120px"><b>Betreff</b></td>
-        <td><input type="text" name="betreff" value="<?php echo stripslashes($_POST['betreff']); ?>" size="70" class="input_text" /></td>
+        <td><input type="text" name="betreff" value="<?php echo htmlentities($_POST['betreff'],$htmlent_flags,$htmlent_encoding_acp); ?>" size="70" class="input_text" /></td>
     </tr>
     
 	<tr>
-		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo stripslashes($_POST['mailtext']); ?></textarea></td>
+		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea></td>
 	</tr>
 <?php if($settings['attachments'] == 1){ ?>	
     <tr>

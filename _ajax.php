@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.131#
+	#fv.132#
 */
 
 // Security: Only allow calls from _ajaxloader.php!
@@ -40,7 +40,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			if($row['utimestamp'] == 0) $row['utimestamp'] = time();
 			    
 			if($row['art'] == "e"){
-				$betreff = "document.post.betreff.value = '".utf8_encode(addcslashes($row['betreff'],"\n\r"))."';
+				$betreff = "document.post.betreff.value = '".addcslashes(addslashes($row['betreff']),"\n\r")."';
 				document.post.entwurfid.value = '".$row['id']."';\n";
 				if($settings['use_cronjob'] == 1)
 				$betreff .= "document.post.send_time.value = '".date("d.m.Y",$row['utimestamp'])."';\n";
@@ -77,7 +77,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 				$attachments = explode("|",$row['attachments']);
 				$z = 1;
 				foreach($attachments as $attachment){
-					$attach .= "\ndocument.post.attachment".$z.".value = '".utf8_encode($attachment)."';
+					$attach .= "\ndocument.post.attachment".$z.".value = '".$attachment."';
 					InsertNewAttachmentField();";
 					$z++;
 					}
@@ -92,10 +92,10 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			if($settings['use_html'])
 			    $text = "var ed = tinyMCE.get('mailtext');
 			ed.setProgressState(1);
-			ed.setContent('".utf8_encode(addcslashes($row['mailinhalt'],"'\n\r"))."');
+			ed.setContent('".utf8_encode(addcslashes(addslashes($row['mailinhalt']),"'\n\r"))."');
 			ed.setProgressState(0);";
 			else
-				$text = "document.post.mailtext.value = '".utf8_encode(addcslashes($row['mailinhalt'],"\n\r"))."';";
+				$text = "document.post.mailtext.value = '".addcslashes(addslashes($row['mailinhalt']),"\n\r")."';";
 			
 			echo "<script type=\"text/javascript\">
 			".$showdelvorlage."

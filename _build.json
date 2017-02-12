@@ -16,11 +16,14 @@
     "templates/style.css",
     "01newsletter.php",
     "_info.xml",
+    "_ajax.php",
     "_updates.php",
     "_functions.php",
     "_cronjob.php",
     "_headinclude.php",
+    "category.php",
     "emails.php",
+    "index.php",
     "newsletter.php"
   ]
 }

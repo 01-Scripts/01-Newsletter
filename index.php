@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Modul-Startseite innerhalb des 01ACP
-	#fv.131#
+	#fv.132#
 */
 ?>
 
@@ -39,9 +39,9 @@
 	<?php 
 	$list = $mysqli->query("SELECT id,utimestamp,betreff,mailinhalt FROM ".$mysql_tables['archiv']." WHERE art='a' ORDER BY utimestamp DESC LIMIT 4");
 	while($row = $list->fetch_assoc()){
-		echo "<p><b><a href=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a></b><br />
+		echo "<p><b><a href=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".$row['betreff']."</a></b><br />
 		<span class=\"small\"><i>Verschickt am ".date("d.m.Y",$row['utimestamp'])." um ".date("G:i",$row['utimestamp'])."Uhr</i></span><br />
-		".substr(stripslashes(strip_tags($row['mailinhalt'])),0,100)."...
+		".substr(strip_tags($row['mailinhalt']),0,100)."...
 		</p>";
 		}
 	?>
