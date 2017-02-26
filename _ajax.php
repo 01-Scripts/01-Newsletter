@@ -42,8 +42,6 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			if($row['art'] == "e"){
 				$betreff = "document.post.betreff.value = '".addcslashes(addslashes($row['betreff']),"\n\r")."';
 				document.post.entwurfid.value = '".$row['id']."';\n";
-				if($settings['use_cronjob'] == 1)
-				$betreff .= "document.post.send_time.value = '".date("d.m.Y",$row['utimestamp'])."';\n";
 				
 				list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats']."")->fetch_array(MYSQLI_NUM);
 				if($row['kategorien'] == "all" && $settings['usecats'] == 1 && $catmenge > 1)
