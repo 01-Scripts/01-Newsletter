@@ -103,11 +103,10 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 			else
 				$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
 	
-			$mailinhalt .= str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']);
 			if($settings['use_html'])
-				$mail->msgHTML($mailinhalt, dirname(__FILE__));
+				$mail->msgHTML($mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']), dirname(__FILE__));
 			else
-				$mail->Body = $mailinhalt;
+				$mail->Body = $mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']);
 
 			$mail->addAddress($row['email']);
 			if(!$mail->send())
