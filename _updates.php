@@ -36,8 +36,10 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 
 	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
 	<ul>
-		<li></li>
-		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01gallery_changelog.txt" target="_blank">changelog.txt</a></li>
+		<li><b>Versand per SMTP hinzugef&uuml;gt</b> (neue Einstellungen erforderlich)</li>
+		<li>Seite zum Erstellen eines neuen Newsletters &uuml;berarbeitet</li>
+		<li>Archivierten Newsletter mit einem Klick als Vorlage f&uuml;r einen neuen Newsletter verwenden</li>
+		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </div>

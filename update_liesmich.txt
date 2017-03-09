@@ -1,24 +1,25 @@
-01ACP - Copyright 2008-2014 by Michael Lorer - 01-Scripts.de
+01ACP - Copyright 2008-2017 by Michael Lorer - 01-Scripts.de
 Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 =========================================================
 
-Neuinstallation:
-================
-Informationen zur Neuinstallation des 01-Newsletter in beiliegender Installationsanleitung.pdf oder online:
-http://www.01-scripts.de/01newsletter.php?install
 
-
-Update:	01-Newsletter V 1.3.0 nach V 1.3.1
+Update:	01-Newsletter V 1.3.1 nach V 1.3.2
 ==========================================
 
 !!! ACHTUNG !!!
-Voraussetzung für dieses Update ist die Version 1.3.0 oder größer des 01ACP!
+Voraussetzung für dieses Update ist die Version 1.3.1 oder größer des 01ACP!
 Sie können diese Version hier herunterladen: http://www.01-scripts.de/01acp.php
 !!! ACHTUNG !!!
 
 - Legen Sie ein Backup ihrer Datenbank an!
 - Legen Sie ein Backup ihrer Daten via FTP-Programm an!
+
+Achtung:
+- Mit diesem Update wurde der CSS-Code zur Gestaltung des 01-Newsletter in eine separate Datei ausgelagert
+  und kann nicht mehr im 01ACP in den Einstellungen direkt bearbeitet werden.
+  Der CSS-Code befindet sich nun in der Datei 01module/01newsletter/templates/style.css und kann
+  dort bearbeitet werden.
 
 - Markieren Sie alle im Verzeichnis 01newsletter/ enthaltenen Dateien und Unterverzeichnisse und
   laden Sie sie per FTP-Programm in das entsprechende Modul-Verzeichnis (01scripts/01module/.....) auf Ihren Webspace hoch.
@@ -30,10 +31,11 @@ Sie können diese Version hier herunterladen: http://www.01-scripts.de/01acp.php
 
 
 
-01-Newsletter - 1.3.1
-=====================
-- 0000694: [Global (Modul)] 	Der Spaltenname 'timestamp' ist ein reserviertes MySQL-Schlüsselwort.
-- 0000671: [Backend (Modul)] 	CSS-Code überarbeiten
-- 0000685: [Frontend (Modul)] 	Benutzer konnten sich nicht selbst vom Newsletter abmelden
-- 0000668: [Global (Modul)] 	Replace all deprecated mysql_-functions
-- 0000649: [Frontend (Modul)] 	Keine Anzeige der Kategorie-Auswahl bei Newsletter-Anmeldung
+Changelog 01-Newsletter - 1.3.2
+===============================
+- 0000717: [Global (Modul)]     Kleinere Bugs beheben (Admin) - bestätigt.
+- 0000339: [Global (Modul)]     Versand per SMTP (Admin) - erledigt.
+- 0000724: [Global (Modul)]     PHPMailer statt mail() verwenden (Admin) - erledigt.
+- 0000635: [Backend (Modul)]    "Newsletter schreiben"-Seite überarbeiten (Admin) - erledigt.
+- 0000745: [Global (Modul)]     CSS-Code in dedizierte Datei verschieben (Admin) - erledigt.
+- 0000186: [Backend (Modul)]    Archivtext für neuen Newsletter per Klick verwenden (Admin) - erledigt.
