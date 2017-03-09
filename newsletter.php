@@ -92,7 +92,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	elseif(isset($_POST['entwurf']) && !empty($_POST['entwurf']))
 	    $timestamp = 0;	// leer bei Entwurf
 	else
-		$timestamp = mktime("0", "0", "1");
+		$timestamp = time();
 	
 	// Speicherart ermitteln
 	if(isset($_POST['senden']) && !empty($_POST['senden']))
