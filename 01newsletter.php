@@ -200,22 +200,27 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					}
 				// Normale "Einstellungen bearbeiten"-Seite anzeigen 
 				else{
-					$cats_reg = array();
-					if($row['catids'] == "0"){ $sel1 = " selected=\"selected\""; }
-					else{
-						$sel1 = "";
-						$cats_reg = explode(",",$row['catids']);
-						}
-						
-					$mailcats = "<option value=\"all\"".$sel1.">".$lang['allcats']."</option>\n";
 
-					$listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-					while($rowcats = $listcats->fetch_assoc()){
-						if($sel1 == "" && in_array($rowcats['id'],$cats_reg)) $sel2 = " selected=\"selected\"";
-						else $sel2 = "";
-						
-						$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities($rowcats['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
-						}
+					// Kategorien aktiviert?
+					$mailcats = "";
+					if($settings['usecats'] == 1){
+						$cats_reg = array();
+						if($row['catids'] == "0"){ $sel1 = " selected=\"selected\""; }
+						else{
+							$sel1 = "";
+							$cats_reg = explode(",",$row['catids']);
+							}
+							
+						$mailcats = "<option value=\"all\"".$sel1.">".$lang['allcats']."</option>\n";
+
+						$listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+						while($rowcats = $listcats->fetch_assoc()){
+							if($sel1 == "" && in_array($rowcats['id'],$cats_reg)) $sel2 = " selected=\"selected\"";
+							else $sel2 = "";
+							
+							$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities($rowcats['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
+							}
+					}
 					
 					$dellink = addParameter2Link($filename,"action=delabo");
 					$dellink = addParameter2Link($dellink,"email=".$row['email']);

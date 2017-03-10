@@ -12,10 +12,11 @@
 <p>
 Die E-Mail-Adresse kann nicht ge&auml;ndert werden.
 Wenn Sie Ihre Adresse &auml;ndern m&ouml;chten, bestellen Sie den Newsletter bitte ab und melden Sie sich
-mit Ihrer neuen E-Mail-Adresse erneut an.
+mit ihrer neuen E-Mail-Adresse neu an.
 </p> 
 
-<h3><label for="input_cats">Abonierte Kategorien &auml;ndern</label></h3>
+<?php if($settings['usecats'] == 1): ?>
+<h3><label for="input_cats">Abonnierte Kategorien &auml;ndern</label></h3>
 
 <select name="cats[]" id="input_cats" size="5" multiple="multiple" class="input_select">
 	<?php echo $mailcats; ?>
@@ -25,10 +26,11 @@ mit Ihrer neuen E-Mail-Adresse erneut an.
 
 <input type="hidden" name="action" value="changecats" />
 <input type="submit" name="send" value="Go" class="input_button" />
+<?php endif; ?>
 
 <h3>Abonnement l&ouml;schen</h3>
 
-<p><a href="<?php echo $dellink; ?>">Klicken Sie hier um Ihre E-Mail-Adresse aus dem Newsletter zu l&ouml;schen.</a></p>
+<p><a href="<?php echo $dellink; ?>">Klicken Sie hier um ihre E-Mail-Adresse aus dem Newsletter zu l&ouml;schen.</a></p>
 
 </div>
 
