@@ -17,7 +17,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 	            ('".$mysqli->escape_string($modul)."', 0, 3, 3, 'smtp_nl_port', 'SMTP-Server TCP Port','','text','50','','587','587',0,0),
 	            ('".$mysqli->escape_string($modul)."', 0, 3, 4, 'smtp_nl_username', 'SMTP Username','','text','50','','','',0,0),
 	            ('".$mysqli->escape_string($modul)."', 0, 3, 5, 'smtp_nl_password', 'SMTP Password','Das SMTP Passwort wird aus technischen Gr&uuml;nden unverschl&uuml;sselt gespeichert.','text','50','','','',0,0);";
-	mysql_query($sql_insert) OR die(mysql_error());
+	$mysqli->query($sql_insert) OR die($mysqli->error);
 	
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.3.2' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
@@ -44,6 +44,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </div>
 <?PHP
+}
 // 1.3.0 --> 1.3.1
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 
