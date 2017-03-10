@@ -33,9 +33,9 @@ Achtung:
 
 Changelog 01-Newsletter - 1.3.2
 ===============================
-- 0000717: [Global (Modul)]     Kleinere Bugs beheben (Admin) - bestätigt.
-- 0000339: [Global (Modul)]     Versand per SMTP (Admin) - erledigt.
-- 0000724: [Global (Modul)]     PHPMailer statt mail() verwenden (Admin) - erledigt.
-- 0000635: [Backend (Modul)]    "Newsletter schreiben"-Seite überarbeiten (Admin) - erledigt.
-- 0000745: [Global (Modul)]     CSS-Code in dedizierte Datei verschieben (Admin) - erledigt.
-- 0000186: [Backend (Modul)]    Archivtext für neuen Newsletter per Klick verwenden (Admin) - erledigt.
+- 0000717: [Global (Modul)]     Kleinere Bugs beheben
+- 0000339: [Global (Modul)]     Versand per SMTP
+- 0000724: [Global (Modul)]     PHPMailer statt mail() verwenden
+- 0000635: [Backend (Modul)]    "Newsletter schreiben"-Seite überarbeiten
+- 0000745: [Global (Modul)]     CSS-Code in dedizierte Datei verschieben
+- 0000186: [Backend (Modul)]    Archivtext für neuen Newsletter per Klick verwenden
