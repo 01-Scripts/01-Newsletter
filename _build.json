@@ -14,6 +14,7 @@
   "Files4Update": [
     "images/icon_copy.gif",
     "templates/formular_account.html",
+    "templates/formular_registrierung.html",
     "templates/lang_vars.php",
     "templates/style.css",
     "01newsletter.php",

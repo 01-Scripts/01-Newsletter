@@ -262,6 +262,8 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 			$meldung .= "<br /><a href=\"".addParameter2Link($system_link,"action=newacode")."\">".$lang['resend_acode']."</a>";
 
 			include($tempdir."meldungen.html");
+			$formcodename = "acode";
+			include($tempdir."formular_acode.html");
 			}
 		// Kategorien anzeigen
 		else{
@@ -306,6 +308,8 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 				$meldung .= "<br /><a href=\"".addParameter2Link($system_link,"action=newacode")."\">".$lang['resend_acode']."</a>";
 	
 				include($tempdir."meldungen.html");
+				$formcodename = "acode";
+				include($tempdir."formular_acode.html");
 				}
 			// Formular ausgeben
 			else{
