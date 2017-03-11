@@ -90,7 +90,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
 			if($settings['use_html'])
 			    $text = "var ed = tinyMCE.get('mailtext');
 			ed.setProgressState(1);
-			ed.setContent('".utf8_encode(addcslashes(addslashes($row['mailinhalt']),"'\n\r"))."');
+			ed.setContent('".utf8_encode(addcslashes($row['mailinhalt'],"'\n\r"))."');
 			ed.setProgressState(0);";
 			else
 				$text = "document.post.mailtext.value = '".addcslashes(addslashes($row['mailinhalt']),"\n\r")."';";
