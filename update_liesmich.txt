@@ -20,6 +20,9 @@ Achtung:
   und kann nicht mehr im 01ACP in den Einstellungen direkt bearbeitet werden.
   Der CSS-Code befindet sich nun in der Datei 01module/01newsletter/templates/style.css und kann
   dort bearbeitet werden.
+- Die Texte in der 01module/01newsletter/templates/lang_vars.php-Datei wurden mit diesem Update geändert.
+  Sollten Sie an den Texten eigene Änderungen vorgenommen haben, speichern Sie diese Änderungen bitte vor dem
+  Durchführen des Updates.
 
 - Markieren Sie alle im Verzeichnis 01newsletter/ enthaltenen Dateien und Unterverzeichnisse und
   laden Sie sie per FTP-Programm in das entsprechende Modul-Verzeichnis (01scripts/01module/.....) auf Ihren Webspace hoch.
