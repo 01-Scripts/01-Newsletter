@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -38,6 +38,7 @@ else
 include_once($subfolder."01_config.php");
 include_once($subfolder."01acp/system/headinclude.php");
 if(!$flag_second) include_once($subfolder."01acp/system/functions.php");
+if(!$flag_second) include_once($subfolder."01acp/system/includes/PHPMailerAutoload.php");
 
 $modulvz = $modul."/";
 // Modul-Config-Dateien einbinden
@@ -54,7 +55,6 @@ $lang['mail_ecode'] = $settings['newslettertitel'].": ".$lang['mail_ecode'];
 $lang['mail_dcode'] = $settings['newslettertitel'].": ".$lang['mail_dcode'];
 
 $filename = $_SERVER['PHP_SELF'];
-$mail_header = _01newsletter_getMailHeader();
 $meldung = "";
 
 // Notice: Undefined index: ... beheben
@@ -69,16 +69,11 @@ if(!isset($_REQUEST['dcode']))		$_REQUEST['dcode'] = "";
 //Link-String generieren
 $system_link = addParameter2Link($filename,"email=".$_REQUEST['email']);
 
-
-
-
 // externe CSS-Datei / CSS-Eigenschaften?
-if(isset($settings['extern_css']) && !empty($settings['extern_css']) && $settings['extern_css'] != "http://" && !$flag_nocss)
+if(isset($settings['extern_css']) && !empty($settings['extern_css']) && filter_var($settings['extern_css'], FILTER_VALIDATE_URL) !== FALSE && !$flag_nocss)
 	$echo_css = "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$settings['extern_css']."\" />";
-elseif(isset($settings['csscode']) && !empty($settings['csscode']) && !$flag_nocss)
-	$echo_css = "<style type=\"text/css\">
-".$settings['csscode']."
-</style>";
+elseif(!$flag_nocss)
+	$echo_css = "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$tempdir."style.css\" />";
 else $echo_css = "";
 
 // Main_Top einfügen
@@ -105,7 +100,12 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$row['acode']),$lang['mailinhalt_acode']);
 					$mail_inhalt = str_replace("#acode#",$row['acode'],$mail_inhalt);
 					
-					mail($row['email'],$lang['mail_acode'],$mail_inhalt,$mail_header);
+					$mail = new PHPMailer;
+					_01newsletter_configurePHPMailer($mail);
+					$mail->addAddress($row['email']);
+					$mail->Subject = $lang['mail_acode'];
+					$mail->Body    = $mail_inhalt;
+					$mail->send();
 					
 					$meldung = $lang['meldung_newacode'];
 					
@@ -134,15 +134,19 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					else
 						$cats_string = 0;
 	
-					$zahl = mt_rand(1, 9999999999999);
-					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
+					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
 					
 					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET newcatids = '".$mysqli->escape_string($cats_string)."', editcode='".$ecode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 					
 					$mail_inhalt = str_replace("#ecodelink#",addParameter2Link($settings['formzieladdr'],"ecode=".$ecode),$lang['mailinhalt_ecode']);
 					$mail_inhalt = str_replace("#ecode#",$ecode,$mail_inhalt);
 
-					mail($row['email'],$lang['mail_ecode'],$mail_inhalt,$mail_header);
+					$mail = new PHPMailer;
+					_01newsletter_configurePHPMailer($mail);
+					$mail->addAddress($row['email']);
+					$mail->Subject = $lang['mail_ecode'];
+					$mail->Body    = $mail_inhalt;
+					$mail->send();
 					
 					$meldung = $lang['meldung_ecode_send'];
 					$formcodename = "ecode";
@@ -152,15 +156,19 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					}
 				// Neuen Edit-Code versenden
 				elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "newecode"){
-					$zahl = mt_rand(1, 9999999999999);
-					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
+					$ecode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
 
 					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET editcode='".$ecode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 
 					$mail_inhalt = str_replace("#ecodelink#",addParameter2Link($settings['formzieladdr'],"ecode=".$ecode),$lang['mailinhalt_ecode']);
 					$mail_inhalt = str_replace("#ecode#",$ecode,$mail_inhalt);
 
-					mail($row['email'],$lang['mail_ecode'],$mail_inhalt,$mail_header);
+					$mail = new PHPMailer;
+					_01newsletter_configurePHPMailer($mail);
+					$mail->addAddress($row['email']);
+					$mail->Subject = $lang['mail_ecode'];
+					$mail->Body    = $mail_inhalt;
+					$mail->send();
 
 					$meldung = $lang['meldung_newacode'];
 					$formcodename = "ecode";
@@ -168,17 +176,21 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					include($tempdir."meldungen.html");
 					include($tempdir."formular_acode.html");
 					}
-				// Lösch-Wunsch eintragen
-				elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "delabo"){
-					$zahl = mt_rand(1, 9999999999999);
-					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
+				// Lösch-Wunsch eintragen / Neuen Lösch-Code versenden
+				elseif(isset($_REQUEST['action']) && ($_REQUEST['action'] == "delabo" || $_REQUEST['action'] == "newdcode")){
+					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
 
 					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 
 					$mail_inhalt = str_replace("#dcodelink#",addParameter2Link($settings['formzieladdr'],"dcode=".$dcode),$lang['mailinhalt_dcode']);
 					$mail_inhalt = str_replace("#dcode#",$dcode,$mail_inhalt);
 
-					mail($row['email'],$lang['mail_dcode'],$mail_inhalt,$mail_header);
+					$mail = new PHPMailer;
+					_01newsletter_configurePHPMailer($mail);
+					$mail->addAddress($row['email']);
+					$mail->Subject = $lang['mail_dcode'];
+					$mail->Body    = $mail_inhalt;
+					$mail->send();
 
 					$meldung = $lang['meldung_dcode_send'];
 					$formcodename = "dcode";
@@ -186,42 +198,29 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 					include($tempdir."meldungen.html");
 					include($tempdir."formular_acode.html");
 					}
-				// Neuen Lösch-Code versenden
-				elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "newdcode"){
-					$zahl = mt_rand(1, 9999999999999);
-					$dcode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
-
-					$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET delcode='".$dcode."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
-
-					$mail_inhalt = str_replace("#dcodelink#",addParameter2Link($settings['formzieladdr'],"dcode=".$dcode),$lang['mailinhalt_ecode']);
-					$mail_inhalt = str_replace("#dcode#",$dcode,$mail_inhalt);
-
-					mail($row['email'],$lang['mail_dcode'],$mail_inhalt,$mail_header);
-
-					$meldung = $lang['meldung_newacode'];
-					$formcodename = "dcode";
-
-					include($tempdir."meldungen.html");
-					include($tempdir."formular_acode.html");
-					}
 				// Normale "Einstellungen bearbeiten"-Seite anzeigen 
 				else{
-					$cats_reg = array();
-					if($row['catids'] == "0"){ $sel1 = " selected=\"selected\""; }
-					else{
-						$sel1 = "";
-						$cats_reg = explode(",",$row['catids']);
-						}
-						
-					$mailcats = "<option value=\"all\"".$sel1.">".$lang['allcats']."</option>\n";
 
-					$listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
-					while($rowcats = $listcats->fetch_assoc()){
-						if($sel1 == "" && in_array($rowcats['id'],$cats_reg)) $sel2 = " selected=\"selected\"";
-						else $sel2 = "";
-						
-						$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities(stripslashes($rowcats['catname']),$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
-						}
+					// Kategorien aktiviert?
+					$mailcats = "";
+					if($settings['usecats'] == 1){
+						$cats_reg = array();
+						if($row['catids'] == "0"){ $sel1 = " selected=\"selected\""; }
+						else{
+							$sel1 = "";
+							$cats_reg = explode(",",$row['catids']);
+							}
+							
+						$mailcats = "<option value=\"all\"".$sel1.">".$lang['allcats']."</option>\n";
+
+						$listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+						while($rowcats = $listcats->fetch_assoc()){
+							if($sel1 == "" && in_array($rowcats['id'],$cats_reg)) $sel2 = " selected=\"selected\"";
+							else $sel2 = "";
+							
+							$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities($rowcats['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
+							}
+					}
 					
 					$dellink = addParameter2Link($filename,"action=delabo");
 					$dellink = addParameter2Link($dellink,"email=".$row['email']);
@@ -235,8 +234,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 	else{
 		// Adresse direkt registrieren und Aktivierungsmail verschicken
 		if($settings['usecats'] == 0 && ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']))){
-			$zahl = mt_rand(1, 9999999999999);
-			$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
+			$acode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
 			
 			$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids,newcatids)
 				   		VALUES(
@@ -252,15 +250,20 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 			
 			$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 			$mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
-			$empf = preg_replace( "/[^a-z0-9 !?:;,.\/_\-=+@#$&\*\(\)]/im", "",$_REQUEST['email']);
-		    $empf = preg_replace( "/(content-type:|bcc:|cc:|to:|from:)/im", "",$empf);
 			
-			mail($empf,$lang['mail_acode'],$mail_inhalt,$mail_header);
+			$mail = new PHPMailer;
+			_01newsletter_configurePHPMailer($mail);
+			$mail->addAddress($_REQUEST['email']);
+			$mail->Subject = $lang['mail_acode'];
+			$mail->Body    = $mail_inhalt;
+			$mail->send();
 			
 			$meldung = $lang['meldung_registriert'];
 			$meldung .= "<br /><a href=\"".addParameter2Link($system_link,"action=newacode")."\">".$lang['resend_acode']."</a>";
 
 			include($tempdir."meldungen.html");
+			$formcodename = "acode";
+			include($tempdir."formular_acode.html");
 			}
 		// Kategorien anzeigen
 		else{
@@ -277,8 +280,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 				else
 					$cats_string = 0;
 					
-				$zahl = mt_rand(1, 9999999999999);
-				$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_REQUEST['email']);
+				$acode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
 				
 				$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids,newcatids)
 				   		VALUES(
@@ -294,15 +296,20 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 				
 				$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 				$mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
-				$empf = preg_replace( "/[^a-z0-9 !?:;,.\/_\-=+@#$&\*\(\)]/im", "",$_REQUEST['email']);
-		    	$empf = preg_replace( "/(content-type:|bcc:|cc:|to:|from:)/im", "",$empf);
-	
-				mail($empf,$lang['mail_acode'],$mail_inhalt,$mail_header);
+
+				$mail = new PHPMailer;
+				_01newsletter_configurePHPMailer($mail);
+				$mail->addAddress($_REQUEST['email']);
+				$mail->Subject = $lang['mail_acode'];
+				$mail->Body    = $mail_inhalt;
+				$mail->send();
 				
 				$meldung = $lang['meldung_registriert'];
 				$meldung .= "<br /><a href=\"".addParameter2Link($system_link,"action=newacode")."\">".$lang['resend_acode']."</a>";
 	
 				include($tempdir."meldungen.html");
+				$formcodename = "acode";
+				include($tempdir."formular_acode.html");
 				}
 			// Formular ausgeben
 			else{
@@ -310,7 +317,7 @@ if(isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUE
 				
 				$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
 				while($row = $list->fetch_assoc()){
-					$mailcats .= "<option value=\"".$row['id']."\">".htmlentities(stripslashes($row['catname']),$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
+					$mailcats .= "<option value=\"".$row['id']."\">".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 					}
 				
 				include($tempdir."formular_registrierung.html");
@@ -332,11 +339,14 @@ elseif(isset($_REQUEST['acode']) && !empty($_REQUEST['acode']) && strlen($_REQUE
 		$meldung = $lang['meldung_activated'];
 		
 		// E-Mail für Neuregistrierung an Admin versenden
-		if($settings['send_benachrichtigung'] == 1)
-			mail($settings['email_absender'],$settings['sitename']." - ".$lang['neue_reg_betreff'],$lang['neue_reg_body'].$row_email['email']."
-
----
-Webmailer",$mail_header);
+		if($settings['send_benachrichtigung'] == 1){
+			$mail = new PHPMailer;
+			_01newsletter_configurePHPMailer($mail);
+			$mail->addAddress($settings['email_absender']);
+			$mail->Subject = $settings['sitename']." - ".$lang['neue_reg_betreff'];
+			$mail->Body    = $lang['neue_reg_body'].$row_email['email']."\n\n---\nWebmailer";
+			$mail->send();
+		}
 		
 		include($tempdir."meldungen.html");
 		}
@@ -398,12 +408,10 @@ elseif(isset($_REQUEST['email']) && !empty($_REQUEST['email'])){
 	include($tempdir."formular_addemail.html");
 	}
 // Nichts übergeben -> Register-Formular anzeigen
-else{
+else
 	include($tempdir."formular_addemail.html");
-	}
 
 
 // Main_Bottom einfügen
 include($tempdir."main_bottom.html");
-
 ?>

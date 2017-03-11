@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Neuen Newsletter verfassen (Formular) und absenden
-	#fv.131#
+	#fv.132#
 */
 
 // Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
@@ -35,7 +35,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 			$chosencats = array();
 			$listcats = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
 			while($rowcats = $listcats->fetch_assoc()){
-				$chosencats[$rowcats['id']] = stripslashes($rowcats['catname']);
+				$chosencats[$rowcats['id']] = $rowcats['catname'];
 				}
 	
 			$where = "catids = '0' OR catids = ',0,'";
@@ -60,12 +60,12 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
     // Newsletter-Signatur anhängen (nur bei Versand)
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1 && isset($_POST['senden']) && !empty($_POST['senden'])){
 		if($settings['use_html'])
-		    $mailinhalt = stripslashes($_POST['mailtext'])."<br /><br />".nl2br($settings['newslettersignatur']);
+		    $mailinhalt = $_POST['mailtext']."<br /><br />".nl2br($settings['newslettersignatur']);
 		else	
-			$mailinhalt = stripslashes($_POST['mailtext'])."\n\n".$settings['newslettersignatur'];
+			$mailinhalt = $_POST['mailtext']."\n\n".$settings['newslettersignatur'];
 		}
 	else
-		$mailinhalt = stripslashes($_POST['mailtext']);
+		$mailinhalt = $_POST['mailtext'];
 		
 	// Anhänge
 	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
@@ -92,7 +92,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	elseif(isset($_POST['entwurf']) && !empty($_POST['entwurf']))
 	    $timestamp = 0;	// leer bei Entwurf
 	else
-		$timestamp = mktime("0", "0", "1");
+		$timestamp = time();
 	
 	// Speicherart ermitteln
 	if(isset($_POST['senden']) && !empty($_POST['senden']))
@@ -188,8 +188,18 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 	
 	if($settings['use_html'])
 	    echo loadTinyMCE("advanced","","","","top");
+
+	// Inhalt von archiviertem Newsletter laden?
+	if(isset($_GET['copyid']) && is_numeric($_GET['copyid']) && $_GET['copyid'] > 0){
+		$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND id = '".$mysqli->escape_string($_GET['copyid'])."' LIMIT 1");
+		$row = $list->fetch_assoc();
+		if(isset($row['betreff']) && !empty($row['betreff'])){
+			$_POST['betreff'] = $row['betreff'];
+			$_POST['mailtext'] = $row['mailinhalt'];
+		}
+	}
 	
-	echo "<h1>Neuen Newsletter verfassen</h1>";
+	echo "<h1>Newsletter verfassen</h1>";
 	
 	// Nicht alle nötigen Felder ausgefüllt -> Fehlermeldung
 	if(isset($_POST['action']) && $_POST['action'] == "send")
@@ -198,43 +208,46 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 ?>
 
 <form action="<?PHP echo $filename; ?>" method="post" name="post">
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
 
 <?php 
 list($catmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['mailcats']."")->fetch_array(MYSQLI_NUM);
 ?>
-    <tr>
-		<td colspan="2"><h2>Empf&auml;nger w&auml;hlen</h2></td>
+    <tr class="trb">
+		<td colspan="2"><h2>Empf&auml;nger</h2></td>
 	</tr>
 
 	<tr>
         <td align="center"><input type="radio" name="empf" value="all"<?php if(isset($_POST['empf']) && $_POST['empf'] == "all" || $settings['usecats'] != 1 || $catmenge < 1) echo " checked=\"checked\""; ?> /></td>
-        <td><b>Newsletter an alle registrierten E-Mail-Adressen senden</b></td>
+        <td><b>An alle Abonnenten</b></td>
     </tr>
-<?php if($settings['usecats'] == 1 && $catmenge > 1){ ?>    
+<?php if($settings['usecats'] == 1 && $catmenge >= 1){ ?>    
     <tr>
         <td align="center"><input type="radio" name="empf" value="cats"<?php if(isset($_POST['empf']) && $_POST['empf'] == "cats") echo " checked=\"checked\""; ?> /></td>
-        <td><b>Newsletter an bestimmte Kategorien versenden:</b><br />
-		<select name="empfcats[]" size="5" multiple="multiple" class="input_select">
+        <td><b>An Abonnenten einer bestimmten Kategorien:</b><br />
+		<select name="empfcats[]" size="5" multiple="multiple" class="input_select" style="width:275px">
 			<?php 
 			$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
 			while($row = $list->fetch_assoc()){
 				if(isset($_POST['empfcats']) && is_array($_POST['empfcats']) && in_array($row['id'],$_POST['empfcats'])) $sel = " selected=\"selcted\"";
 				else $sel = "";
 				
-				echo "<option value=\"".$row['id']."\"".$sel.">".stripslashes($row['catname'])."</option>\n";
+				echo "<option value=\"".$row['id']."\"".$sel.">".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 				}
 			?>
-		</select> <span class="small">Halten Sie die STRG-Taste gedr&uuml;ckt um mehrere Kategorien auszuw&auml;hlen.</span>
+		</select><br /><span class="small">Zur Mehrfachauswahl STRG-Taste gedr&uuml;ckt halten.</span>
 		</td>
     </tr>
 <?php } ?>
 	<tr>
         <td align="center"><input type="radio" name="empf" value="test"<?php if(isset($_POST['empf']) && $_POST['empf'] == "test") echo " checked=\"checked\""; ?> /></td>
-        <td><b>Test-Newsletter an folgende Adressen senden:</b> <input type="text" size="35" name="testempf" value="<?php if(isset($_POST['testempf'])){ echo $_POST['testempf']; } ?>" class="input_text"> <span class="small">(kommasepariert)</span></td>
+        <td>
+        	<b>Test-Newsletter an folgende Adressen versenden:</b><br />
+        	<input type="text" size="35" name="testempf" value="<?php if(isset($_POST['testempf'])){ echo $_POST['testempf']; } ?>" class="input_text" style="width:275px"> <span class="small">(kommasepariert)</span>
+        </td>
     </tr>
 
-    <tr>
+    <tr class="trb">
 		<td colspan="2"><h2>Nachrichtentext</h2></td>
 	</tr>
 <?php
@@ -255,13 +268,13 @@ if($evmenge >= 1){
 			}
 		
 		if($row['utimestamp'] == 0) $row['utimestamp'] = time();
-		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['utimestamp'])." - ".stripslashes($row['betreff'])."</option>\n";
+		$seloptions .= "<option value=\"".$row['id']."\">".date("d.m.Y",$row['utimestamp'])." - ".$row['betreff']."</option>\n";
 		}
 ?>
     <tr>
         <td><b>Entwurf / Vorlage</b></td>
         <td>
-			<select name="vorlage" size="1" class="input_select" style="float: left;" onchange="Start_Loading_standard(); AjaxRequest.send('modul=<?php echo $modul; ?>&ajaxaction=load_vorlage&id='+this.options[this.selectedIndex].value+'');">
+			<select name="vorlage" size="1" class="input_select" style="float: left; width:275px;" onchange="Start_Loading_standard(); AjaxRequest.send('modul=<?php echo $modul; ?>&ajaxaction=load_vorlage&id='+this.options[this.selectedIndex].value+'');">
 				<?php echo $seloptions; ?>
 			</select>
 			&nbsp;&nbsp;&nbsp;&nbsp;
@@ -270,23 +283,20 @@ if($evmenge >= 1){
 			</div>
 		</td>
     </tr>
-    <tr>
-        <td colspan="2"><span class="small">Ihr momentan eingegebener Text wird ggf. durch den Entwurf / die Vorlage ersetzt!</span></td>
-    </tr>
 <?php 
 	}
 ?>
     <tr>
-        <td style="width:120px"><b>Betreff</b></td>
-        <td><input type="text" name="betreff" value="<?php echo stripslashes($_POST['betreff']); ?>" size="70" class="input_text" /></td>
+        <td style="width:100px"><h3>Betreff</h3></td>
+        <td><input type="text" name="betreff" value="<?php echo htmlentities($_POST['betreff'],$htmlent_flags,$htmlent_encoding_acp); ?>" size="57" class="input_text" style="font-size:14pt" /></td>
     </tr>
     
 	<tr>
-		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo stripslashes($_POST['mailtext']); ?></textarea></td>
+		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea></td>
 	</tr>
 <?php if($settings['attachments'] == 1){ ?>	
-    <tr>
-		<td colspan="2"><h2 style="float:left; margin-right:10px;">Dateianh&auml;nge</h2><br /><a href="javascript:InsertNewAttachmentField();"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Weiteren Dateianhang hinzuf&uuml;gen" style="margin-right: 3px; margin-bottom:-3px;" />Weiteren Anhang hinzuf&uuml;gen</a></td>
+    <tr class="trb">
+		<td colspan="2"><h2 style="float:left; margin-right:10px;">Dateianh&auml;nge</h2><br /><a href="javascript:InsertNewAttachmentField();"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Dateianhang hinzuf&uuml;gen" style="margin-right: 3px; margin-bottom:-3px;" />Anhang hinzuf&uuml;gen</a></td>
 	</tr>	
 	<tr>
 		<td colspan="2">
@@ -305,51 +315,45 @@ if($evmenge >= 1){
 	</tr>
 		
 <?php } ?>
+    <tr class="trb">
+		<td colspan="2"><h2>Weitere Optionen</h2></td>
+	</tr>
+<?php if($settings['use_cronjob'] == 1){ ?>
     <tr>
-		<td colspan="2"><h2 style="float:left; margin-right:10px;">Weitere Optionen</h2></td>
-	</tr>
-<?php if($settings['use_cronjob'] == 1){ ?>	
-	<tr>
-		<td colspan="2">
-			<input type="text" name="send_time" class="DatePicker" size="10" value="<?php if(isset($_POST['send_time']) && !empty($_POST['send_time'])){ echo $_POST['send_time']; }else{ echo date("d.m.Y"); } ?>" /> <div style="float:left; margin-right:5px;"><b>Versanddatum ausw&auml;hlen:</b></div>
-		</td>
-	</tr>
+        <td><input type="text" name="send_time" class="DatePicker" size="10" value="<?php if(isset($_POST['send_time']) && !empty($_POST['send_time'])){ echo $_POST['send_time']; }else{ echo date("d.m.Y"); } ?>" /></td>
+        <td><b>Versanddatum</b></td>
+    </tr>
 <?php } ?>
 <?php if(!empty($settings['newslettersignatur'])){ ?>	
 	<tr>
-		<td colspan="2">
-			<input type="checkbox" name="use_signatur" value="1" checked="checked" onclick="toggleSignatur();" /> <b>Signatur anh&auml;ngen</b>
-			<div id="signatur">
-				<?php echo nl2br($settings['newslettersignatur']); ?>
-			</div>
-		</td>
+		<td align="center"><input type="checkbox" name="use_signatur" value="1" checked="checked" /></td>
+		<td><b>Signatur anh&auml;ngen</b></td>
 	</tr>
 <?php } ?>
 <?php if($userdata['vorlagen'] == 1){ ?>
 	<tr>
-		<td colspan="2">
-			<input type="checkbox" name="als_vorlage" value="1" onclick="alsVorlage();" /> <b>Newsletter als Vorlage speichern</b>
+		<td align="center"><input type="checkbox" name="als_vorlage" value="1" onclick="alsVorlage();" /></td>
+		<td>
+			<b>Newsletter als Vorlage speichern</b>
 			<div id="vorlagenname">
-				Vorlage speichern als: <input type="text" name="vorlagenname" size="70" class="input_text" /> <input type="submit" name="savevorlage" value="Speichern" class="input" />
+				Vorlage speichern als: <input type="text" name="vorlagenname" size="50" class="input_text" /> <input type="submit" name="savevorlage" value="Speichern" class="input" />
 			</div>
 		</td>
 	</tr>
 <?php } ?>
 	<tr id="savetr">
-		<td><input type="submit" name="entwurf" value="Als Entwurf speichern" class="input" id="button1" /></td>
+		<td><input type="submit" name="entwurf" value="Entwurf speichern" class="input" id="button1" /></td>
 		<td align="right"><input type="submit" name="senden" value="Newsletter versenden / F&uuml;r den Versand speichern" class="input" id="button2" /></td>
 	</tr>
 
 </table>
+
 <input type="hidden" name="entwurfid" value="x" />
 <input type="hidden" name="action" value="send" />
 <input type="hidden" name="attachfieldcounter" value="<?php echo $_POST['attachfieldcounter']; ?>" id="attachfieldcounter" />
 </form>
 
 <script type="text/javascript">
-<?php if(!empty($settings['newslettersignatur'])){ ?>
-$('signatur').slide('show');
-<?php } ?>
 <?php if($userdata['vorlagen'] == 1){ ?>
 $('vorlagenname').slide('hide');
 <?php } ?>
@@ -368,7 +372,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 <h1>Newsletter</h1>
 
 <p>
-<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=newsletter&amp;action=new" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neue E-Mail-Adresse hinzuf&uuml;gen" style="border:0; margin-right:10px;" />Newsletter schreiben</a>
+<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=newsletter&amp;action=new" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neuen Newsletter schreiben" style="border:0; margin-right:10px;" />Newsletter schreiben</a>
 </p>
 
 <form action="<?PHP echo $filename; ?>" method="get" style="float:left; margin-right:20px;">
@@ -377,12 +381,12 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 	<input type="hidden" name="loadpage" value="newsletter" />
 </form>
 
-<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
     <tr>
 		<td style="width:120px"><b>Versanddatum</b></td>
         <td style="width:400px"><b>Betreff</b></td>
-		<td><b>An folgende Kategorien versand</b></td>
-		<td><b>Verschickt von</b></td>
+		<td><b>Kategorien</b></td>
+		<td><b>Absender</b></td>
 		<td class="nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
@@ -399,11 +403,11 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 		$data = getUserdatafields($row['uid'],"username");
 
 		echo "    <tr id=\"id".$row['id']."\">
-		<td>".date("d.m.Y, H:i",$row['utimestamp'])." Uhr</td>
-		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['betreff'])."</td>
-		<td onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\" style=\"cursor: pointer;\">".stripslashes($row['kategorien'])."</td>
-		<td>".$data['username']."</td>
-		<td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
+		<td valign=\"bottom\">".date("d.m.Y, H:i",$row['utimestamp'])." Uhr</td>
+		<td onmouseover=\"fade_element('copyid_".$row['id']."')\" onmouseout=\"fade_element('copyid_".$row['id']."')\"><a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a> <div class=\"moo_inlinehide\" id=\"copyid_".$row['id']."\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=newsletter&amp;action=new&amp;copyid=".$row['id']."\"><img src=\"".$modulpath."images/icon_copy.gif\" alt=\"Symbol: Kopieren\" title=\"Inhalt in einen neuen Newsletter übernehmen\" /></a></div></td>
+		<td valign=\"bottom\">".stripslashes($row['kategorien'])."</td>
+		<td valign=\"bottom\">".$data['username']."</td>
+		<td valign=\"bottom\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 	</tr>";
 		}
 ?>

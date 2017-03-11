@@ -1,10 +1,10 @@
--- 01-Newsletter - Copyright 2009-2014 by Michael Lorer - 01-Scripts.de
+-- 01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
 -- Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 -- Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des 01-Newsletterscripts
--- #fv.131#
+-- #fv.132#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
 -- --------------------------------------------------------
@@ -20,6 +20,12 @@ START TRANSACTION;
 --
 
 INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
+('#modul_idname#', 1, 3, 5, 'smtp_nl_settings', 'Newsletter Versandeinstellungen', NULL , NULL , NULL , NULL , NULL , NULL ,0,0),
+('#modul_idname#', 0, 3, 1, 'smtp_nl', 'Wie m&ouml;chten Sie ausgehende Newsletter versenden?','','Standardversand per PHP mail()-Befehl|SMTP-Versand (SMTP-Server aus 01ACP Einstellungen)|SMTP-Versand (Nachfolgend angegebener SMTP-Server)','php|smtp_01acp|smtp_01newsletter','','php','php',0,0),
+('#modul_idname#', 0, 3, 2, 'smtp_nl_host', 'SMTP-Server','','text','50','','','',0,0),
+('#modul_idname#', 0, 3, 3, 'smtp_nl_port', 'SMTP-Server TCP Port','','text','50','','587','587',0,0),
+('#modul_idname#', 0, 3, 4, 'smtp_nl_username', 'SMTP Username','','text','50','','','',0,0),
+('#modul_idname#', 0, 3, 5, 'smtp_nl_password', 'SMTP Password','Das SMTP Passwort wird aus technischen Gr&uuml;nden unverschl&uuml;sselt gespeichert.','text','50','','','',0,0),
 ('#modul_idname#', 0, 1, 9,  'use_cronjob','Newsletter per Cronjob versenden?','Legen Sie dazu einen regelm&auml;&szlig;igen Cronjob auf die Datei <i>01scripts/01module/#modul_idname#/_cronjob.php</i> an.<br /><a href=\"http://cronjob.01-scripts.de\" target=\"_blank\">Weitere Informationen zum Thema</a>','Ja|Nein','1|0','','0','0','0','0'),
 ('#modul_idname#', 0, 1, 10, 'newslettersignatur', 'Signatur', 'Die Signatur wird automatisch an alle Newsletter angeh&auml;ngt.', 'textarea', '5|50', '', '', '', 0, 0),
 ('#modul_idname#', 0, 1, 11, 'use_nutzungsbedingungen','Datenschutz / Nutzungsbedingungen aktivieren?','Beim Abonnieren des Newsletters muss den eingegebenen Datenschutz bzw. Nutzungsbedingungen zugestimmt werden.','Ja|Nein','1|0','','0','0','0','0'),
@@ -27,9 +33,8 @@ INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formena
 ('#modul_idname#', 0, 1, 7, 'attachments','Dateianh&auml;nge verwenden?','','Ja|Nein','1|0','','1','1','0','0'),
 ('#modul_idname#', 0, 1, 8, 'use_html','HTML-Newsletter versenden?','','Ja|Nein','1|0','','0','0','0','0'),
 ('#modul_idname#', 0, 1, 1, 'newslettertitel', 'Titel des Newsletters', '', 'text', '50', '', '', '', 0, 0),
-('#modul_idname#', 0, 2, 2, 'csscode', 'CSS-Eigenschaften', 'Nachfolgende CSS-Definitionen werden nur ber&uuml;cksichtigt, wenn <b>keine</b> URL zu einer externen CSS-Datei eingegeben wurde!', 'textarea', '18|100', '', '', '/* Äußere Box für den gesamten Bereich - DIV selber (id = _01newsletter) */\r\n#_01newsletter{\r\n	text-align:left;\r\n	}\r\n\r\n.box_out{\r\n	width: 800px;\r\n	margin: 0 auto;\r\n	text-align:left;\r\n	font-family: Verdana, Arial, Helvetica, sans-serif;\r\n	color:#000;\r\n	}\r\n\r\n/* Link-Definitionen (box_out) */\r\n.box_out a:link,.box_out a:visited  {\r\n	text-decoration: underline;\r\n	color: #000;\r\n}\r\n.box_out a:hover  {\r\n	text-decoration: none;\r\n	color: #000;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n/* DIV um das Formular zum Eintragen neuer Adressen */\r\n.formular{\r\n\r\n	}\r\n\r\n\r\n	\r\n	\r\n	\r\n\r\n\r\n\r\n	\r\n/* Aussehen von kleinem Text */\r\n.small, .small a:link,.small a:visited {\r\n	font-size:10px;\r\n	text-decoration:none;\r\n	text-transform: uppercase;\r\n	font-family: Arial, Helvetica, sans-serif;\r\n	}\r\n.small a:link,.small a:visited {\r\n	text-decoration:underline;\r\n	}\r\n.box_out a:hover  {\r\n	text-decoration: none;\r\n}\r\n	\r\n/* Hervorgehobener, wichtiger Text */\r\n.highlight {\r\n	font-weight:bold;\r\n	color:red;\r\n	}\r\n	\r\n\r\n\r\n	\r\n	\r\n\r\n\r\n\r\n/* Formular-Elemente */\r\n/* Normales Textfeld */\r\n.input_field {\r\n\r\n	}\r\n	\r\n/* Formular-Buttons */\r\n.input_button {\r\n\r\n	}\r\n	\r\n/* Dropdown-Boxen */\r\n.input_selectfield {\r\n	\r\n	}\r\n	\r\n	\r\n	\r\n	\r\n	\r\n	\r\n	\r\n/* Copyright-Hinweis */\r\n/* Sichtbare Hinweis darf ohne eine entsprechende Lizenz NICHT entfernt werden! */\r\n.copyright {\r\n	padding-top:15px;\r\n	font-size:11px;\r\n	text-decoration:none;\r\n	}', 0, 0),
-('#modul_idname#', 0, 2, 1, 'extern_css', 'Externe CSS-Datei', 'Geben Sie einen absoluten Pfad inkl. <b>http://</b> zu einer externen CSS-Datei an.\r\nLassen Sie dieses Feld leer um die nachfolgend definierten CSS-Eigenschaften zu verwenden.', 'text', '50', '', '', '', 0, 0),
 ('#modul_idname#', 1, 2, 2, 'csssettings', 'CSS-Einstellungen', '', '', '', '', '', '', 0, 0),
+('#modul_idname#', 0, 2, 1, 'extern_css', 'Externe CSS-Datei', 'Geben Sie einen absoluten Pfad inkl. <b>http://</b> zu einer externen CSS-Datei an.\nIst dieses Feld leer, wird die Datei templates/style.css aus dem Modulverzeichnis verwendet.', 'text', '50', '', '', '', 0, 0),
 ('#modul_idname#', 0, 1, 2, 'formzieladdr', 'Ziel-URL f&uuml;r Anmeldformular', 'Bitte geben Sie die absolute URL (inkl. http://) zu der Datei ein, <b>in die Sie die Datei 01newsletter/01newsletter.php</b> per PHP eingebunden haben.', 'text', '50', NULL, NULL, '', 0, 0),
 ('#modul_idname#', 0, 1 ,5 ,'send_benachrichtigung','E-Mail-Benachrichtigung','M&ouml;chten Sie eine Benachrichtigung per E-Mail erhalten, wenn sich ein neuer Benutzer für den Newsletter anmeldet?','Aktivieren|Deaktivieren','1|0', NULL, '0', '0', 0, 0),
 ('#modul_idname#', 0, 1, 6, 'usecats', 'Kategorien verwenden?', NULL, 'Ja|Nein', '1|0', NULL, '0', '0', 0, 0),

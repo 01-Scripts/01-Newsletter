@@ -1,4 +1,50 @@
 <?PHP
+// 1.3.1 --> 1.3.2
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
+
+	// #745 - CSS-Code aus Datenbank/Settings in Datei auslagern
+	$mysqli->query("UPDATE ".$mysql_tables['settings']." SET 
+	`exp` = 'Geben Sie einen absoluten Pfad inkl. <b>http://</b> zu einer externen CSS-Datei an.\nIst dieses Feld leer, wird die Datei templates/style.css aus dem Modulverzeichnis verwendet.'
+	WHERE `modul` = '".$mysqli->escape_string($modul)."' AND `idname` = 'extern_css' LIMIT 1");
+	$mysqli->query("DELETE FROM ".$mysql_tables['settings']." WHERE `modul` = '".$mysqli->escape_string($modul)."' AND `idname` = 'csscode' LIMIT 1");
+
+	// #339 Versand per SMTP
+	$sql_insert = "INSERT INTO ".$mysql_tables['settings']." (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide)
+	            VALUES 
+	            ('".$mysqli->escape_string($modul)."', 1, 3, 5, 'smtp_nl_settings', 'Newsletter Versandeinstellungen', NULL , NULL , NULL , NULL , NULL , NULL ,0,0),
+	            ('".$mysqli->escape_string($modul)."', 0, 3, 1, 'smtp_nl', 'Wie m&ouml;chten Sie ausgehende Newsletter versenden?','','Standardversand per PHP mail()-Befehl|SMTP-Versand (SMTP-Server aus 01ACP Einstellungen)|SMTP-Versand (Nachfolgend angegebener SMTP-Server)','php|smtp_01acp|smtp_01newsletter','','php','php',0,0),
+	            ('".$mysqli->escape_string($modul)."', 0, 3, 2, 'smtp_nl_host', 'SMTP-Server','','text','50','','','',0,0),
+	            ('".$mysqli->escape_string($modul)."', 0, 3, 3, 'smtp_nl_port', 'SMTP-Server TCP Port','','text','50','','587','587',0,0),
+	            ('".$mysqli->escape_string($modul)."', 0, 3, 4, 'smtp_nl_username', 'SMTP Username','','text','50','','','',0,0),
+	            ('".$mysqli->escape_string($modul)."', 0, 3, 5, 'smtp_nl_password', 'SMTP Password','Das SMTP Passwort wird aus technischen Gr&uuml;nden unverschl&uuml;sselt gespeichert.','text','50','','','',0,0);";
+	$mysqli->query($sql_insert) OR die($mysqli->error);
+	
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.3.2' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 1.3.1 nach 1.3.2</h2>
+
+<div class="meldung_erfolg">
+	Das Update von Version 1.3.1 auf Version 1.3.2 wurde erfolgreich durchgef&uuml;hrt.<br />
+	<br />
+	<b>Achtung:</b><br />
+	Mit diesem Update wurde der CSS-Code zur Gestaltung des 01-Newsletter in eine separate Datei ausgelagert
+	und kann nicht mehr im 01ACP in den Einstellungen direkt bearbeitet werden.<br />
+	Der CSS-Code befindet sich nun in der Datei <i>01module/01newsletter/templates/style.css</i> und kann
+	dort bearbeitet werden.<br />
+	<br />
+
+	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<ul>
+		<li><b>Versand per SMTP hinzugef&uuml;gt</b> (neue Einstellungen erforderlich)</li>
+		<li>Seite zum Erstellen eines neuen Newsletters &uuml;berarbeitet</li>
+		<li>Archivierten Newsletter mit einem Klick als Vorlage f&uuml;r einen neuen Newsletter verwenden</li>
+		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
+	</ul>
+	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
+</div>
+<?PHP
+}
 // 1.3.0 --> 1.3.1
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 

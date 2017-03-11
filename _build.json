@@ -1,7 +1,8 @@
 {
-  "Version": "1.3.1",
-  "PrevVersion": "1.3.0",
+  "Version": "1.3.2",
+  "PrevVersion": "1.3.1",
   "Files2Minimize": [
+    "templates/style.css",
     "_javascript.js"
   ],
   "Files2Delete": [
@@ -11,16 +12,18 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
-    "templates/",
+    "images/icon_copy.gif",
+    "templates/formular_account.html",
+    "templates/formular_registrierung.html",
+    "templates/lang_vars.php",
+    "templates/style.css",
     "01newsletter.php",
-    "_ajax.php",
-    "_cronjob.php",
-    "_functions.php",
-    "_headinclude.php",
     "_info.xml",
-    "_javascript.js",
-    "_popup.php",
+    "_ajax.php",
     "_updates.php",
+    "_functions.php",
+    "_cronjob.php",
+    "_headinclude.php",
     "category.php",
     "emails.php",
     "index.php",

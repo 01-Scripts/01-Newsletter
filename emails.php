@@ -1,13 +1,15 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
-	#fv.131#
+	#fv.132#
 */
+
+include_once("system/includes/PHPMailerAutoload.php");
 
 // Berechtigungsabfragen
 if($userdata['show_emails'] == 1){
@@ -36,8 +38,7 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 		$cats_string = 0;
 
 	if(isset($_POST['acode']) && $_POST['acode'] == 1){
-		$zahl = mt_rand(1, 9999999999999);
-		$acode = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$_POST['email']);
+		$acode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_POST['email']);
 		}
 	else
 		$acode = "0";
@@ -62,16 +63,16 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 			// Sprachvariablen einfügen
 			include_once($tempdir."lang_vars.php");
 			$lang['mail_acode'] = $settings['newslettertitel'].": ".$lang['mail_acode'];
-			$lang['mail_ecode'] = $settings['newslettertitel'].": ".$lang['mail_ecode'];
-			$lang['mail_dcode'] = $settings['newslettertitel'].": ".$lang['mail_dcode'];
 			
-			$mail_header = "From:".$settings['email_absender']."<".$settings['email_absender'].">\n";
 			$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 			$mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
-			$empf = preg_replace( "/[^a-z0-9 !?:;,.\/_\-=+@#$&\*\(\)]/im", "",$_POST['email']);
-	    	$empf = preg_replace( "/(content-type:|bcc:|cc:|to:|from:)/im", "",$empf);
 	
-			mail($empf,$lang['mail_acode'],$mail_inhalt,$mail_header);
+			$mail = new PHPMailer;
+			_01newsletter_configurePHPMailer($mail);
+			$mail->addAddress($_POST['email']);
+			$mail->Subject = $lang['mail_acode'];
+			$mail->Body    = $mail_inhalt;
+			$mail->send();
 			}
 			
 		echo "<p class=\"meldung_erfolg\"><b>Neue E-Mail-Adresse wurde erfolgreich hinzugef&uuml;gt!</b><br />
@@ -106,7 +107,7 @@ if($settings['usecats'] == 1 && $catmenge > 1){
 	
 	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['mailcats']." ORDER BY catname");
 	while($row = $list->fetch_assoc()){
-		$mailcats .= "<option value=\"".$row['id']."\">".stripslashes($row['catname'])."</option>\n";
+		$mailcats .= "<option value=\"".$row['id']."\">".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 		}
 ?>
 	<tr>
@@ -203,7 +204,7 @@ if($catmenge > 0){
 		
 		echo "    <tr id=\"id".$row['id']."\">
 		<td align=\"center\">".$row['id']."</td>
-		<td>".stripslashes($row['email'])."</td>
+		<td>".$row['email']."</td>
 		<td>".date("d.m.Y",$row['timestamp_reg'])."</td>
 		<td align=\"center\">".$aktiv."</td>
 		<td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Adresse l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delemailaddy&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>

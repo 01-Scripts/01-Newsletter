@@ -1,7 +1,7 @@
 h1. 01-Newsletter
 
 Mit dem "_01-Newsletter_":http://www.01-scripts.de/01newsletter.php haben Sie die Möglichkeit schnell, einfach und sicher für ihre Besucher oder Kunden einen eigenen Newsletter anzubieten. Dabei müssen Sie die Daten Ihrer Abonnenten nicht mehr aus der Hand geben - alle E-Mail-Adressen bleiben auf Ihrem eigenen Server gespeichert und können nicht von Dritten eingesehen werden.
-Sie können mit dem Script Newsletter sowohl im HTML- als auch im Text-Format versenden und können Kategorien und Dateianhänge verwenden.
+Sie können mit dem Script Newsletter sowohl im HTML- als auch im Text-Format per SMTP versenden und können Kategorien und Dateianhänge verwenden.
 "Weitere Informationen...":http://www.01-scripts.de/01newsletter.php
 
 h2. Download
