@@ -225,6 +225,8 @@ function _01newsletter_configurePHPMailer(&$mail){
         $mail->From = $settings['email_absender'];
         $mail->FromName = $settings['email_absender'];
     }
+
+    $mail->Encoding = "quoted-printable"; // Resolve Encoding issues with PHP >= 5.6 when sending from the Frontend
 }
 }
 ?>
