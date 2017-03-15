@@ -11,9 +11,7 @@
 Die Sprachvariablen in dieser Datei können von Ihnen verändert werden.
 */
 
-$lang['meldung_acode']		= "Diese E-Mail-Adresse wurde bereits registriert aber noch nicht aktiviert.<br />Ein Aktivierungscode zur Best&auml;tigung der E-Mail-Adresse wurde versendet. &Uuml;berpr&uuml;fen Sie auch ihren Spam-Ordner. Klicken Sie hier um einen neuen Aktivierungscode anzufordern:";
-$lang['resend_acode']		= "Aktivierungscode erneut anfordern";
-$lang['mail_acode']			= "Aktivierungscode zur Bestätigung der Newsletter-Anmeldung";
+$lang['mail_acode']			= "Bitte bestätigen Sie ihre Newsletter-Anmeldung";
 $lang['mailinhalt_acode']	= "Vielen Dank für ihre Anmeldung beim Newsletter!
 Damit Sie in Zukunft unseren Newsletter bekommen können ist es nötig, dass Sie ihre E-Mail-Adresse durch einen Klick auf den nachfolgenden Link bestätigen und aktivieren:
 
@@ -23,16 +21,15 @@ Falls Sie den Link nicht anklicken können, kopieren Sie Ihn bitte manuell in ihr
 
 Ihr Aktivierungscode lautet:
 #acode#";
-$lang['meldung_registriert']= "Sie haben sich soeben erfolgreich f&uuml;r den Newsletter angemeldet. Sie erhalten in K&uuml;rze eine E-Mail zur Best&auml;tigung ihrer E-Mail-Adresse. &Uuml;berpr&uuml;fen Sie auch ihren Spam-Ordner.<br /><br />Klicken Sie auf nachfolgenden Link falls Sie keine E-Mail bekommen haben:";
+$lang['meldung_registriert']= "Wenn diese E-Mail-Adresse zuvor noch nicht registriert war, haben sich soeben erfolgreich f&uuml;r den Newsletter angemeldet. Sie erhalten in K&uuml;rze eine E-Mail zur Best&auml;tigung ihrer E-Mail-Adresse.<br />&Uuml;berpr&uuml;fen Sie auch ihren Spam-Ordner.";
 $lang['neue_reg_betreff']	= "Neue Newsletter-Anmeldung auf Ihrer Seite";
 $lang['neue_reg_body']		= "Hallo,
 
-soeben hat sich ein neuer Benutzer für den Newsletter angemeldet.
+soeben hat sich ein neuer Benutzer für ihren Newsletter angemeldet.
 E-Mail-Adresse: ";
-$lang['meldung_newacode']	= "Ein neuer Aktivierungscode wurden soeben an ihre E-Mail-Adresse geschickt. &Uuml;berpr&uuml;fen Sie ggf. auch ihren Spam-Ordner.";
 $lang['meldung_falschemail']= "Fehler: Es wurde keine g&uuml;ltige E-Mail-Adresse eingegeben.";
 $lang['meldung_activated']	= "Ihre E-Mail-Adresse wurde erfolgreich best&auml;tigt und aktiviert.";
-$lang['meldung_wrongacode']	= "Fehler: Sie haben keinen korrekten Aktivierungscode eingegeben.";
+$lang['meldung_wrongacode']	= "Fehler: Sie haben keinen korrekten Best&auml;tigungscode eingegeben.";
 $lang['meldung_changes']	= "Ihre &Auml;nderungen wurden erfolgreich gespeichert.";
 $lang['meldung_deleted']	= "Ihre E-Mail-Adresse wurde erfolgreich aus dem Newslettersystem entfernt.";
 $lang['meldung_ecode_send']	= "Wenn die eingegebene E-Mail-Adresse existiert, wurde soeben ein pers&ouml;nlicher Link an diese Adresse verschickt.<br />Klicken Sie auf den Link in der Best&auml;tigungs E-Mail um ihr Newsletter-Abonnement zu bearbeiten.";

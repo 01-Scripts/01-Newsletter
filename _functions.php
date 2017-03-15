@@ -229,4 +229,25 @@ function _01newsletter_configurePHPMailer(&$mail){
     $mail->Encoding = "quoted-printable"; // Resolve Encoding issues with PHP >= 5.6 when sending from the Frontend
 }
 }
+
+
+// Alle Datenbank-Informationen zu einer übergebenen E-Mail-Adresse holen
+/*$email           Per Formular oder sonstwie übergebene E-Mail-Adresse
+
+RETURN: Array($db_values)
+  */
+if(!function_exists("_01newsletter_getEmailData")){
+function _01newsletter_getEmailData($email){
+global $mysqli,$mysql_tables;
+
+if(isset($email) && !empty($email) && check_mail($email)){
+    $list = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".$mysqli->escape_string($email)."' LIMIT 1");
+    if($list->num_rows == 1)
+        return $list->fetch_assoc();
+}
+
+return FALSE;
+
+}
+}
 ?>

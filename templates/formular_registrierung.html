@@ -2,7 +2,11 @@
 <h2><label for="input_emailaddy">Ihre E-Mail-Adresse:</label></h2>
 <input type="text" name="email" id="input_emailaddy" value="<?php echo $_REQUEST['email']; ?>" size="30" class="input_text" />
 
+<?php if (!isset($_REQUEST['email']) || (isset($_REQUEST['email']) && (empty($_REQUEST['email']) || !check_mail($_REQUEST['email'])) ) ): ?>
+<p class="highlight">Bitte geben Sie eine g&uuml;ltige E-Mail-Adresse ein</p>
+<?php else: ?>
 <br /><br />
+<?php endif; ?>
 
 <?php if ($settings['usecats'] == 1): ?>
 

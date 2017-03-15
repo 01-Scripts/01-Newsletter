@@ -14,10 +14,12 @@
   "Files4Update": [
     "templates/formular_account.html",
     "templates/formular_acode.html",
+    "templates/formular_registrierung.html",
     "templates/lang_vars.php",
     "_ajax.php",
     "_info.xml",
     "01newsletter.php",
+    "_functions.php",
     "_updates.php",
     "emails.php"
   ]
