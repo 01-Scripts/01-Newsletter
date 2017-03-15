@@ -1,6 +1,29 @@
 <?PHP
+// 1.3.2 --> 1.4.0
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
+
+	
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 1.3.2 nach 1.4.0</h2>
+
+<div class="meldung_erfolg">
+	Das Update von Version 1.3.2 auf Version 1.4.0 wurde erfolgreich durchgef&uuml;hrt.<br />
+	<br />
+	<br />
+
+	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<ul>
+
+		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
+	</ul>
+	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
+</div>
+<?PHP
+}
 // 1.3.1 --> 1.3.2
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 
 	// #745 - CSS-Code aus Datenbank/Settings in Datei auslagern
 	$mysqli->query("UPDATE ".$mysql_tables['settings']." SET 
@@ -46,7 +69,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 <?PHP
 }
 // 1.3.0 --> 1.3.1
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 
 	// Spaltenname 'timestamp' umbenennen in 'utimestamp' #694
 	$mysqli->query("ALTER TABLE ".$mysql_tables['archiv']." CHANGE `timestamp` `utimestamp` INT( 15 ) NOT NULL DEFAULT '0'");
@@ -65,7 +88,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 <?PHP
 }
 // 1.2.0 --> 1.3.0
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
 	
 	// Neue Einstellungen anlegen:
 	$sql_insert = "INSERT INTO `".$mysql_tables['settings']."` (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
