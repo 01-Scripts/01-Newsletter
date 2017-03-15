@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Sprachvariablen
-	#fv.132#
+	#fv.140#
 	
 Die Sprachvariablen in dieser Datei können von Ihnen verändert werden.
 */
@@ -35,19 +35,18 @@ $lang['meldung_activated']	= "Ihre E-Mail-Adresse wurde erfolgreich best&auml;ti
 $lang['meldung_wrongacode']	= "Fehler: Sie haben keinen korrekten Aktivierungscode eingegeben.";
 $lang['meldung_changes']	= "Ihre &Auml;nderungen wurden erfolgreich gespeichert.";
 $lang['meldung_deleted']	= "Ihre E-Mail-Adresse wurde erfolgreich aus dem Newslettersystem entfernt.";
-$lang['meldung_ecode_send']	= "Die von ihnen vorgenommenen &Auml;nderungen wurden gespeichert.<br />Zur Best&auml;tigung der &Auml;nderungen wurde soeben ein Best&auml;tigungs-Link per E-Mail versendet.";
-$lang['mail_ecode']			= "Bitte bestätigen Sie die Änderungen an ihrem Newsletter-Abonnement";
+$lang['meldung_ecode_send']	= "Wenn die eingegebene E-Mail-Adresse existiert, wurde soeben ein pers&ouml;nlicher Link an diese Adresse verschickt.<br />Klicken Sie auf den Link in der Best&auml;tigungs E-Mail um ihr Newsletter-Abonnement zu bearbeiten.";
+$lang['mail_ecode']			= "Newsletter-Abonnement bearbeiten";
 $lang['mailinhalt_ecode']	= "Guten Tag,
 
-Sie haben soeben Änderungen an ihrem Newsletter-Abonnement vorgenommen.
-Bitte bestätigen Sie, dass Sie diese Änderungen wirklich übernehmen möchten:
+um Änderungen an ihrem Newsletter-Abonnement vorzunehmen klicken Sie bitte auf folgenden Link:
 #ecodelink#
 Falls Sie den Link nicht anklicken können, kopieren Sie ihn bitte manuell in Ihren Browser und rufen ihn auf.
 
 Ihr Bestätigungscode lautet:
 #ecode#
 
-Sollten Sie keine Änderungen an ihrem Newsletter-Abonnement vorgenommen haben, können Sie diese E-Mail als hinfällig betrachten und löschen.
+Sollten Sie keine Änderungen an ihrem Newsletter-Abonnement vornehmen wollen, können Sie diese E-Mail als hinfällig betrachten und löschen.
 Es werden dann keine Änderungen durchgeführt.";
 $lang['meldung_dcode_send']	= "Zur Best&auml;tigung der L&ouml;schung wurde soeben ein Best&auml;tigungs-Link per E-Mail versendet.";
 $lang['mail_dcode']			= "Bitte bestätigen Sie die Löschung ihres Newsletter-Abonnements";

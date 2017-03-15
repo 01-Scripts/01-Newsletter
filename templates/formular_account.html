@@ -6,7 +6,7 @@
 
 <p>
 <label for="input_email">Ihre registrierte E-Mail-Adresse lautet:</label><br />
-<input type="text" name="email" id="input_email" size="38" value="<?php echo $_REQUEST['email']; ?>" class="input_text" readonly="readonly" />
+<input type="text" name="email" id="input_email" size="38" value="<?php echo $row['email']; ?>" class="input_text" readonly="readonly" />
 </p>
 
 <p>
@@ -24,7 +24,8 @@ mit ihrer neuen E-Mail-Adresse erneut an.
 
 <br /><br />
 
-<input type="hidden" name="action" value="changecats" />
+<input type="hidden" name="action" value="update_account" />
+<input type="hidden" name="ecode" value="<?PHP echo $row['editcode']; ?>" />
 <input type="submit" name="send" value="Go" class="input_button" />
 <?php endif; ?>
 

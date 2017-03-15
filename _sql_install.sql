@@ -1,10 +1,10 @@
--- 01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
+-- 01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 -- Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 -- Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des 01-Newsletterscripts
--- #fv.132#
+-- #fv.140#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
 -- --------------------------------------------------------
@@ -94,7 +94,6 @@ CREATE TABLE `01modulprefix_emailadressen` (
   `timestamp_reg` int(15) NOT NULL DEFAULT '0',
   `email` varchar(50),
   `catids` varchar(100) NOT NULL DEFAULT '0',
-  `newcatids` varchar(100) NOT NULL DEFAULT '0' COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 

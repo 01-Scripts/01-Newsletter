@@ -6,7 +6,7 @@
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.132#
+	#fv.140#
 */
 
 // Security: Only allow calls from _ajaxloader.php!
@@ -117,7 +117,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
 
 	$mysqli->query("DELETE FROM ".$mysql_tables['mailcats']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
 
-	$catidlist = $mysqli->query("SELECT id,catids,newcatids FROM ".$mysql_tables['emailadds']."");
+	$catidlist = $mysqli->query("SELECT id,catids FROM ".$mysql_tables['emailadds']."");
 	while($row = $catidlist->fetch_assoc()){
 		$testarray = explode(",",substr($row['catids'],1,strlen($row['catids'])-2));
 		if(is_array($testarray) && count($testarray) > 1){
@@ -130,17 +130,6 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
 			$mysqli->query("DELETE FROM ".$mysql_tables['emailadds']." WHERE id = '".$mysqli->escape_string($row['id'])."' LIMIT 1");
 			}
 		
-		if($row['newcatids'] != "0"){
-			$testarray2 = explode(",",substr($row['newcatids'],1,strlen($row['newcatids'])-2));
-			if(is_array($testarray2) && count($testarray2) > 1){
-				unset($testarray2[array_search($_REQUEST['id'],$testarray2)]);
-	
-				$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET newcatids=',".implode(",",$testarray2).",' WHERE id='".$mysqli->escape_string($row['id'])."'");
-				}
-			elseif($row['newcatids'] == ",".$_REQUEST['id'].","){
-				$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET newcatids='0', editcode='0' WHERE id='".$mysqli->escape_string($row['id'])."'");
-				}
-			}
 		}
 	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}

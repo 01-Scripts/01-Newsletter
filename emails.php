@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
-	#fv.132#
+	#fv.140#
 */
 
 include_once("system/includes/PHPMailerAutoload.php");
@@ -47,15 +47,14 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".$mysqli->escape_string($_POST['email'])."' LIMIT 1");
 	if($list->num_rows == 0){
 	
-		$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids,newcatids)
+		$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids)
 				   		VALUES(
 						   '".$acode."',
 						   '0',
 						   '0',
 						   '".time()."',
 						   '".$mysqli->escape_string($_POST['email'])."',
-						   '".$mysqli->escape_string($cats_string)."',
-						   '0'
+						   '".$mysqli->escape_string($cats_string)."'
 						   )";
 		$mysqli->query($sql_insert) OR die($mysqli->error);
 		

@@ -2,6 +2,8 @@
 // 1.3.2 --> 1.4.0
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 
+	// #742 - Zuerst Editcode versenden um Abonnement-Daten bearbeiten zu können.
+	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." DROP `newcatids`");
 	
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");

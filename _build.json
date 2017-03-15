@@ -12,7 +12,13 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
+    "templates/formular_account.html",
+    "templates/formular_acode.html",
+    "templates/lang_vars.php",
+    "_ajax.php",
     "_info.xml",
-    "_updates.php"
+    "01newsletter.php",
+    "_updates.php",
+    "emails.php"
   ]
 }
