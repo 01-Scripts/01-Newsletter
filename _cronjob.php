@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Datei für den Versand aller Newsletter. Kann auch über einen Cronjob angesprochen werden
-	#fv.132#
+	#fv.140#
 */
 
 // Variablen definieren
@@ -96,17 +96,23 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 	
 		// Mails verschicken
 		$errors = array();
-		$list = $mysqli->query("SELECT id,email FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".$mysqli->escape_string($limit)."");
+		$list = $mysqli->query("SELECT id,email,name FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".$mysqli->escape_string($limit)."");
 		while($row = $list->fetch_assoc()){
+			if($use_name && !empty($row['name']))
+				$t_mailinhalt = str_replace($name_replace," ".$row['name'],$mailinhalt);
+		   	else
+		   		$t_mailinhalt = str_replace($name_replace,"",$mailinhalt);
+
+
 			if($settings['use_html'])
 				$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".$lang['austragen_html']."</a>";
 			else
 				$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
-	
+
 			if($settings['use_html'])
-				$mail->msgHTML($mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']), dirname(__FILE__));
+				$mail->msgHTML($t_mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']), dirname(__FILE__));
 			else
-				$mail->Body = $mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']);
+				$mail->Body = $t_mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']);
 
 			$mail->addAddress($row['email']);
 			if(!$mail->send())

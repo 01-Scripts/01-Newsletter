@@ -6,7 +6,7 @@
 
 	Modul:		01newsletter
 	Dateiinfo: 	Neuen Newsletter verfassen (Formular) und absenden
-	#fv.132#
+	#fv.140#
 */
 
 // Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
@@ -29,7 +29,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	if(isset($_POST['senden']) && !empty($_POST['senden'])){
 		$save_cat = "";
 		if($_POST['empf'] == "all")
-			$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0'";
+			$query = "SELECT email,name FROM ".$mysql_tables['emailadds']." WHERE acode = '0'";
 		elseif($_POST['empf'] == "cats" && $settings['usecats'] == 1){
 			// Vorhandene Kategorien in Array einlesen
 			$chosencats = array();
@@ -44,7 +44,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				$save_cat .= $chosencats[$cat].", ";
 				}
 	
-			$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$where.")";
+			$query = "SELECT email,name FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$where.")";
 			}
 		elseif($_POST['empf'] == "test"){
 			if(!check_mail(trim($_POST['testempf'])))
@@ -130,7 +130,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				if(check_mail(trim($email))){
 					if($x > 0) $values .= ",\n";
 
-					$values .= "('".$timestamp."','".$var."','".$mysqli->escape_string(trim($email))."')";
+					$values .= "('".$timestamp."','".$var."','".$mysqli->escape_string(trim($email))."', '')";
 
 					$x++;
 				}
@@ -141,14 +141,14 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 			while($row = $list->fetch_assoc()){
 				if($x > 0) $values .= ",\n";
 				
-				$values .= "('".$timestamp."','".$var."','".$row['email']."')";
+				$values .= "('".$timestamp."','".$var."','".$row['email']."','".$row['name']."')";
 				
 				$x++;
 				}
 		}
 		
 		if($values != "")
-			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
+			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email, name) VALUES ".$values.";") OR die($mysqli->error);
 		
 		// Newsletter sofort via IFrame verschicken
 		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !mysql_error()){
@@ -292,7 +292,13 @@ if($evmenge >= 1){
     </tr>
     
 	<tr>
-		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea></td>
+		<td colspan="2">
+			<textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea>
+<?php if ($use_name == TRUE): ?>
+			<br />
+			<span class="small">Fügen Sie <b><?PHP echo $name_replace; ?></b> in den Newsletter ein, um es beim Versand durch den Namen des Empfängers ersetzen zu lassen!</span>
+<?php endif; ?>
+		</td>
 	</tr>
 <?php if($settings['attachments'] == 1){ ?>	
     <tr class="trb">

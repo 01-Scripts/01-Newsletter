@@ -42,18 +42,23 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 		}
 	else
 		$acode = "0";
+
+	$name = NULL;
+	if(isset($_POST['name']) && !empty($_POST['name']))
+		$name = CleanStr($_REQUEST['name']);
 		
 	// E-Mail-Adresse bereits vorhanden?
 	$list = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE email = '".$mysqli->escape_string($_POST['email'])."' LIMIT 1");
 	if($list->num_rows == 0){
 	
-		$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids)
+		$sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,name,catids)
 				   		VALUES(
 						   '".$acode."',
 						   '0',
 						   '0',
 						   '".time()."',
 						   '".$mysqli->escape_string($_POST['email'])."',
+						   '".$mysqli->escape_string($name)."',
 						   '".$mysqli->escape_string($cats_string)."'
 						   )";
 		$mysqli->query($sql_insert) OR die($mysqli->error);
@@ -65,6 +70,7 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 			
 			$mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 			$mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
+			$mail_inhalt = str_replace($name_replace," ".$name,$mail_inhalt);
 	
 			$mail = new PHPMailer;
 			_01newsletter_configurePHPMailer($mail);
@@ -97,8 +103,14 @@ if(isset($_GET['action']) && $_GET['action'] == "addemail"){
 
 	<tr>
         <td width="30%"><b>E-Mail-Adresse:</b></td>
-        <td><input type="text" name="email" value="" size="50" class="input_text" /></td>
+        <td><input type="text" name="email" value="" size="50" class="input_text" maxlength="<?PHP echo $email_max_len; ?>" /></td>
     </tr>
+<?php if ($use_name == TRUE): ?>
+	<tr>
+        <td><b>Name:</b></td>
+        <td><input type="text" name="name" value="" size="50" class="input_text" maxlength="<?PHP echo $name_max_len; ?>" /></td>
+    </tr>
+<?php endif; ?>
 <?php 
 if($settings['usecats'] == 1 && $catmenge > 1){
 
@@ -161,13 +173,15 @@ if($catmenge > 0){
 	if(isset($_GET['sort']) && $_GET['sort'] == "desc") $sortorder = "DESC";
 	else{ $sortorder = "ASC"; $_GET['sort'] = "ASC"; }
 	
-	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " WHERE email LIKE '%".$mysqli->escape_string($_GET['search'])."%'";
-	elseif(isset($_GET['catid']) && !empty($_GET['catid']) && is_numeric($_GET['catid'])) $where = " WHERE catids LIKE '%,".$mysqli->escape_string($_GET['catid']).",%' ";
+	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " WHERE email LIKE '%".CleanStr($_GET['search'])."%' OR name LIKE '%".CleanStr($_GET['search'])."%'";
+	elseif(isset($_GET['catid']) && !empty($_GET['catid']) && is_numeric($_GET['catid'])) $where = " WHERE catids LIKE '%,".CleanStr($_GET['catid']).",%' ";
 
 	if(!isset($_GET['orderby'])) $_GET['orderby'] = "";
 	switch($_GET['orderby']){
 	  case "timestamp":
 	    $orderby = "timestamp_reg";
+	  case "name":
+	    $orderby = "name";
 	  break;
 	  default:
 	    $orderby = "email";
@@ -185,6 +199,10 @@ if($catmenge > 0){
         <td><b>E-Mail-Adresse</b>
 			<a href="<?PHP echo $filename; ?>&amp;sort=asc"><img src="images/icons/sort_asc.gif" alt="Icon: Pfeil nach oben" title="Aufsteigend sortieren" /></a>
 			<a href="<?PHP echo $filename; ?>&amp;sort=desc"><img src="images/icons/sort_desc.gif" alt="Icon: Pfeil nach unten" title="Absteigend sortieren (DESC)" /></a>
+		</td>
+        <td><b>Name</b>
+			<a href="<?PHP echo $filename; ?>&amp;sort=asc&amp;orderby=name"><img src="images/icons/sort_asc.gif" alt="Icon: Pfeil nach oben" title="Aufsteigend sortieren" /></a>
+			<a href="<?PHP echo $filename; ?>&amp;sort=desc&amp;orderby=name"><img src="images/icons/sort_desc.gif" alt="Icon: Pfeil nach unten" title="Absteigend sortieren (DESC)" /></a>
 		</td>
 		<td><b>Registriert am</b>
 			<a href="<?PHP echo $filename; ?>&amp;sort=asc&amp;orderby=timestamp"><img src="images/icons/sort_asc.gif" alt="Icon: Pfeil nach oben" title="Aufsteigend sortieren" /></a>
@@ -204,6 +222,7 @@ if($catmenge > 0){
 		echo "    <tr id=\"id".$row['id']."\">
 		<td align=\"center\">".$row['id']."</td>
 		<td>".$row['email']."</td>
+		<td>".htmlentities($row['name'],$htmlent_flags,$htmlent_encoding_acp)."</td>
 		<td>".date("d.m.Y",$row['timestamp_reg'])."</td>
 		<td align=\"center\">".$aktiv."</td>
 		<td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Adresse l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delemailaddy&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>

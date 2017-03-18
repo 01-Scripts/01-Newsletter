@@ -4,6 +4,10 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 
 	// #742 - Zuerst Editcode versenden um Abonnement-Daten bearbeiten zu können.
 	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." DROP `newcatids`");
+
+	// #192 - Möglichkeit einen Namen zu erfassen (optional)
+	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD  `name` VARCHAR( 50 ) NULL AFTER  `email`");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['temp_table']." ADD  `name` VARCHAR( 50 ) NULL AFTER  `email`");
 	
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
@@ -17,7 +21,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 
 	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
 	<ul>
-
+		<li><b>Persönliche Ansprache ihrer Abonnenten mit deren Namen möglich</b></li>
 		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>

@@ -9,6 +9,13 @@
 <input type="text" name="email" id="input_email" size="38" value="<?php echo $row['email']; ?>" class="input_text" readonly="readonly" />
 </p>
 
+<?php if ($use_name == TRUE): ?>
+<p>
+<label for="input_name">Ihre Name:</label><br />
+<input type="text" name="name" id="input_name" size="38" value="<?php echo $name; ?>" class="input_text" maxlength="<?PHP echo $name_max_len; ?>" />
+</p>
+<?php endif; ?>
+
 <p>
 Die E-Mail-Adresse kann nicht ge&auml;ndert werden.
 Wenn Sie ihre E-Mail-Adresse &auml;ndern m&ouml;chten, bestellen Sie den Newsletter bitte ab und melden Sie sich

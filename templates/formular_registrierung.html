@@ -1,12 +1,19 @@
 <form action="<?php echo $filename; ?>" method="post">
 <h2><label for="input_emailaddy">Ihre E-Mail-Adresse:</label></h2>
-<input type="text" name="email" id="input_emailaddy" value="<?php echo $_REQUEST['email']; ?>" size="30" class="input_text" />
+<input type="text" name="email" id="input_emailaddy" value="<?php echo $_REQUEST['email']; ?>" size="30" class="input_text" maxlength="<?PHP echo $email_max_len; ?>" />
 
 <?php if (!isset($_REQUEST['email']) || (isset($_REQUEST['email']) && (empty($_REQUEST['email']) || !check_mail($_REQUEST['email'])) ) ): ?>
 <p class="highlight">Bitte geben Sie eine g&uuml;ltige E-Mail-Adresse ein</p>
-<?php else: ?>
-<br /><br />
 <?php endif; ?>
+
+<?php if ($use_name == TRUE): ?>
+<br /><br />
+
+<h2><label for="input_name">Ihr Name:</label></h2>
+<input type="text" name="name" id="input_name" value="<?php echo $_REQUEST['name']; ?>" size="30" class="input_text" maxlength="<?PHP echo $name_max_len; ?>" />
+<?php endif; ?>
+
+<br /><br />
 
 <?php if ($settings['usecats'] == 1): ?>
 

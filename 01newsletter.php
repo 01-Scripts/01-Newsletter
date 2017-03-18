@@ -24,6 +24,7 @@ include($subfolder."01module/".$modul."01newsletter.php");
 $frontp = 1;
 $flag_acp = FALSE;
 if(!isset($flag_nocss)) $flag_nocss = FALSE;
+if(!isset($flag_utf8))  $flag_utf8	= FALSE;
 if(!isset($flag_second)) $flag_second = FALSE;
 
 if(isset($subfolder) && !empty($subfolder)){
@@ -85,7 +86,7 @@ $row = _01newsletter_getEmailData($_REQUEST['email']);
 
 // Neuregistrierung oder Fake-Neuregistrierung
 if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
-	isset($_REQUEST['email']) && !empty($_REQUEST['email']) && check_mail($_REQUEST['email']) &&
+	isset($_REQUEST['email']) && !empty($_REQUEST['email']) && strlen($_REQUEST['email']) <= $email_max_len && check_mail($_REQUEST['email']) &&
    ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']) ||
     isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] == 1)){
 	// E-Mail-Adresse wurde bereits registriert aber noch nicht aktiviert --> Eintrag löschen und neu registrieren
@@ -106,20 +107,31 @@ if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
 	        $cats_string = 0;
 	        
 	    $acode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
+
+	    $name = NULL;
+	    if($flag_utf8 && $use_name && isset($_REQUEST['name']) && !empty($_REQUEST['name']))
+			$name = CleanStr(utf8_decode($_REQUEST['name']));
+		elseif($use_name && isset($_REQUEST['name']) && !empty($_REQUEST['name']))
+			$name = CleanStr($_REQUEST['name']);
 	    
-	    $sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,catids)
+	    $sql_insert = "INSERT INTO ".$mysql_tables['emailadds']." (acode,editcode,delcode,timestamp_reg,email,name,catids)
 	            VALUES(
 	               '".$acode."',
 	               '0',
 	               '0',
 	               '".time()."',
 	               '".$mysqli->escape_string($_REQUEST['email'])."',
+	               '".$mysqli->escape_string($name)."',
 	               '".$mysqli->escape_string($cats_string)."'
 	               )";
 	    $mysqli->query($sql_insert) OR die($mysqli->error);
 	    
 	    $mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 	    $mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
+	    if($use_name)
+	    	$mail_inhalt = str_replace($name_replace," ".$name,$mail_inhalt);
+	   	else
+	   		$mail_inhalt = str_replace($name_replace,"",$mail_inhalt);
 
 	    $mail = new PHPMailer;
 	    _01newsletter_configurePHPMailer($mail);
@@ -159,7 +171,13 @@ elseif(isset($_REQUEST['action']) && $_REQUEST['action'] == "update_account" && 
 	else
 		$cats_string = 0;
 
-	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET catids = '".$mysqli->escape_string($cats_string)."', editcode='' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
+    $name = NULL;
+    if($flag_utf8 && $use_name && isset($_REQUEST['name']) && !empty($_REQUEST['name']))
+		$name = CleanStr(utf8_decode($_REQUEST['name']));
+	elseif($use_name && isset($_REQUEST['name']) && !empty($_REQUEST['name']))
+		$name = CleanStr($_REQUEST['name']);
+
+	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET catids = '".$mysqli->escape_string($cats_string)."', editcode='', name='".$mysqli->escape_string($name)."' WHERE email='".$mysqli->escape_string($row['email'])."' LIMIT 1");
 	
 	$meldung = $lang['meldung_changes'];
 	include($tempdir."meldungen.html");
@@ -275,6 +293,10 @@ elseif(isset($_REQUEST['ecode']) && !empty($_REQUEST['ecode']) && strlen($_REQUE
 					$mailcats .= "<option value=\"".$rowcats['id']."\"".$sel2.">".htmlentities($rowcats['catname'],$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 					}
 			}
+
+			$name = "";
+		    if(isset($row['name']) && $row['name'] != NULL)
+				$name = htmlentities($row['name'],$htmlent_flags,$htmlent_encoding_pub);
 			
 			$dellink = addParameter2Link($filename,"action=delabo");
 			$dellink = addParameter2Link($dellink,"email=".$row['email']);

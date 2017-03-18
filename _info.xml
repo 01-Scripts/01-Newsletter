@@ -17,8 +17,13 @@ ausw&#228;hlen und sp&#228;ter seine Anmeldedaten bearbeiten und sich wieder vom
 $subfolder		= "01scripts/"; // Unterverzeichnis<br />
 $modul			= "01newsletter"; // Modul- und Verzeichnisname (ID-Name), ggf. &#228;ndern<br />
 <br />
+// ->>An dieser Stelle k&#246;nnen weitere, optionale Parameter eingef&#252;gt werden<<-<br />
+<br />
 include($subfolder."01module/".$modul."/01newsletter.php");<br />
 ?&gt;
+<br />
+Optionale Parameter sind:<br />
+$flag_utf8      = FALSE; // Setzen Sie $flag_utf8 = TRUE; falls Sie Ihre Seite UTF-8-kodiert ausgeben<br />
 </code></p>
 <p class="meldung_hinweis"><b class="red">Der Pfad zu der Datei, in die Sie obigen PHP-Code eingeben, muss in den Einstellungen
 im ACP eingetragen werden!</b></p>

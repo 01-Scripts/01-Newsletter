@@ -1,13 +1,13 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Grundeinstellungen, Variablendefinitionen etc.
 				Wird automatisch am Anfang jeden Modulaufrufs automatisch includiert.
-	#fv.132#
+	#fv.140#
 */
 
 // Modul-Spezifische MySQL-Tabellen
@@ -33,6 +33,10 @@ $tempdir	= "templates/";			// Template-Verzeichnis
 $intervall  = 10;                   // Wie viele Mails sollen pro Schritt versendet werden?
 $intervall_cron = 200;				// Wie viele Mails sollen pro Cronjob-Aufruf versendet werden?
 $deletimer	= 30;					// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
+$use_name   = TRUE;                 // Namensfeld für Newsletter verwenden?
+$name_replace = "{#name#}";         // Wird beim Versand ggf. durch den Namen des Empfängers ersetzt
+$email_max_len = 50;                // Maximale Anzahl an Zeichen für E-Mail-Adressen
+$name_max_len = 50;                 // Maximale Anzahl an Zeichen für den Namen
 $SMTPSecurity = "tls";              // 'tls' or 'ssl'
 $SMTPAuth = TRUE;                   // SMTP Authentication verwenden bei Versand per SMTP?
 

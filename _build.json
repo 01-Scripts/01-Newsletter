@@ -16,11 +16,14 @@
     "templates/formular_acode.html",
     "templates/formular_registrierung.html",
     "templates/lang_vars.php",
-    "_ajax.php",
-    "_info.xml",
     "01newsletter.php",
+    "_ajax.php",
+    "_cronjob.php",
+    "_headinclude.php",
+    "_info.xml",
     "_functions.php",
     "_updates.php",
-    "emails.php"
+    "emails.php",
+    "newsletter.php"
   ]
 }
