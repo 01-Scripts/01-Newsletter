@@ -3,7 +3,8 @@
   "PrevVersion": "1.3.2",
   "Files2Minimize": [
     "templates/style.css",
-    "_javascript.js"
+    "_javascript.js",
+    "modul.css"
   ],
   "Files2Delete": [
     ".gitattributes",
@@ -24,6 +25,8 @@
     "_functions.php",
     "_updates.php",
     "emails.php",
+    "import.php",
+    "modul.css",
     "newsletter.php"
   ]
 }

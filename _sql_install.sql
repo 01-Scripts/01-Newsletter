@@ -89,12 +89,14 @@ UPDATE `01prefix_user` SET `#modul_idname#_vorlagen` = '1' WHERE `01prefix_user`
 CREATE TABLE `01modulprefix_emailadressen` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `acode` varchar(32) NOT NULL DEFAULT '0',
-  `editcode` varchar(32) NOT NULL DEFAULT '0' COMMENT 'Code zur Bestätigung von Änderungen',
+  `editcode` varchar(32) NOT NULL DEFAULT '0',
   `delcode` varchar(32) NOT NULL DEFAULT '0',
   `timestamp_reg` int(15) NOT NULL DEFAULT '0',
   `email` varchar(50),
+  `name` varchar(50),
   `catids` varchar(100) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -146,6 +148,7 @@ CREATE TABLE IF NOT EXISTS `01modulprefix_send_newsletter_temp` (
   `utimestamp` int(15) NOT NULL DEFAULT '0',
   `message_id` int(10) NOT NULL,
   `email` varchar(50) NOT NULL,
+  `name` varchar(50),
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 

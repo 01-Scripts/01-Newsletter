@@ -120,7 +120,7 @@ if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
 	               '0',
 	               '0',
 	               '".time()."',
-	               '".$mysqli->escape_string($_REQUEST['email'])."',
+	               '".$mysqli->escape_string(strtolower($_REQUEST['email']))."',
 	               '".$mysqli->escape_string($name)."',
 	               '".$mysqli->escape_string($cats_string)."'
 	               )";

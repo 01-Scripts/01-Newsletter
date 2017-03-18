@@ -17,13 +17,14 @@ $mysql_tables['mailcats']	= "01_".$instnr."_".$module[$modul]['nr']."_newsletter
 $mysql_tables['temp_table']	= "01_".$instnr."_".$module[$modul]['nr']."_send_newsletter_temp";
 
 $addJSFile 	= "_javascript.js";			// Zusätzliche modulspezifische JS-Datei (im Modulverzeichnis!)
-$addCSSFile = "";						// Zusätzliche modulspezifische CSS-Datei (im Modulverzeichnis!)
+$addCSSFile = "modul.css";				// Zusätzliche modulspezifische CSS-Datei (im Modulverzeichnis!)
 $mootools_use = array("moo_core","moo_more","moo_calendar","moo_slideh","moo_request");
 
 // Welche PHP-Seiten sollen abhängig von $_REQUEST['loadpage'] includiert werden?
 $loadfile['index'] 		= "index.php";			// Standardseite, falls loadpage invalid ist
 $loadfile['newsletter']	= "newsletter.php";
 $loadfile['emails']		= "emails.php";
+$loadfile['csvimport']  = "import.php";
 $loadfile['cats']		= "category.php";
 
 // Weitere Pfadangaben

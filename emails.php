@@ -57,7 +57,7 @@ if(isset($_POST['action']) && $_POST['action'] == "doadd" &&
 						   '0',
 						   '0',
 						   '".time()."',
-						   '".$mysqli->escape_string($_POST['email'])."',
+						   '".$mysqli->escape_string(strtolower($_POST['email']))."',
 						   '".$mysqli->escape_string($name)."',
 						   '".$mysqli->escape_string($cats_string)."'
 						   )";
@@ -96,8 +96,9 @@ elseif(isset($_POST['action']) && $_POST['action'] == "doadd")
 	<a href=\"javascript:history.back();\">&laquo; Bitte gehen Sie zur&uuml;ck</a></p>";
 
 if(isset($_GET['action']) && $_GET['action'] == "addemail"){
-	echo "<h1>E-Mail-Adresse hinzuf&uuml;gen</h1>";
 ?>
+<h1>E-Mail-Adresse hinzuf&uuml;gen</h1>
+
 <form action="<?PHP echo $filename; ?>" method="post" name="post">
 <table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
 
@@ -142,14 +143,15 @@ if($settings['usecats'] == 1 && $catmenge > 1){
 	}
 else{
 ?>
-<h1>Eingetragene E-Mail-Adressen</h1>
+<h1>E-Mail-Adressen</h1>
 
 <p>
-<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=emails&amp;action=addemail" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neue E-Mail-Adresse hinzuf&uuml;gen" style="border:0; margin-right:10px;" />E-Mail-Adresse hinzuf&uuml;gen</a>
+	<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=emails&amp;action=addemail" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neue E-Mail-Adresse hinzuf&uuml;gen" style="border:0; margin-right:10px;" />E-Mail-Adresse hinzuf&uuml;gen</a>
+	<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=csvimport&amp;action=import" class="actionbutton"><img src="images/icons/icon_upload.gif" alt="Symbol: Hochladen" title="E-Mail-Adresse importieren" style="border:0; margin-right:10px; width: 16px; height: 16px;" />E-Mail-Adresse importieren</a>
 </p>
 
 <form action="<?PHP echo $filename; ?>" method="get" style="float:left; margin-right:20px;">
-	<input type="text" name="search" value="<?php echo (isset($_GET['search']) && !empty($_GET['search']))?$_GET['search']:"E-Mail-Adressen suchen";  ?>" size="30" onfocus="clearField(this);" onblur="checkField(this);" class="input_search" /> <input type="submit" value="Suchen &raquo;" class="input" />
+	<input type="text" name="search" value="<?php echo (isset($_GET['search']) && !empty($_GET['search']))?$_GET['search']:"Suche...";  ?>" size="30" onfocus="clearField(this);" onblur="checkField(this);" class="input_search" /> <input type="submit" value="Suchen &raquo;" class="input" />
 	<input type="hidden" name="modul" value="<?PHP echo $modul; ?>" />
 	<input type="hidden" name="loadpage" value="emails" />
 </form>

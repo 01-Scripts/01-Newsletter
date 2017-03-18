@@ -8,6 +8,11 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 	// #192 - Möglichkeit einen Namen zu erfassen (optional)
 	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD  `name` VARCHAR( 50 ) NULL AFTER  `email`");
 	$mysqli->query("ALTER TABLE ".$mysql_tables['temp_table']." ADD  `name` VARCHAR( 50 ) NULL AFTER  `email`");
+
+	// #279 - CSV Import von E-Mail-Adressen
+	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET email=LOWER(email);");
+	$mysqli->query("DELETE t1 FROM ".$mysql_tables['emailadds']." t1, ".$mysql_tables['emailadds']." t2 WHERE t1.id < t2.id AND t1.email = t2.email;"); // Remove duplicate entries - keep newest one
+	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD UNIQUE (email);");
 	
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
@@ -19,9 +24,10 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 	<br />
 	<br />
 
-	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<b>Mit dem Update wurden unter anderem folgende Funktionen hinzugef&uuml;gt oder verbessert:</b>
 	<ul>
-		<li><b>Persönliche Ansprache ihrer Abonnenten mit deren Namen möglich</b></li>
+		<li><b>CSV Import von E-Mail-Adressen</b></li>
+		<li><b>Pers&ouml;nliche Ansprache ihrer Abonnenten mit deren Namen m&ouml;glich</b></li>
 		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
