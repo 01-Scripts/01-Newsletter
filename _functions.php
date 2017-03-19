@@ -6,7 +6,7 @@
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.132#
+	#fv.140#
 */
 
 // Globale Funktionen - nötig!
@@ -40,6 +40,7 @@ $modul = $mysqli->escape_string($modul);
 $mysqli->query("DROP TABLE `".$mysql_tables['archiv']."`");
 $mysqli->query("DROP TABLE `".$mysql_tables['emailadds']."`");
 $mysqli->query("DROP TABLE `".$mysql_tables['mailcats']."`");
+$mysqli->query("DROP TABLE `".$mysql_tables['temp_table']."`");
 
 // Rechte entfernen
 $mysqli->query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_vorlagen`");
