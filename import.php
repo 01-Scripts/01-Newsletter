@@ -70,7 +70,7 @@ if(isset($_POST['action']) && $_POST['action'] == "doimport" &&
                 $mail->clearAddresses();
             }
 
-            if($row > 0) $values .= ",\n";
+            if($x > 0) $values .= ",\n";
 
             $values .= "('".$acode."','0','0','".time()."','".$mysqli->escape_string(strtolower($_POST['row_'.$row.'_email']))."','".$name."','".$mysqli->escape_string($cats_string)."')";
             
