@@ -112,7 +112,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
     $c = 0;
     }
 // Kategorie löschen
-elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" && $userdata['settings'] == 1 &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 
 	$mysqli->query("DELETE FROM ".$mysql_tables['mailcats']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
@@ -134,7 +134,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
 	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
 // E-Mail-Adresse löschen
-elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailaddy" &&
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailaddy" && $userdata['show_emails'] == 1 &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
    	$list = $mysqli->query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
 	$row_email = $list->fetch_assoc();
@@ -146,7 +146,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailadd
    	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
 // Archiv-Eintrag löschen
-elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delarchiv" &&
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delarchiv" && $userdata[$modul] == 1 &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
    	$mysqli->query("DELETE FROM ".$mysql_tables['archiv']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
 
