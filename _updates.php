@@ -27,6 +27,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 	<b>Mit dem Update wurden unter anderem folgende Funktionen hinzugef&uuml;gt oder verbessert:</b>
 	<ul>
 		<li><b>CSV Import von E-Mail-Adressen</b></li>
+		<li><b>CSV Export von E-Mail-Adressen</b></li>
 		<li><b>Pers&ouml;nliche Ansprache ihrer Abonnenten mit deren Namen m&ouml;glich</b></li>
 		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>

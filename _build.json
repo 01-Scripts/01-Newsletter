@@ -13,6 +13,7 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
+    "images/icon_export.png",
     "templates/formular_account.html",
     "templates/formular_acode.html",
     "templates/formular_registrierung.html",
