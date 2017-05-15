@@ -1,6 +1,6 @@
 {
-  "Version": "1.3.1",
-  "PrevVersion": "1.3.0",
+  "Version": "1.3.3",
+  "PrevVersion": "1.3.1",
   "Files2Minimize": [
     "_javascript.js"
   ],
@@ -11,19 +11,11 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
-    "templates/",
-    "01newsletter.php",
+    "images/icon_export.png",
     "_ajax.php",
-    "_cronjob.php",
     "_functions.php",
-    "_headinclude.php",
     "_info.xml",
-    "_javascript.js",
-    "_popup.php",
     "_updates.php",
-    "category.php",
-    "emails.php",
-    "index.php",
-    "newsletter.php"
+    "emails.php"
   ]
 }

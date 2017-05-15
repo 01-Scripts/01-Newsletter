@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Newsletter - Copyright 2009-2013 by Michael Lorer - 01-Scripts.de
+	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
-	#fv.131#
+	#fv.133#
 */
 
 // Berechtigungsabfragen
@@ -89,9 +89,41 @@ elseif(isset($_POST['action']) && $_POST['action'] == "doadd")
 	<br />
 	<a href=\"javascript:history.back();\">&laquo; Bitte gehen Sie zur&uuml;ck</a></p>";
 
-if(isset($_GET['action']) && $_GET['action'] == "addemail"){
-	echo "<h1>E-Mail-Adresse hinzuf&uuml;gen</h1>";
+if(isset($_GET['action']) && $_GET['action'] == "export"){
+	list($emailmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['emailadds']." WHERE acode = '0'")->fetch_array(MYSQLI_NUM);
 ?>
+<h1>E-Mail-Adresse exportieren</h1>
+
+<p class="meldung_hinweis">
+	Beim Export einzelner Kategorien sind auch alle Abonnenten enthalten, die <b>alle</b> Kategorien abonniert haben!
+</p>
+
+<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
+
+	<tr>
+        <td width="30%">Alle E-Mail-Adressen</td>
+        <td><a href="_ajaxloader.php?<?PHP echo "modul=".$modul.""; ?>&amp;ajaxaction=csvexport&amp;data=all"><?PHP echo $emailmenge; ?> Adressen exportieren</a></td>
+    </tr>
+
+    <?PHP
+    $catidlist = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']." ORDER BY catname");
+	while($row = $catidlist->fetch_assoc()){
+		$listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (catids = '0' OR catids = ',0,' OR catids LIKE '%,".$row['id'].",%')");
+		echo "	<tr>
+        <td>".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."</td>
+        <td><a href=\"_ajaxloader.php?modul=".$modul."&amp;ajaxaction=csvexport&amp;data=".$row['id']."\">".$listcats->num_rows." Adressen exportieren</a></td>
+    </tr>";
+	}
+    ?>
+
+</table>
+
+<?PHP
+	} // Ende: Export
+elseif(isset($_GET['action']) && $_GET['action'] == "addemail"){
+?>
+<h1>E-Mail-Adresse hinzuf&uuml;gen</h1>
+
 <form action="<?PHP echo $filename; ?>" method="post" name="post">
 <table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen trab">
 
@@ -133,7 +165,8 @@ else{
 <h1>Eingetragene E-Mail-Adressen</h1>
 
 <p>
-<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=emails&amp;action=addemail" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neue E-Mail-Adresse hinzuf&uuml;gen" style="border:0; margin-right:10px;" />E-Mail-Adresse hinzuf&uuml;gen</a>
+	<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=emails&amp;action=addemail" class="actionbutton"><img src="images/icons/add.gif" alt="Plus-Zeichen" title="Neue E-Mail-Adresse hinzuf&uuml;gen" style="border:0; margin-right:10px;" />E-Mail-Adresse hinzuf&uuml;gen</a>
+	<a href="_loader.php?modul=<?php echo $modul; ?>&amp;loadpage=emails&amp;action=export" class="actionbutton"><img src="<?PHP echo $modulpath."images/icon_export.png"; ?>" alt="Symbol: Exportieren" title="E-Mail-Adresse exportieren" style="border:0; margin-right:10px; width: 16px; height: 16px;" />E-Mail-Adresse exportieren</a>
 </p>
 
 <form action="<?PHP echo $filename; ?>" method="get" style="float:left; margin-right:20px;">

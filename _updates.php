@@ -1,4 +1,26 @@
 <?PHP
+// 1.3.1 --> 1.3.3
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_133"){
+
+	
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.3.3' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 1.3.1 nach 1.3.3</h2>
+
+<div class="meldung_erfolg">
+	Das Update von Version 1.3.1 auf Version 1.3.3 wurde erfolgreich durchgef&uuml;hrt.<br />
+	<br />
+	<br />
+
+	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<ul>
+		<li><b>CSV Export von E-Mail-Adressen</b></li>
+	</ul>
+	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
+</div>
+<?PHP
+}
 // 1.3.0 --> 1.3.1
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 
