@@ -177,7 +177,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "csvexport" 
 		if($_REQUEST['data'] == "all")
 			_01newsletter_query_to_csv("SELECT email,catids FROM ".$mysql_tables['emailadds']." WHERE acode = '0'", "email_adresses-".date("d-m-Y").".csv", $cat);
 		else
-			_01newsletter_query_to_csv("SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (catids = '0' OR catids = ',0,' OR catids LIKE '%,".CleanStr($_REQUEST['data']).",%')", "email_adresses-".preg_replace('/[^a-zA-Z0-9\-_]/', '', $cat[$_REQUEST['data']])."-".date("d-m-Y").".csv");
+			_01newsletter_query_to_csv("SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (catids = '0' OR catids = ',0,' OR catids LIKE '%,".$_REQUEST['data'].",%')", "email_adresses-".preg_replace('/[^a-zA-Z0-9\-_]/', '', $cat[$_REQUEST['data']])."-".date("d-m-Y").".csv");
    	}
 else{
 	echo "<script type=\"text/javascript\"> Failed_delfade(); </script>";
