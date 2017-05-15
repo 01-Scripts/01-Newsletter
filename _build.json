@@ -1,5 +1,5 @@
 {
-  "Version": "1.4.0",
+  "Version": "1.3.3",
   "PrevVersion": "1.3.2",
   "Files2Minimize": [
     "templates/style.css",
@@ -12,7 +12,11 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
+    "images/icon_export.png",
+    "_ajax.php",
+    "_functions.php",
     "_info.xml",
-    "_updates.php"
+    "_updates.php",
+    "emails.php"
   ]
 }

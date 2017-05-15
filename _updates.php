@@ -1,22 +1,21 @@
 <?PHP
-// 1.3.2 --> 1.4.0
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
+// 1.3.2 --> 1.3.3
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_133"){
 
 	
 	// Versionsnummer aktualisieren
-	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.3.3' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
 ?>
-<h2>Update Version 1.3.2 nach 1.4.0</h2>
+<h2>Update Version 1.3.2 nach 1.3.3</h2>
 
 <div class="meldung_erfolg">
-	Das Update von Version 1.3.2 auf Version 1.4.0 wurde erfolgreich durchgef&uuml;hrt.<br />
+	Das Update von Version 1.3.2 auf Version 1.3.3 wurde erfolgreich durchgef&uuml;hrt.<br />
 	<br />
 	<br />
 
 	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
 	<ul>
-
-		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
+		<li><b>CSV Export von E-Mail-Adressen</b></li>
 	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </div>

@@ -6,11 +6,11 @@
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.132#
+	#fv.133#
 */
 
 // Security: Only allow calls from _ajaxloader.php!
- if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
+if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
 
 // Vorlage / Entwurf löschen
 if(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "del_vorlage" &&
@@ -163,7 +163,22 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delarchiv" 
 
    	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
-else
+// CSV-Export
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "csvexport" && $userdata['show_emails'] == 1 &&
+   isset($_REQUEST['data']) && !empty($_REQUEST['data']) && (is_numeric($_REQUEST['data']) || $_REQUEST['data'] == "all")){
+   		$cat[0] = "Alle Kategorien";
+		$catidlist = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
+		while($row = $catidlist->fetch_assoc()){
+			$cat[$row['id']] = $row['catname'];
+		}
+
+		if($_REQUEST['data'] == "all")
+			_01newsletter_query_to_csv("SELECT email,catids FROM ".$mysql_tables['emailadds']." WHERE acode = '0'", "email_adresses-".date("d-m-Y").".csv", $cat);
+		else
+			_01newsletter_query_to_csv("SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (catids = '0' OR catids = ',0,' OR catids LIKE '%,".CleanStr($_REQUEST['data']).",%')", "email_adresses-".preg_replace('/[^a-zA-Z0-9\-_]/', '', $cat[$_REQUEST['data']])."-".date("d-m-Y").".csv");
+   	}
+else{
 	echo "<script type=\"text/javascript\"> Failed_delfade(); </script>";
+}
 	
 ?>

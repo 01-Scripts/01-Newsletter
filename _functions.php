@@ -6,7 +6,7 @@
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.132#
+	#fv.133#
 */
 
 // Globale Funktionen - nötig!
@@ -227,6 +227,53 @@ function _01newsletter_configurePHPMailer(&$mail){
     }
 
     $mail->Encoding = "quoted-printable"; // Resolve Encoding issues with PHP >= 5.6 when sending from the Frontend
+}
+}
+
+
+// Daten via MySQL-Query aus Datenbank in CSV-Datei exportieren
+/*$query           Valid MySQL-Query
+  $filename        Filename for CSV-Export file
+  $lookup          $cat['id']=name
+  $attachment      true = send to browser, false = save as file locally
+  $headers         Add first row with column description
+
+RETURN: NULL
+  */
+if(!function_exists("_01newsletter_query_to_csv")){
+function _01newsletter_query_to_csv($query, $filename, $lookup = false, $attachment = true, $headers = true) {
+    global $mysqli;
+    
+    if($attachment) {
+        header( 'Content-Type: text/csv' );
+        header( 'Content-Disposition: attachment;filename='.$filename);
+        $fp = fopen('php://output', 'w');
+    } else {
+        $fp = fopen($filename, 'w');
+    }
+    
+    $result = $mysqli->query($query);
+
+    if($headers) {
+        // output header row (if at least one row exists)
+        $row = $result->fetch_assoc();
+        if($row) {
+            fputcsv($fp, array_keys($row), ";");
+            $result->data_seek(0); // reset pointer back to beginning
+        }
+    }
+    
+    while($row = $result->fetch_assoc()){
+        if(isset($lookup) && is_array($lookup) && !empty($lookup)){
+            if($row['catids'] == '0') $row['catids'] = ",0,";
+            $row['catids'] = implode(",", array_intersect_key($lookup, array_flip(explode(",",substr($row['catids'],1,-1)))));
+        }
+
+        fputcsv($fp, $row, ";");
+        //print_r($row);
+    }
+    
+    fclose($fp);
 }
 }
 ?>
