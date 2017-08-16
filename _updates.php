@@ -13,6 +13,16 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET email=LOWER(email);");
 	$mysqli->query("DELETE t1 FROM ".$mysql_tables['emailadds']." t1, ".$mysql_tables['emailadds']." t2 WHERE t1.id < t2.id AND t1.email = t2.email;"); // Remove duplicate entries - keep newest one
 	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD UNIQUE (email);");
+
+	// #757 - Paternoster-Mailing
+	// Setting-Reihenfolge aktualisieren
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '11' WHERE `idname` = 'newslettersignatur' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '12' WHERE `idname` = 'use_nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '13' WHERE `idname` = 'nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	// Neue Einstellungen anlegen:
+	$sql_insert = "INSERT INTO `".$mysql_tables['settings']."` (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
+				('".$mysqli->escape_string($modul)."','0','1','10','use_recurrent','Wiederkehrenden Newsletterversand aktivieren?','Nur bei aktiviertem Cronjob-Versand m&ouml;glich.','function','1|0','','0','0','0','0');";
+	$mysqli->query($sql_insert) OR die($mysqli->error);
 	
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");

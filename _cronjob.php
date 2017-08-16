@@ -43,6 +43,58 @@ $mail = new PHPMailer;
 _01newsletter_configurePHPMailer($mail);
 $mail->SMTPKeepAlive = true; // SMTP connection will not close after each email sent, reduces SMTP overhead
 
+// Steht ein wiederkehrender Versand an (monatlich/jährlich)?
+$x = 0;
+$getrmails = $mysqli->query("SELECT id,art,utimestamp,kategorien FROM ".$mysql_tables['archiv']." WHERE (art = 'm' OR art = 'y') AND utimestamp <= '".time()."'");
+while($mrow = $getrmails->fetch_assoc()){
+	// Aktuelle Empfänger zusammenstellen
+	if($mrow['kategorien'] == "all" || empty($mrow['kategorien']))
+		$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0'";
+	else{
+			if(strpos($mrow['kategorien'], ",") !== FALSE){
+				$cats = explode(",", $mrow['kategorien']);
+
+				$cw = "catids = '0' OR catids = ',0,'";
+				foreach($cats as $cat){
+					$cw .= " OR catids LIKE '%,".$cat.",%'";
+				}
+			}else{
+				$cw = "catids = '0' OR catids = ',0,' OR catids LIKE '%,".$mrow['kategorien'].",%'";
+			}
+
+			$query = "SELECT email,name FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$cw.")";
+		}
+
+	$values = "";
+	$emaillist = $mysqli->query($query);
+	while($erow = $emaillist->fetch_assoc()){
+		if($x > 0) $values .= ",\n";
+		
+		$values .= "('".$mrow['utimestamp']."','".$mrow['id']."','".$erow['email']."','".$erow['name']."')";
+		
+		$x++;
+	}
+
+	if(!empty($values))
+		$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
+
+	// Versandzeitpunkt um ein Monat bzw. Jahr nach hinten verschieben
+	$datum = date("d.m.Y", $mrow['utimestamp']);
+	$send_date = explode(".",$datum);
+	if($mrow['art'] == 'm'){
+		// Sind wir im Dezember? Überlauf in den Januar des darauf folgenden Jahres
+		if($send_date[1] == 12){
+			$send_date[1] = 1;
+			$send_date[2]++;
+		}
+	}
+	else
+		$send_date[2]++;
+
+	$timestamp = mktime("0", "0", "1", $send_date[1], $send_date[0], $send_date[2]);
+	$mysqli->query("UPDATE ".$mysql_tables['archiv']." SET utimestamp='".$timestamp."' WHERE id='".$mrow['id']."' LIMIT 1");
+}
+
 // Message_ids für zutreffende Newsletter holen
 $getmessage_ids = $mysqli->query("SELECT message_id FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."'".$where." GROUP BY message_id ORDER BY utimestamp");
 while($msgids = $getmessage_ids->fetch_assoc()){

@@ -298,4 +298,46 @@ function _01newsletter_query_to_csv($query, $filename, $lookup = false, $attachm
     fclose($fp);
 }
 }
+
+
+// Forumlarfeld zur Aktivierung des regelm‰ﬂigen Versands nur bei aktiviertem Cronjob-Versand anzeigen
+/* @params string $idname       IDName des Feldes (modul_idname)
+ * @params string $wert         Enth‰lt bisherigen gespeicherten Wert des Feldes
+
+RETURN: Entsprechendes Formularfeld mit aktuellem Wert oder Hinweistext
+  */
+if(!function_exists("_01newsletter_use_recurrent_Read")){
+function _01newsletter_use_recurrent_Read($idname,$wert){
+    global $settings;
+
+if($settings['use_cronjob'] == 1 && $wert == 1)
+    return "<input type=\"radio\" name=\"use_recurrent\" value=\"1\" checked=\"checked\" /> Ja<br />
+            <input type=\"radio\" name=\"use_recurrent\" value=\"0\" /> Nein";
+elseif($settings['use_cronjob'] == 1 && $wert == 0)
+    return "<input type=\"radio\" name=\"use_recurrent\" value=\"1\" /> Ja<br />
+            <input type=\"radio\" name=\"use_recurrent\" value=\"0\" checked=\"checked\" /> Nein";
+else
+    return "<input type=\"hidden\" name=\"use_recurrent\" value=\"0\" />Bitte Cronjob-Versand aktivieren.";
+
+}
+}
+
+
+// Funktion ¸berpr¸ft ob Versand per Cronjob aktiv ist. Nur dann wird ein Wert von 1 ggf. weitergegeben
+/* @params string $idname       IDName des Feldes (modul_idname)
+ * @params string $wert         Enth‰lt den zu speichernden Wert des Feldes
+
+RETURN: Settingswert nach ‹berpr¸fung
+  */
+if(!function_exists("_01newsletter_use_recurrent_Write")){
+function _01newsletter_use_recurrent_Write($idname,$wert){
+    global $settings;
+
+if($settings['use_cronjob'] == 0)
+    $wert = 0;
+
+return intval($wert);
+
+}
+}
 ?>
