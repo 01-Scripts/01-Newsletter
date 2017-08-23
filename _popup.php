@@ -2,10 +2,10 @@
 /*
 	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+	Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
-	Dateiinfo: 	Programmcode fÃ¼r Modul-Popup-Fenster
+	Dateiinfo: 	Programmcode für Modul-Popup-Fenster
 	#fv.140#
 */
 
@@ -17,7 +17,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "show_letter" &&
 	while($row = $list->fetch_assoc()){
 		echo "<h2>".$row['betreff']."</h2>";
 		
-		// HTML ggf. berÃ¼cksichtigen
+		// HTML ggf. berücksichtigen
 		$found_html = FALSE;
 		$arr = array("</p>","</table>","</a>","<img","<br />","<hr","<ul","<b","<i","<span","<td"); 
 		foreach($arr as $search_needle){ 
