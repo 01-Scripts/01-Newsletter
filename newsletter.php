@@ -9,7 +9,7 @@
 	#fv.140#
 */
 
-// Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
+// Formular abgesendet (Entwurf / Vorlage / fÃ¼r Versand speichern)
 if(isset($_POST['action']) && $_POST['action'] == "send" &&
    isset($_POST['mailtext']) && !empty($_POST['mailtext']) &&
    (
@@ -20,7 +20,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
    )
    		){
 	
-	// Empfänger zusammenstellen (zum Speichern bei Entwürfen)
+	// EmpfÃ¤nger zusammenstellen (zum Speichern bei EntwÃ¼rfen)
 	$save_cat = "all";
 	$save_cat_r = "all";
 	if($_POST['empf'] == "cats" && $settings['usecats'] == 1 && isset($_POST['empfcats']) && is_array($_POST['empfcats'])){
@@ -28,7 +28,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		$save_cat_r = implode(",",$_POST['empfcats']);
 	}
 
-	// Empfänger zusammenstellen (zur Ermittlung der betreffenden E-Mail-Adressen und zum Speichern im Klartext beim Versand im Archiv)
+	// EmpfÃ¤nger zusammenstellen (zur Ermittlung der betreffenden E-Mail-Adressen und zum Speichern im Klartext beim Versand im Archiv)
 	if(isset($_POST['senden']) && !empty($_POST['senden'])){
 		$save_cat = "";
 		if($_POST['empf'] == "all")
@@ -60,7 +60,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	elseif(isset($_POST['savevorlage']) && !empty($_POST['savevorlage']) && $userdata['vorlagen'] == 1)
 	    $save_cat = "";
 
-    // Newsletter-Signatur anhängen (nur bei Versand)
+    // Newsletter-Signatur anhÃ¤ngen (nur bei Versand)
 	if(!empty($settings['newslettersignatur']) && isset($_POST['use_signatur']) && $_POST['use_signatur'] == 1 && isset($_POST['senden']) && !empty($_POST['senden'])){
 		if($settings['use_html'])
 		    $mailinhalt = $_POST['mailtext']."<br /><br />".nl2br($settings['newslettersignatur']);
@@ -70,7 +70,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	else
 		$mailinhalt = $_POST['mailtext'];
 		
-	// Anhänge
+	// AnhÃ¤nge
 	if($settings['attachments'] == 1 && isset($_POST['attachfieldcounter']) && is_numeric($_POST['attachfieldcounter']) && $_POST['attachfieldcounter'] > 0){
 		$attachments = array();
 		for($x=1;$x<=$_POST['attachfieldcounter'];$x++){
@@ -87,7 +87,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	else
 		$titel = $_POST['betreff'];
 	
-	// Timestamp für zeitversetzten Versand anpassen
+	// Timestamp fÃ¼r zeitversetzten Versand anpassen
 	if(isset($_POST['send_time']) && !empty($_POST['send_time']) && !isset($_POST['savevorlage'])){
 		$send_date = explode(".",$_POST['send_time']);
 		$timestamp = mktime("0", "0", "1", $send_date[1], $send_date[0], $send_date[2]);
@@ -132,7 +132,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		$var = $mysqli->insert_id;
 		}
 	
-	// Bei Versand: Empfänger in temporäre Tabelle übertragen
+	// Bei Versand: EmpfÃ¤nger in temporÃ¤re Tabelle Ã¼bertragen
 	if(isset($_POST['senden']) && !empty($_POST['senden'])){
 		$x = 0; $values = "";
 		if($_POST['empf'] == "test"){
@@ -146,7 +146,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				}
 			}
 		}
-		elseif($art != 'm' && $art != 'y'){		// Bei Wiederkehrendem Versand werden die Empfänger erst zum Versandzeitpunkt zusammengestellt
+		elseif($art != 'm' && $art != 'y'){		// Bei Wiederkehrendem Versand werden die EmpfÃ¤nger erst zum Versandzeitpunkt zusammengestellt
 			$list = $mysqli->query($query);
 			while($row = $list->fetch_assoc()){
 				if($x > 0) $values .= ",\n";
@@ -171,8 +171,8 @@ Sie k&ouml;nnen die eingebettete Seite &uuml;ber den folgenden Verweis aufrufen:
 			}
 		// Fehlermeldung, wenn die eingegebene Test-E-Mail-Adresse fehlerhaft ist
 		elseif($_POST['empf'] == "test")
-			echo "<p class=\"meldung_error\"><b>Der Test-Newsletter konnte nicht versendet werden, da keine gültige E-Mail-Adresse eingegeben wurde.</b></p>";			
-		// Newsletter wird später via Cronjob verschickt
+			echo "<p class=\"meldung_error\"><b>Der Test-Newsletter konnte nicht versendet werden, da keine gÃ¼ltige E-Mail-Adresse eingegeben wurde.</b></p>";			
+		// Newsletter wird spÃ¤ter via Cronjob verschickt
 		else
 			echo "<p class=\"meldung_erfolg\"><b>Der Newsletter wurde erfolgreich gespeichert und wird zum gew&uuml;nschten Zeitpunkt automatisch per Cronjob versendet.</b><br />
 <br />
@@ -211,7 +211,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 	
 	echo "<h1>Newsletter verfassen</h1>";
 	
-	// Nicht alle nötigen Felder ausgefüllt -> Fehlermeldung
+	// Nicht alle nÃ¶tigen Felder ausgefÃ¼llt -> Fehlermeldung
 	if(isset($_POST['action']) && $_POST['action'] == "send")
 		echo "<p class=\"meldung_error\">Sie haben nicht alle ben&ouml;tigten Pflichtfelder ausgef&uuml;llt!</p>";
 
@@ -306,7 +306,7 @@ if($evmenge >= 1){
 			<textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea>
 <?php if ($use_name == TRUE): ?>
 			<br />
-			<span class="small">Fügen Sie <b><?PHP echo $name_replace; ?></b> in den Newsletter ein, um es beim Versand durch den Namen des Empfängers ersetzen zu lassen!</span>
+			<span class="small">FÃ¼gen Sie <b><?PHP echo $name_replace; ?></b> in den Newsletter ein, um es beim Versand durch den Namen des EmpfÃ¤ngers ersetzen zu lassen!</span>
 <?php endif; ?>
 		</td>
 	</tr>
@@ -408,16 +408,17 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
     <tr>
 		<td style="width:120px"><b>Versanddatum</b></td>
         <td style="width:400px"><b>Betreff</b></td>
-		<td><b>Kategorien</b></td>
+		<td><b>Kategorie-ID</b></td>
 		<td><b>Absender</b></td>
-		<td class="nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
+		<td class="nosort" style="width:25px" align="center"><!--Bearbeiten--></td>
+		<td class="nosort" style="width:25px" align="center"><!--LÃ¶schen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
 	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " AND (betreff LIKE '%".$mysqli->escape_string($_GET['search'])."%' OR mailinhalt LIKE '%".$mysqli->escape_string($_GET['search'])."%' OR kategorien LIKE '%".$mysqli->escape_string($_GET['search'])."%')";
 	else $where = "";
 	
-	// Ausgabe der Datensätze (Liste) aus DB
-	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a'".$where." ORDER BY utimestamp DESC";
+	// Ausgabe der DatensÃ¤tze (Liste) aus DB
+	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a' OR art = 'm' OR art = 'y' ".$where." ORDER BY art DESC, utimestamp DESC";
 	$query = makepages($query,$sites,"site",ACP_PER_PAGE);
 	
 	$list = $mysqli->query($query);
@@ -427,9 +428,10 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 
 		echo "    <tr id=\"id".$row['id']."\">
 		<td valign=\"bottom\">".date("d.m.Y, H:i",$row['utimestamp'])." Uhr</td>
-		<td onmouseover=\"fade_element('copyid_".$row['id']."')\" onmouseout=\"fade_element('copyid_".$row['id']."')\"><a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a> <div class=\"moo_inlinehide\" id=\"copyid_".$row['id']."\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=newsletter&amp;action=new&amp;copyid=".$row['id']."\"><img src=\"".$modulpath."images/icon_copy.gif\" alt=\"Symbol: Kopieren\" title=\"Inhalt in einen neuen Newsletter übernehmen\" /></a></div></td>
+		<td onmouseover=\"fade_element('copyid_".$row['id']."')\" onmouseout=\"fade_element('copyid_".$row['id']."')\"><a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a> <div class=\"moo_inlinehide\" id=\"copyid_".$row['id']."\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=newsletter&amp;action=new&amp;copyid=".$row['id']."\"><img src=\"".$modulpath."images/icon_copy.gif\" alt=\"Symbol: Kopieren\" title=\"Inhalt in einen neuen Newsletter Ã¼bernehmen\" /></a></div></td>
 		<td valign=\"bottom\">".stripslashes($row['kategorien'])."</td>
 		<td valign=\"bottom\">".$data['username']."</td>
+		<td valign=\"bottom\" align=\"center\">".( (in_array($row['art'], array('m','y')) || $row['art'] == 'a' && $row['utimestamp'] > time() ) ? "<a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','edit_letter','".$row['id']."','','',750,450);\"><img src=\"images/icons/icon_edit.gif\" alt=\"Bearbeiten - Stift\" title=\"Text bearbeiten\" style=\"border:0;\" /></a>" : "")."</td>
 		<td valign=\"bottom\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 	</tr>";
 		}
