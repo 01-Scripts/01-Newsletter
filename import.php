@@ -2,7 +2,7 @@
 /*
 	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+	Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Auflistung aller eingetragener E-Mail-Adressen
@@ -278,7 +278,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "import"){
 <p class="meldung_hinweis">
 	Sie haben die M&ouml;glichkeit E-Mail-Adressen aus einer CSV-Datei zu importieren. Die Datei sollte in einer Spalte E-Mail-Adressen in einer zweiten 
 	Spalte optional den Empf&auml;ngernamen enthalten.<br />
-	Passen Sie die nachfolgenden Optionen ggf. an das spezifische Format ihrer CSV-Datei an. Ausf&uuml;hrliche Informationen zum Import finden Sie <a href="http://www.01-scripts.de/01newsletter.php?install#csvimport" target="_blank">hier</a>.<br />
+	Passen Sie die nachfolgenden Optionen ggf. an das spezifische Format ihrer CSV-Datei an. Ausf&uuml;hrliche Informationen zum Import finden Sie <a href="https://www.01-scripts.de/01newsletter.php?install#csvimport" target="_blank">hier</a>.<br />
 	Im n&auml;chsten Schritt haben Sie die M&ouml;glichkeit die Daten vor dem Import zu überpr&uuml;fen und Kategorien f&uuml;r den Import zu w&auml;hlen.
 </p>
 

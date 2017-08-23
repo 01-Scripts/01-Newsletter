@@ -1,6 +1,6 @@
-01ACP - Copyright 2008-2017 by Michael Lorer - 01-Scripts.de
+01-Newsletter - Copyright 2008-2017 by Michael Lorer - 01-Scripts.de
 Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 =========================================================
 
 
@@ -9,7 +9,7 @@ Update:	01-Newsletter V 1.3.2 nach V 1.4.0
 
 !!! ACHTUNG !!!
 Voraussetzung für dieses Update ist die Version 1.3.1 oder größer des 01ACP!
-Sie können diese Version hier herunterladen: http://www.01-scripts.de/01acp.php
+Sie können diese Version hier herunterladen: https://www.01-scripts.de/01acp.php
 !!! ACHTUNG !!!
 
 - Legen Sie ein Backup ihrer Datenbank an!
