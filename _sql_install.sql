@@ -1,6 +1,6 @@
 -- 01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 -- Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
--- Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+-- Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des 01-Newsletterscripts
@@ -27,9 +27,10 @@ INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formena
 ('#modul_idname#', 0, 3, 4, 'smtp_nl_username', 'SMTP Username','','text','50','','','',0,0),
 ('#modul_idname#', 0, 3, 5, 'smtp_nl_password', 'SMTP Password','Das SMTP Passwort wird aus technischen Gr&uuml;nden unverschl&uuml;sselt gespeichert.','text','50','','','',0,0),
 ('#modul_idname#', 0, 1, 9,  'use_cronjob','Newsletter per Cronjob versenden?','Legen Sie dazu einen regelm&auml;&szlig;igen Cronjob auf die Datei <i>01scripts/01module/#modul_idname#/_cronjob.php</i> an.<br /><a href=\"http://cronjob.01-scripts.de\" target=\"_blank\">Weitere Informationen zum Thema</a>','Ja|Nein','1|0','','0','0','0','0'),
-('#modul_idname#', 0, 1, 10, 'newslettersignatur', 'Signatur', 'Die Signatur wird automatisch an alle Newsletter angeh&auml;ngt.', 'textarea', '5|50', '', '', '', 0, 0),
-('#modul_idname#', 0, 1, 11, 'use_nutzungsbedingungen','Datenschutz / Nutzungsbedingungen aktivieren?','Beim Abonnieren des Newsletters muss den eingegebenen Datenschutz bzw. Nutzungsbedingungen zugestimmt werden.','Ja|Nein','1|0','','0','0','0','0'),
-('#modul_idname#', 0, 1, 12,'nutzungsbedingungen','Datenschutz / Nutzungsbedingungen','','textarea','5|50','','','','0','0'),
+('#modul_idname#', 0, 1, 10, 'use_recurrent','Wiederkehrenden Newsletterversand aktivieren?','Nur bei aktiviertem Cronjob-Versand m&ouml;glich.','function','1|0','','0','0',0,0),
+('#modul_idname#', 0, 1, 11, 'newslettersignatur', 'Signatur', 'Die Signatur wird automatisch an alle Newsletter angeh&auml;ngt.', 'textarea', '5|50', '', '', '', 0, 0),
+('#modul_idname#', 0, 1, 12, 'use_nutzungsbedingungen','Datenschutz / Nutzungsbedingungen aktivieren?','Beim Abonnieren des Newsletters muss den eingegebenen Datenschutz bzw. Nutzungsbedingungen zugestimmt werden.','Ja|Nein','1|0','','0','0','0','0'),
+('#modul_idname#', 0, 1, 13,'nutzungsbedingungen','Datenschutz / Nutzungsbedingungen','','textarea','5|50','','','','0','0'),
 ('#modul_idname#', 0, 1, 7, 'attachments','Dateianh&auml;nge verwenden?','','Ja|Nein','1|0','','1','1','0','0'),
 ('#modul_idname#', 0, 1, 8, 'use_html','HTML-Newsletter versenden?','','Ja|Nein','1|0','','0','0','0','0'),
 ('#modul_idname#', 0, 1, 1, 'newslettertitel', 'Titel des Newsletters', '', 'text', '50', '', '', '', 0, 0),
