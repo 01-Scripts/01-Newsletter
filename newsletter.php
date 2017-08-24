@@ -306,7 +306,13 @@ if($evmenge >= 1){
 			<textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea>
 <?php if ($use_name == TRUE): ?>
 			<br />
-			<span class="small">Fügen Sie <b><?PHP echo $name_replace; ?></b> in den Newsletter ein, um es beim Versand durch den Namen des Empfängers ersetzen zu lassen!</span>
+			<span class="small">Fügen Sie <b><?PHP echo $replace_name; ?></b> in den Newsletter ein, um es beim Versand durch den Namen des Empfängers ersetzen zu lassen! <a href="#" onclick="$('additional_vars').slide('toggle');">Weitere Variablen anzeigen...</a></span>
+			<div id="additional_vars">
+				<span class="small">
+					<b><?PHP echo $replace_year; ?></b> wird ersetzt durch <?PHP echo date("Y"); ?><br />
+					<b><?PHP echo $replace_date; ?></b> wird ersetzt durch <?PHP echo date($format_date); ?><br />
+				</span>
+			</div>
 <?php endif; ?>
 		</td>
 	</tr>
@@ -380,6 +386,7 @@ if($evmenge >= 1){
 <?php if($userdata['vorlagen'] == 1){ ?>
 $('vorlagenname').slide('hide');
 <?php } ?>
+$('additional_vars').slide('hide');
 </script>
 
 <?PHP

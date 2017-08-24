@@ -31,14 +31,20 @@ $loadfile['cats']		= "category.php";
 $tempdir	= "templates/";			// Template-Verzeichnis
 
 // Weitere Variablen
-$intervall  = 10;                   // Wie viele Mails sollen pro Schritt versendet werden?
+$intervall      = 10;               // Wie viele Mails sollen pro Schritt versendet werden?
 $intervall_cron = 200;				// Wie viele Mails sollen pro Cronjob-Aufruf versendet werden?
-$deletimer	= 30;					// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
-$use_name   = TRUE;                 // Namensfeld für Newsletter verwenden?
-$name_replace = "{#name#}";         // Wird beim Versand ggf. durch den Namen des Empfängers ersetzt
-$email_max_len = 50;                // Maximale Anzahl an Zeichen für E-Mail-Adressen
-$name_max_len = 50;                 // Maximale Anzahl an Zeichen für den Namen
-$SMTPSecurity = "tls";              // 'tls' or 'ssl'
-$SMTPAuth = TRUE;                   // SMTP Authentication verwenden bei Versand per SMTP?
+$deletimer	    = 30;				// Nicht-aktivierte E-Mail-Adressen nach x TAGEN löschen
+$use_name       = TRUE;             // Namensfeld für Newsletter verwenden?
+$email_max_len  = 50;               // Maximale Anzahl an Zeichen für E-Mail-Adressen
+$name_max_len   = 50;               // Maximale Anzahl an Zeichen für den Namen
+
+$SMTPSecurity   = "tls";            // 'tls' or 'ssl'
+$SMTPAuth       = TRUE;             // SMTP Authentication verwenden bei Versand per SMTP?
+
+// Dynamische Newsletter-Variablen
+$replace_name = "{#name#}";         // Wird beim Versand ggf. durch den Namen des Empfängers ersetzt
+$replace_year = "{#akt_jahr#}";     // Wird durch das aktuelle Jahr des geplanten Versandzeitpunkts ersetzt
+$replace_date = "{#akt_date#}";     // Wird durch das aktuelle Datum des geplanten Versandzeitpunkts ersetzt
+$format_date  = "d.m.Y"             // Formatstring für die Datums-Ausgabe: http://de2.php.net/manual/en/function.date.php
 
 ?>

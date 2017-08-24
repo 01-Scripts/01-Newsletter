@@ -129,9 +129,9 @@ if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
 	    $mail_inhalt = str_replace("#acodelink#",addParameter2Link($settings['formzieladdr'],"acode=".$acode),$lang['mailinhalt_acode']);
 	    $mail_inhalt = str_replace("#acode#",$acode,$mail_inhalt);
 	    if($use_name)
-	    	$mail_inhalt = str_replace($name_replace," ".$name,$mail_inhalt);
+	    	$mail_inhalt = str_replace($replace_name," ".$name,$mail_inhalt);
 	   	else
-	   		$mail_inhalt = str_replace($name_replace,"",$mail_inhalt);
+	   		$mail_inhalt = str_replace($replace_name,"",$mail_inhalt);
 
 	    $mail = new PHPMailer;
 	    _01newsletter_configurePHPMailer($mail);

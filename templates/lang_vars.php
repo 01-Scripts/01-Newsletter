@@ -12,7 +12,7 @@ Die Sprachvariablen in dieser Datei können von Ihnen verändert werden.
 */
 
 $lang['mail_acode']			= "Bitte bestätigen Sie ihre Newsletter-Anmeldung";
-$lang['mailinhalt_acode']	= "Guten Tag".$name_replace.",
+$lang['mailinhalt_acode']	= "Guten Tag".$replace_name.",
 
 vielen Dank für ihre Anmeldung beim Newsletter!
 Damit Sie in Zukunft unseren Newsletter bekommen können ist es nötig, dass Sie ihre E-Mail-Adresse durch einen Klick auf den nachfolgenden Link bestätigen und aktivieren:

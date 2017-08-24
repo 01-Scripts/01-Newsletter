@@ -108,7 +108,10 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 	while($mailrow = $getmail->fetch_assoc()){
 		if($c == $limit) break;
 		
-		$mailinhalt				= $mailrow['mailinhalt'];
+		$mailinhalt	= $mailrow['mailinhalt'];
+		$mailinhalt = str_replace($replace_year,date("Y",$mailrow['utimestamp']),$mailinhalt);
+		$mailinhalt = str_replace($replace_date,date($format_date,$mailrow['utimestamp']),$mailinhalt);
+
 		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
 			$attachments = explode("|",$mailrow['attachments']);
 	
@@ -151,9 +154,9 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 		$list = $mysqli->query("SELECT id,email,name FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".$mysqli->escape_string($limit)."");
 		while($row = $list->fetch_assoc()){
 			if($use_name && !empty($row['name']))
-				$t_mailinhalt = str_replace($name_replace," ".$row['name'],$mailinhalt);
+				$t_mailinhalt = str_replace($replace_name," ".$row['name'],$mailinhalt);
 		   	else
-		   		$t_mailinhalt = str_replace($name_replace,"",$mailinhalt);
+		   		$t_mailinhalt = str_replace($replace_name,"",$mailinhalt);
 
 
 			if($settings['use_html'])
