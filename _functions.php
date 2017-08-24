@@ -57,7 +57,9 @@ RETURN: Option-Elemente für Select-Formularelement
 */
 if(!function_exists("_01newsletter_CatDropDown")){
 function _01newsletter_CatDropDown($sel){
-global $mysqli,$mysql_tables;
+global $mysqli,$mysql_tables,$htmlent_flags,$htmlent_encoding_acp;
+
+$return = "";
 
 $list = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']." ORDER BY catname");
 while($row = $list->fetch_assoc()){
