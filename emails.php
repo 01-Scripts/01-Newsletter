@@ -208,7 +208,7 @@ if($catmenge > 0){
 	else{ $sortorder = "ASC"; $_GET['sort'] = "ASC"; }
 	
 	if(isset($_GET['search']) && !empty($_GET['search'])) $where = " WHERE email LIKE '%".CleanStr($_GET['search'])."%' OR name LIKE '%".CleanStr($_GET['search'])."%'";
-	elseif(isset($_GET['catid']) && !empty($_GET['catid']) && is_numeric($_GET['catid'])) $where = " WHERE catids LIKE '%,".CleanStr($_GET['catid']).",%' ";
+	elseif(isset($_GET['catid']) && !empty($_GET['catid']) && is_numeric($_GET['catid'])) $where = " WHERE catids LIKE '%,".CleanStr($_GET['catid']).",%' OR catids = '0' OR catids = ',0,' ";
 
 	if(!isset($_GET['orderby'])) $_GET['orderby'] = "";
 	switch($_GET['orderby']){
@@ -246,16 +246,36 @@ if($catmenge > 0){
 		<td class="nosort" width="25" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
+	if($settings['usecats'] == 1){
+		$cat[0] = "Alle Kategorien";
+		$catidlist = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
+		while($row = $catidlist->fetch_assoc()){
+			$cat[$row['id']] = $row['catname'];
+		}
+	}
+
 	// Ausgabe der Datensätze (Liste) aus DB
 	$list = $mysqli->query($query);
 	while($row = $list->fetch_assoc()){
+
+		// Kategorien aktiviert?
+		$mailcats = "";
+		if($settings['usecats'] == 1){
+			$cats_reg = array();
+			if($row['catids'] == "0") $mailcats = "Abonnierte Kategorien: ".$cat[0];
+			else{
+				$cats_reg = explode(",",$row['catids']);
+				$cats_reg = array_flip($cats_reg);
+				$mailcats = "Abonnierte Kategorien: ".implode(",", array_intersect_key($cat, $cats_reg));
+				}
+		}
 		
 		if(strlen($row['acode']) == 32) $aktiv = "-";
 		else $aktiv = "<img src=\"images/icons/ok.gif\" alt=\"Gr&uuml;ner OK-Haken\" title=\"Adresse wurde best&auml;tigt und ist aktiv\" />";
 		
 		echo "    <tr id=\"id".$row['id']."\">
 		<td align=\"center\">".$row['id']."</td>
-		<td>".$row['email']."</td>
+		<td title=\"".$mailcats."\">".$row['email']."</td>
 		<td>".htmlentities($row['name'],$htmlent_flags,$htmlent_encoding_acp)."</td>
 		<td>".date("d.m.Y",$row['timestamp_reg'])."</td>
 		<td align=\"center\">".$aktiv."</td>
