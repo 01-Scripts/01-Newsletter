@@ -45,6 +45,8 @@ $SMTPAuth       = TRUE;             // SMTP Authentication verwenden bei Versand
 $replace_name = "{#name#}";         // Wird beim Versand ggf. durch den Namen des Empfängers ersetzt
 $replace_year = "{#akt_jahr#}";     // Wird durch das aktuelle Jahr des geplanten Versandzeitpunkts ersetzt
 $replace_date = "{#akt_date#}";     // Wird durch das aktuelle Datum des geplanten Versandzeitpunkts ersetzt
-$format_date  = "d.m.Y"             // Formatstring für die Datums-Ausgabe: http://de2.php.net/manual/en/function.date.php
+$format_date  = "d.m.Y";             // Formatstring für die Datums-Ausgabe: http://de2.php.net/manual/en/function.date.php
+$replace_mail = "{#empf_mail#}";    // Wird durch die E-Mail-Adresse des Empfängers ersetzt
+$replace_send = "{#send_mail#}";    // Wird durch die Absender E-Mail-Adresse ersetzt
 
 ?>

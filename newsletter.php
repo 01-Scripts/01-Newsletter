@@ -311,6 +311,9 @@ if($evmenge >= 1){
 				<span class="small">
 					<b><?PHP echo $replace_year; ?></b> wird ersetzt durch <?PHP echo date("Y"); ?><br />
 					<b><?PHP echo $replace_date; ?></b> wird ersetzt durch <?PHP echo date($format_date); ?><br />
+					<b><?PHP echo $replace_send; ?></b> wird ersetzt durch <?PHP echo !empty($settings['versandadresse']) ? $settings['versandadresse'] : $settings['email_absender']; ?><br />
+					<b><?PHP echo $replace_mail; ?></b> wird ersetzt durch die E-Mail-Adresse des Empf&auml;ngers<br />
+					<b>{#abmeldelink#}</b> wird durch einen Link zum Abmelden vom Newsletter ersetzt<br />
 				</span>
 			</div>
 <?php endif; ?>

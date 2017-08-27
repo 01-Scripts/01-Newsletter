@@ -63,5 +63,5 @@ Ihr Newsletter-Abonnement bleibt dann weiterhin aktiv.";
 $lang['allcats']			= "Alle Kategorien abonnieren";
 $lang['austragen_html']		= "Klicken Sie hier um sich vom Newsletter abzumelden";
 $lang['austragen']			= "Vom Newsletter abmelden:
-#abmeldelink#";
+{#abmeldelink#}";
 ?>

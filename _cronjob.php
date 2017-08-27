@@ -111,6 +111,7 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 		$mailinhalt	= $mailrow['mailinhalt'];
 		$mailinhalt = str_replace($replace_year,date("Y",$mailrow['utimestamp']),$mailinhalt);
 		$mailinhalt = str_replace($replace_date,date($format_date,$mailrow['utimestamp']),$mailinhalt);
+		$mailinhalt = str_replace($replace_send,$mail->From,$mailinhalt);
 
 		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
 			$attachments = explode("|",$mailrow['attachments']);
@@ -153,21 +154,31 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 		$errors = array();
 		$list = $mysqli->query("SELECT id,email,name FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."' AND message_id = '".$msgids['message_id']."' LIMIT ".$mysqli->escape_string($limit)."");
 		while($row = $list->fetch_assoc()){
+			$r = 0;
+
 			if($use_name && !empty($row['name']))
 				$t_mailinhalt = str_replace($replace_name," ".$row['name'],$mailinhalt);
 		   	else
 		   		$t_mailinhalt = str_replace($replace_name,"",$mailinhalt);
 
+		   	$t_mailinhalt = str_replace($replace_mail,$row['email'],$t_mailinhalt);
 
+			// Individellen Abmelde-Link ggf. ersetzen
+			$t_mailinhalt = str_replace("{#abmeldelink#}",addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true),$t_mailinhalt,$r);
+			// Wenn kein individueller Abmelde-Link verwendet wurde, standardm‰ﬂig anh‰ngen
+			if($r == 0){
+				if($settings['use_html'])
+					$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".$lang['austragen_html']."</a>";
+				else
+					$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
+					
+				$t_mailinhalt .= str_replace("{#abmeldelink#}",$abmeldelink,$lang['austragen']);
+			}
+			
 			if($settings['use_html'])
-				$abmeldelink = "<br /><a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".$lang['austragen_html']."</a>";
+				$mail->msgHTML($t_mailinhalt, dirname(__FILE__));
 			else
-				$abmeldelink = addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true);
-
-			if($settings['use_html'])
-				$mail->msgHTML($t_mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']), dirname(__FILE__));
-			else
-				$mail->Body = $t_mailinhalt.str_replace("#abmeldelink#",$abmeldelink,$lang['austragen']);
+				$mail->Body = $t_mailinhalt;
 
 			$mail->addAddress($row['email']);
 			if(!$mail->send())
