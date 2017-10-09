@@ -15,13 +15,15 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD UNIQUE (email);");
 
 	// #757 - Paternoster-Mailing
+	// #753 - Optional: ReCaptcha bei der Registrierung verwenden
 	// Setting-Reihenfolge aktualisieren
 	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '11' WHERE `idname` = 'newslettersignatur' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
-	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '12' WHERE `idname` = 'use_nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
-	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '13' WHERE `idname` = 'nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '13' WHERE `idname` = 'use_nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '14' WHERE `idname` = 'nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
 	// Neue Einstellungen anlegen:
 	$sql_insert = "INSERT INTO `".$mysql_tables['settings']."` (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
-				('".$mysqli->escape_string($modul)."','0','1','10','use_recurrent','Wiederkehrenden Newsletterversand aktivieren?','Nur bei aktiviertem Cronjob-Versand m&ouml;glich.','function','1|0','','0','0','0','0');";
+				('".$mysqli->escape_string($modul)."','0','1','10','use_recurrent','Wiederkehrenden Newsletterversand aktivieren?','Nur bei aktiviertem Cronjob-Versand m&ouml;glich.','function','1|0','','0','0','0','0'),
+				('".$mysqli->escape_string($modul)."','0','1','12','use_spamschutz','Spamschutz bei Registrierung aktivieren?','','Ja|Nein','1|0','','0','0','0','0');";
 	$mysqli->query($sql_insert) OR die($mysqli->error);
 	
 	// Versionsnummer aktualisieren

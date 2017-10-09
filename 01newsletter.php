@@ -87,7 +87,8 @@ $row = _01newsletter_getEmailData($_REQUEST['email']);
 // Neuregistrierung oder Fake-Neuregistrierung
 if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
 	isset($_REQUEST['email']) && !empty($_REQUEST['email']) && strlen($_REQUEST['email']) <= $email_max_len && check_mail($_REQUEST['email']) &&
-   ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']) ||
+	($settings['use_spamschutz'] == 0 || $settings['spamschutz'] == 0 || $settings['spamschutz'] == 1 && isset($_REQUEST['antispam']) && md5($_REQUEST['antispam']) == $_SESSION['antispam01'] || $settings['spamschutz'] == 2 && CheckReCAPTCHA($_POST['g-recaptcha-response'])) &&
+    ($settings['use_nutzungsbedingungen'] == 0 || $settings['use_nutzungsbedingungen'] == 1 && empty($settings['nutzungsbedingungen']) ||
     isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] == 1)){
 	// E-Mail-Adresse wurde bereits registriert aber noch nicht aktiviert --> Eintrag löschen und neu registrieren
     if(!empty($row['email']) && check_mail($row['email']) && strlen($row['acode']) == 32){
@@ -106,7 +107,7 @@ if(isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) &&
 	    else
 	        $cats_string = 0;
 	        
-	    $acode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand(1, 9999999999999).$_REQUEST['email']);
+	    $acode = md5(time().$_SERVER['REMOTE_ADDR'].mt_rand().$_REQUEST['email']);
 
 	    $name = NULL;
 	    if($flag_utf8 && $use_name && isset($_REQUEST['name']) && !empty($_REQUEST['name']))
