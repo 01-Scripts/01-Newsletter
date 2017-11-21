@@ -151,7 +151,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
 		
 		// Newsletter sofort via IFrame verschicken
-		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !mysql_error()){
+		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !$mysqli->error){
 			echo "<h1>Newsletter wird verschickt...</h1>";
 			
 			echo "<iframe src=\"".$modulpath."_cronjob.php?message_id=".$var."\" width=\"90%\" height=\"300\" name=\"send_newsletter\">
