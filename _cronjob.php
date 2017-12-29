@@ -76,7 +76,7 @@ while($mrow = $getrmails->fetch_assoc()){
 	}
 
 	if(!empty($values))
-		$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
+		$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email, name) VALUES ".$values.";") OR die($mysqli->error);
 
 	// Versandzeitpunkt um ein Monat bzw. Jahr nach hinten verschieben
 	$datum = date("d.m.Y", $mrow['utimestamp']);
