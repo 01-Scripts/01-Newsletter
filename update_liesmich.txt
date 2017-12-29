@@ -1,4 +1,4 @@
-01-Newsletter - Copyright 2008-2017 by Michael Lorer - 01-Scripts.de
+01-Newsletter - Copyright 2008-2018 by Michael Lorer - 01-Scripts.de
 Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 =========================================================
@@ -20,6 +20,10 @@ Achtung:
   Sollten Sie an den Texten eigene Änderungen vorgenommen haben, speichern Sie diese Änderungen bitte vor dem
   Durchführen des Updates.
 
+- Einige Template-Dateien im Verzeichnis 01module/01newsletter/templates/ wurden mit diesem Update geändert.
+  Sollten Sie an diesen Dateien eigene Änderungen vorgenommen haben, speichern Sie diese Änderungen bitte vor dem
+  Durchführen des Updates und nehmen Sie sie hinterher ggf. erneut vor.
+
 - Markieren Sie alle im Verzeichnis 01newsletter/ enthaltenen Dateien und Unterverzeichnisse und
   laden Sie sie per FTP-Programm in das entsprechende Modul-Verzeichnis (01scripts/01module/.....) auf Ihren Webspace hoch.
   Überschreiben Sie dabei alle bereits existierende Dateien.
@@ -29,7 +33,11 @@ Achtung:
   Starten Sie den Update-Vorgang für den 01-Newsletter durch einen Klick auf das Zahnrad-Symbol.
 
 
-
 Changelog 01-Newsletter - 1.4.0
 ===============================
-tbd
+- 0000757: [Backend (Modul)]    Paternoster-Mailing
+- 0000633: [Backend (Modul)]    Noch nicht versendete Newsletter (Cronjob) lösch (und bearbeitbar) machen
+- 0000756: [Backend (Modul)]    CSV-Export von registrierten E-Mail-Adressen hinzufügen
+- 0000279: [Backend (Modul)]    CSV Import von E-Mail-Adressen
+- 0000192: [Global (Modul)]     Möglichkeit einen Namen zu erfassen (optional)
+- 0000742: [Frontend (Modul)]   Durch E-Mail-Adress-Eingabe keine Informationen an Unbekannte weitergeben

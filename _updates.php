@@ -41,6 +41,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
 		<li><b>CSV Import von E-Mail-Adressen</b></li>
 		<li><b>CSV Export von E-Mail-Adressen</b></li>
 		<li><b>Pers&ouml;nliche Ansprache ihrer Abonnenten mit deren Namen m&ouml;glich</b></li>
+		<li>Automatisierter, regelm‰ﬂiger Newsletter-Versand per <a href="https://www.01-scripts.de/01newsletter.php#paternoster" target="_blank">Paternoster-Mailing-Funktion</a></li>
 		<li>Diverse Fehler behoben. Siehe <a href="https://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
