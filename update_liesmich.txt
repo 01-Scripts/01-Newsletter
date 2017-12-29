@@ -35,6 +35,8 @@ Achtung:
 
 Changelog 01-Newsletter - 1.4.0
 ===============================
+- 0000753: [Frontend (Modul)]   Optional: ReCaptcha bei der Registrierung verwenden
+- 0000754: [Global (Modul)]     Container für Release 1.4.0
 - 0000757: [Backend (Modul)]    Paternoster-Mailing
 - 0000633: [Backend (Modul)]    Noch nicht versendete Newsletter (Cronjob) lösch (und bearbeitbar) machen
 - 0000756: [Backend (Modul)]    CSV-Export von registrierten E-Mail-Adressen hinzufügen
