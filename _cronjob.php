@@ -79,7 +79,7 @@ while($mrow = $getrmails->fetch_assoc()){
 		$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email, name) VALUES ".$values.";") OR die($mysqli->error);
 
 	// Versandzeitpunkt um ein Monat bzw. Jahr nach hinten verschieben
-	$datum = date("d.m.Y", $mrow['utimestamp']);
+	$datum = date("j.n.Y", $mrow['utimestamp']);
 	$send_date = explode(".",$datum);
 	if($mrow['art'] == 'm'){
 		// Sind wir im Dezember? ‹berlauf in den Januar des darauf folgenden Jahres
@@ -87,6 +87,8 @@ while($mrow = $getrmails->fetch_assoc()){
 			$send_date[1] = 1;
 			$send_date[2]++;
 		}
+		else
+			$send_date[1]++;	
 	}
 	else
 		$send_date[2]++;
@@ -96,7 +98,7 @@ while($mrow = $getrmails->fetch_assoc()){
 }
 
 // Message_ids f¸r zutreffende Newsletter holen
-$getmessage_ids = $mysqli->query("SELECT message_id FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."'".$where." GROUP BY message_id ORDER BY utimestamp");
+$getmessage_ids = $mysqli->query("SELECT utimestamp,message_id FROM ".$mysql_tables['temp_table']." WHERE utimestamp <= '".time()."'".$where." GROUP BY message_id ORDER BY utimestamp");
 while($msgids = $getmessage_ids->fetch_assoc()){
 	if($c == $limit) break;
 	
@@ -110,7 +112,7 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 		
 		$mailinhalt	= $mailrow['mailinhalt'];
 		$mailinhalt = str_replace($replace_year,date("Y",$mailrow['utimestamp']),$mailinhalt);
-		$mailinhalt = str_replace($replace_date,date($format_date,$mailrow['utimestamp']),$mailinhalt);
+		$mailinhalt = str_replace($replace_date,date($format_date,$msgids['utimestamp']),$mailinhalt);
 		$mailinhalt = str_replace($replace_send,$mail->From,$mailinhalt);
 
 		if(!empty($mailrow['attachments']) && $settings['attachments'] == 1)
@@ -164,7 +166,10 @@ while($msgids = $getmessage_ids->fetch_assoc()){
 		   	$t_mailinhalt = str_replace($replace_mail,$row['email'],$t_mailinhalt);
 
 			// Individellen Abmelde-Link ggf. ersetzen
-			$t_mailinhalt = str_replace("{#abmeldelink#}",addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true),$t_mailinhalt,$r);
+			if($settings['use_html'])
+				$t_mailinhalt = str_replace("{#abmeldelink#}","<a href=\"".addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true)."\">".$lang['austragen_html']."</a>",$t_mailinhalt,$r);
+			else
+				$t_mailinhalt = str_replace("{#abmeldelink#}",addParameter2Link($settings['formzieladdr'],"email=".$row['email']."&send=Go&action=edit",true),$t_mailinhalt,$r);
 			// Wenn kein individueller Abmelde-Link verwendet wurde, standardm‰ﬂig anh‰ngen
 			if($r == 0){
 				if($settings['use_html'])
