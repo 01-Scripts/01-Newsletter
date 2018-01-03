@@ -2,15 +2,15 @@
 /* 
 	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+	Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 	
 	Modul:		01newsletter
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.132#
+	#fv.140#
 */
 
 // Security: Only allow calls from _ajaxloader.php!
- if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
+if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
 
 // Vorlage / Entwurf löschen
 if(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "del_vorlage" &&
@@ -112,12 +112,12 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "load_vorlag
     $c = 0;
     }
 // Kategorie löschen
-elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" && $userdata['settings'] == 1 &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 
 	$mysqli->query("DELETE FROM ".$mysql_tables['mailcats']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
 
-	$catidlist = $mysqli->query("SELECT id,catids,newcatids FROM ".$mysql_tables['emailadds']."");
+	$catidlist = $mysqli->query("SELECT id,catids FROM ".$mysql_tables['emailadds']."");
 	while($row = $catidlist->fetch_assoc()){
 		$testarray = explode(",",substr($row['catids'],1,strlen($row['catids'])-2));
 		if(is_array($testarray) && count($testarray) > 1){
@@ -130,22 +130,11 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delcat" &&
 			$mysqli->query("DELETE FROM ".$mysql_tables['emailadds']." WHERE id = '".$mysqli->escape_string($row['id'])."' LIMIT 1");
 			}
 		
-		if($row['newcatids'] != "0"){
-			$testarray2 = explode(",",substr($row['newcatids'],1,strlen($row['newcatids'])-2));
-			if(is_array($testarray2) && count($testarray2) > 1){
-				unset($testarray2[array_search($_REQUEST['id'],$testarray2)]);
-	
-				$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET newcatids=',".implode(",",$testarray2).",' WHERE id='".$mysqli->escape_string($row['id'])."'");
-				}
-			elseif($row['newcatids'] == ",".$_REQUEST['id'].","){
-				$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET newcatids='0', editcode='0' WHERE id='".$mysqli->escape_string($row['id'])."'");
-				}
-			}
 		}
 	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
 // E-Mail-Adresse löschen
-elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailaddy" &&
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailaddy" && $userdata['show_emails'] == 1 &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
    	$list = $mysqli->query("SELECT email FROM ".$mysql_tables['emailadds']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
 	$row_email = $list->fetch_assoc();
@@ -157,13 +146,28 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delemailadd
    	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
 // Archiv-Eintrag löschen
-elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delarchiv" &&
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delarchiv" && $userdata[$modul] == 1 &&
    isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
    	$mysqli->query("DELETE FROM ".$mysql_tables['archiv']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
 
    	echo "<script type=\"text/javascript\"> Success_delfade('id".$_REQUEST['id']."'); </script>";
 	}
-else
+// CSV-Export
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "csvexport" && $userdata['show_emails'] == 1 &&
+   isset($_REQUEST['data']) && !empty($_REQUEST['data']) && (is_numeric($_REQUEST['data']) || $_REQUEST['data'] == "all")){
+   		$cat[0] = "Alle Kategorien";
+		$catidlist = $mysqli->query("SELECT id,catname FROM ".$mysql_tables['mailcats']."");
+		while($row = $catidlist->fetch_assoc()){
+			$cat[$row['id']] = $row['catname'];
+		}
+
+		if($_REQUEST['data'] == "all")
+			_01newsletter_query_to_csv("SELECT email,name,catids FROM ".$mysql_tables['emailadds']." WHERE acode = '0'", "email_adresses-".date("d-m-Y").".csv", $cat);
+		else
+			_01newsletter_query_to_csv("SELECT email,name FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (catids = '0' OR catids = ',0,' OR catids LIKE '%,".CleanStr($_REQUEST['data']).",%')", "email_adresses-".preg_replace('/[^a-zA-Z0-9\-_]/', '', $cat[$_REQUEST['data']])."-".date("d-m-Y").".csv");
+   	}
+else{
 	echo "<script type=\"text/javascript\"> Failed_delfade(); </script>";
+}
 	
 ?>

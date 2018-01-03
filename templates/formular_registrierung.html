@@ -1,33 +1,60 @@
 <form action="<?php echo $filename; ?>" method="post">
 <h2><label for="input_emailaddy">Ihre E-Mail-Adresse:</label></h2>
-<input type="text" name="email" id="input_emailaddy" value="<?php echo $_REQUEST['email']; ?>" size="30" class="input_text" />
+<input type="text" name="email" id="input_emailaddy" value="<?php echo parse_SafeString($_REQUEST['email']); ?>" size="30" class="input_text" maxlength="<?PHP echo $email_max_len; ?>" />
+
+<?php if (!isset($_REQUEST['email']) || (isset($_REQUEST['email']) && (empty($_REQUEST['email']) || !check_mail($_REQUEST['email'])) ) ): ?>
+<p class="highlight">Bitte geben Sie eine g&uuml;ltige E-Mail-Adresse ein</p>
+<?php endif; ?>
+
+<?php if ($use_name == TRUE): ?>
+    <br /><br />
+
+    <h2><label for="input_name">Ihr Name:</label></h2>
+    <input type="text" name="name" id="input_name" value="<?php if(isset($_REQUEST['name'])) echo parse_SafeString($_REQUEST['name']); ?>" size="30" class="input_text" maxlength="<?PHP echo $name_max_len; ?>" />
+<?php endif; ?>
 
 <br /><br />
 
 <?php if ($settings['usecats'] == 1): ?>
 
-<h2>Kategorien</h2>
-<p><label for="input_chosecats">Bitte w&auml;hlen Sie die Kategorien aus</label>, zu denen Sie regelm&auml;&szlig;ig informiert werden m&ouml;chten.</p>
+    <h2>Kategorien</h2>
+    <p><label for="input_chosecats">Bitte w&auml;hlen Sie die Kategorien aus</label>, zu denen Sie regelm&auml;&szlig;ig informiert werden m&ouml;chten.</p>
 
-<select name="cats[]" id="input_chosecats" size="5" multiple="multiple" class="input_select">
-	<?php echo $mailcats; ?>
-</select>
+    <select name="cats[]" id="input_chosecats" size="5" multiple="multiple" class="input_select">
+    	<?php echo $mailcats; ?>
+    </select>
 
-<p>Mehrere Kategorien k&ouml;nnen Sie durch das Dr&uuml;cken der <i>STRG</i>-Taste und dem Anklicken der einzelnen Kategorien
-ausw&auml;hlen.</p>
+    <p>Mehrere Kategorien k&ouml;nnen Sie durch das Dr&uuml;cken der <i>STRG</i>-Taste und dem Anklicken der einzelnen Kategorien
+    ausw&auml;hlen.</p>
 
 <?php endif; ?>
 
 <?php if ($settings['use_nutzungsbedingungen'] == 1 && !empty($settings['nutzungsbedingungen'])): ?>
 
-<h2>Datenschutz / Nutzungsbedingungen</h2>
+    <h2>Datenschutz / Nutzungsbedingungen</h2>
 
-<textarea rows="8" cols="70" name="nutzungsbedingungen"><?php echo htmlentities(stripslashes($settings['nutzungsbedingungen']),$htmlent_flags,$htmlent_encoding_acp); ?></textarea>
-<p class="small"><input type="checkbox" name="ok_nutzungsbed" value="1" /> Ich akzeptiere die Datenschutz / Nutzungsbedingungen und abonniere den Newsletter.</p>
+    <textarea rows="8" cols="70" name="nutzungsbedingungen"><?php echo htmlentities(stripslashes($settings['nutzungsbedingungen']),$htmlent_flags,$htmlent_encoding_acp); ?></textarea>
+    <p class="small"><input type="checkbox" name="ok_nutzungsbed" value="1" <?PHP echo @check_checkbox($_REQUEST['ok_nutzungsbed']); ?> /> Ich akzeptiere die Datenschutz / Nutzungsbedingungen und abonniere den Newsletter.</p>
 
-<?php if (isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) && isset($_REQUEST['nutzungsbedingungen']) && (!isset($_REQUEST['ok_nutzungsbed']) || isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] != 1)): ?>
-<p class="highlight">Sie m&uuml;ssen den Datenschutz / Nutzungsbedingungen zustimmen.</p>
+    <?php if (isset($_REQUEST['sendregform']) && !empty($_REQUEST['sendregform']) && isset($_REQUEST['nutzungsbedingungen']) && (!isset($_REQUEST['ok_nutzungsbed']) || isset($_REQUEST['ok_nutzungsbed']) && $_REQUEST['ok_nutzungsbed'] != 1)): ?>
+    <p class="highlight">Sie m&uuml;ssen den Datenschutz / Nutzungsbedingungen zustimmen.</p>
+    <?php endif; ?>
+
 <?php endif; ?>
+
+<?php if ($settings['use_spamschutz'] == 1 && $settings['spamschutz'] >= 1): ?>
+<h2><label for="input_name">Spamschutz:</label></h2>
+
+    <?php if ($settings['spamschutz'] == 1 && isset($_REQUEST['antispam']) && md5($_REQUEST['antispam']) != $_SESSION['antispam01'] || $settings['spamschutz'] == 2 && !CheckReCAPTCHA($_POST['g-recaptcha-response'])): ?>
+    <p class="highlight">Bitte Spamschutz ausf&uuml;llen</p>
+    <?php endif; ?>
+
+    <?php if ($settings['spamschutz'] == 2 && !empty($settings['ReCaptcha_PubKey']) &&  !empty($settings['ReCaptcha_PrivKey'])): ?>
+        <?php echo create_Captcha($settings['spamschutz']); ?>
+    <?php else: ?>
+        <input type="text" name="antispam" id="input_captcha" size="10" class="input_text" /> <?php echo create_Captcha(); ?>
+        <br /><br />
+    <?php endif; ?>
 
 <?php endif; ?>
 

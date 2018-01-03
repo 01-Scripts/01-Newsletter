@@ -1,9 +1,10 @@
 {
-  "Version": "1.3.2",
-  "PrevVersion": "1.3.1",
+  "Version": "1.4.0",
+  "PrevVersion": "1.3.2",
   "Files2Minimize": [
     "templates/style.css",
-    "_javascript.js"
+    "_javascript.js",
+    "modul.css"
   ],
   "Files2Delete": [
     ".gitattributes",
@@ -12,21 +13,24 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
-    "images/icon_copy.gif",
+    "images/icon_export.png",
     "templates/formular_account.html",
+    "templates/formular_acode.html",
     "templates/formular_registrierung.html",
     "templates/lang_vars.php",
-    "templates/style.css",
+    "templates/main_bottom.html",
     "01newsletter.php",
-    "_info.xml",
     "_ajax.php",
-    "_updates.php",
-    "_functions.php",
     "_cronjob.php",
+    "_functions.php",
     "_headinclude.php",
+    "_info.xml",
+    "_popup.php",
+    "_updates.php",
     "category.php",
     "emails.php",
-    "index.php",
+    "import.php",
+    "modul.css",
     "newsletter.php"
   ]
 }

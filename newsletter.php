@@ -2,11 +2,11 @@
 /*
 	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+	Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Neuen Newsletter verfassen (Formular) und absenden
-	#fv.132#
+	#fv.140#
 */
 
 // Formular abgesendet (Entwurf / Vorlage / für Versand speichern)
@@ -22,14 +22,17 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 	
 	// Empfänger zusammenstellen (zum Speichern bei Entwürfen)
 	$save_cat = "all";
-	if($_POST['empf'] == "cats" && $settings['usecats'] == 1 && isset($_POST['empfcats']) && is_array($_POST['empfcats']))
+	$save_cat_r = "all";
+	if($_POST['empf'] == "cats" && $settings['usecats'] == 1 && isset($_POST['empfcats']) && is_array($_POST['empfcats'])){
 		$save_cat = implode(",",$_POST['empfcats']);
+		$save_cat_r = implode(",",$_POST['empfcats']);
+	}
 
 	// Empfänger zusammenstellen (zur Ermittlung der betreffenden E-Mail-Adressen und zum Speichern im Klartext beim Versand im Archiv)
 	if(isset($_POST['senden']) && !empty($_POST['senden'])){
 		$save_cat = "";
 		if($_POST['empf'] == "all")
-			$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0'";
+			$query = "SELECT email,name FROM ".$mysql_tables['emailadds']." WHERE acode = '0'";
 		elseif($_POST['empf'] == "cats" && $settings['usecats'] == 1){
 			// Vorhandene Kategorien in Array einlesen
 			$chosencats = array();
@@ -44,7 +47,7 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				$save_cat .= $chosencats[$cat].", ";
 				}
 	
-			$query = "SELECT email FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$where.")";
+			$query = "SELECT email,name FROM ".$mysql_tables['emailadds']." WHERE acode = '0' AND (".$where.")";
 			}
 		elseif($_POST['empf'] == "test"){
 			if(!check_mail(trim($_POST['testempf'])))
@@ -95,12 +98,19 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 		$timestamp = time();
 	
 	// Speicherart ermitteln
-	if(isset($_POST['senden']) && !empty($_POST['senden']))
-	    $art = "a";
+	if(isset($_POST['senden']) && !empty($_POST['senden']) && ($settings['use_recurrent'] == 1 && $settings['use_cronjob'] == 1 && isset($_POST['recurrent']) && ($_POST['recurrent'] == "month" || $_POST['recurrent'] == "year") )){
+	    if($_POST['recurrent'] == "month")
+	    	$art = 'm';
+	    else
+	    	$art = 'y';
+	    $save_cat = $save_cat_r;
+	}
+	elseif(isset($_POST['senden']) && !empty($_POST['senden']))
+	    $art = 'a';
 	elseif(isset($_POST['entwurf']) && !empty($_POST['entwurf']))
-	    $art = "e";
+	    $art = 'e';
 	elseif(isset($_POST['savevorlage']) && !empty($_POST['savevorlage']) && $userdata['vorlagen'] == 1)
-	    $art = "v";
+	    $art = 'v';
 	
 	// Newsletter in MySQL-Tabelle eintragen
 	if(isset($_POST['entwurfid']) && !empty($_POST['entwurfid']) && is_numeric($_POST['entwurfid'])){
@@ -130,25 +140,25 @@ if(isset($_POST['action']) && $_POST['action'] == "send" &&
 				if(check_mail(trim($email))){
 					if($x > 0) $values .= ",\n";
 
-					$values .= "('".$timestamp."','".$var."','".$mysqli->escape_string(trim($email))."')";
+					$values .= "('".$timestamp."','".$var."','".$mysqli->escape_string(trim($email))."', '')";
 
 					$x++;
 				}
 			}
 		}
-		else{
+		elseif($art != 'm' && $art != 'y'){		// Bei Wiederkehrendem Versand werden die Empfänger erst zum Versandzeitpunkt zusammengestellt
 			$list = $mysqli->query($query);
 			while($row = $list->fetch_assoc()){
 				if($x > 0) $values .= ",\n";
 				
-				$values .= "('".$timestamp."','".$var."','".$row['email']."')";
+				$values .= "('".$timestamp."','".$var."','".$row['email']."','".$row['name']."')";
 				
 				$x++;
 				}
 		}
 		
 		if($values != "")
-			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email) VALUES ".$values.";") OR die($mysqli->error);
+			$mysqli->query("INSERT INTO ".$mysql_tables['temp_table']." (utimestamp, message_id, email, name) VALUES ".$values.";") OR die($mysqli->error);
 		
 		// Newsletter sofort via IFrame verschicken
 		if(($settings['use_cronjob'] == 0 || $_POST['empf'] == "test") && $values != "" && !$mysqli->error){
@@ -191,7 +201,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "send" ||
 
 	// Inhalt von archiviertem Newsletter laden?
 	if(isset($_GET['copyid']) && is_numeric($_GET['copyid']) && $_GET['copyid'] > 0){
-		$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a' AND id = '".$mysqli->escape_string($_GET['copyid'])."' LIMIT 1");
+		$list = $mysqli->query("SELECT * FROM ".$mysql_tables['archiv']." WHERE id = '".$mysqli->escape_string($_GET['copyid'])."' LIMIT 1");
 		$row = $list->fetch_assoc();
 		if(isset($row['betreff']) && !empty($row['betreff'])){
 			$_POST['betreff'] = $row['betreff'];
@@ -292,7 +302,22 @@ if($evmenge >= 1){
     </tr>
     
 	<tr>
-		<td colspan="2"><textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea></td>
+		<td colspan="2">
+			<textarea name="mailtext" rows="15" cols="80"><?php echo $_POST['mailtext']; ?></textarea>
+<?php if ($use_name == TRUE): ?>
+			<br />
+			<span class="small">Fügen Sie <b><?PHP echo $replace_name; ?></b> in den Newsletter ein, um es beim Versand durch den Namen des Empfängers ersetzen zu lassen! <a href="#" onclick="$('additional_vars').slide('toggle');">Weitere Variablen anzeigen...</a></span>
+			<div id="additional_vars">
+				<span class="small">
+					<b><?PHP echo $replace_year; ?></b> wird ersetzt durch <?PHP echo date("Y"); ?><br />
+					<b><?PHP echo $replace_date; ?></b> wird ersetzt durch <?PHP echo date($format_date); ?><br />
+					<b><?PHP echo $replace_send; ?></b> wird ersetzt durch <?PHP echo !empty($settings['versandadresse']) ? $settings['versandadresse'] : $settings['email_absender']; ?><br />
+					<b><?PHP echo $replace_mail; ?></b> wird ersetzt durch die E-Mail-Adresse des Empf&auml;ngers<br />
+					<b>{#abmeldelink#}</b> wird durch einen Link zum Abmelden vom Newsletter ersetzt<br />
+				</span>
+			</div>
+<?php endif; ?>
+		</td>
 	</tr>
 <?php if($settings['attachments'] == 1){ ?>	
     <tr class="trb">
@@ -320,9 +345,16 @@ if($evmenge >= 1){
 	</tr>
 <?php if($settings['use_cronjob'] == 1){ ?>
     <tr>
-        <td><input type="text" name="send_time" class="DatePicker" size="10" value="<?php if(isset($_POST['send_time']) && !empty($_POST['send_time'])){ echo $_POST['send_time']; }else{ echo date("d.m.Y"); } ?>" /></td>
+        <td align="center"><input type="text" name="send_time" class="DatePicker" size="10" value="<?php if(isset($_POST['send_time']) && !empty($_POST['send_time'])){ echo $_POST['send_time']; }else{ echo date("d.m.Y"); } ?>" /></td>
         <td><b>Versanddatum</b></td>
     </tr>
+<?php if($settings['use_recurrent'] == 1){ ?>
+    <tr>
+        <td align="center"><select name="recurrent" size="1" class="input_select"><option value="no">einmalig</option><option value="month">monatlich</option><option value="year">j&auml;hrlich</option></select></td>
+        <td><b>Newsletter regelm&auml;&szlig;ig versenden</b></td>
+    </tr>
+<?php } ?>
+
 <?php } ?>
 <?php if(!empty($settings['newslettersignatur'])){ ?>	
 	<tr>
@@ -357,6 +389,7 @@ if($evmenge >= 1){
 <?php if($userdata['vorlagen'] == 1){ ?>
 $('vorlagenname').slide('hide');
 <?php } ?>
+$('additional_vars').slide('hide');
 </script>
 
 <?PHP
@@ -385,8 +418,9 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
     <tr>
 		<td style="width:120px"><b>Versanddatum</b></td>
         <td style="width:400px"><b>Betreff</b></td>
-		<td><b>Kategorien</b></td>
+		<td><b>Kategorie-ID</b></td>
 		<td><b>Absender</b></td>
+		<td class="nosort" style="width:25px" align="center"><!--Bearbeiten--></td>
 		<td class="nosort" style="width:25px" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
     </tr>
 <?PHP
@@ -394,7 +428,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 	else $where = "";
 	
 	// Ausgabe der Datensätze (Liste) aus DB
-	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a'".$where." ORDER BY utimestamp DESC";
+	$query = "SELECT * FROM ".$mysql_tables['archiv']." WHERE art = 'a' OR art = 'm' OR art = 'y' ".$where." ORDER BY art DESC, utimestamp DESC";
 	$query = makepages($query,$sites,"site",ACP_PER_PAGE);
 	
 	$list = $mysqli->query($query);
@@ -407,6 +441,7 @@ window.open('_ajaxloader.php?modul=<?PHP echo $modul; ?>&action='+action+'&var1=
 		<td onmouseover=\"fade_element('copyid_".$row['id']."')\" onmouseout=\"fade_element('copyid_".$row['id']."')\"><a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','show_letter','".$row['id']."','','',510,450);\">".stripslashes($row['betreff'])."</a> <div class=\"moo_inlinehide\" id=\"copyid_".$row['id']."\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=newsletter&amp;action=new&amp;copyid=".$row['id']."\"><img src=\"".$modulpath."images/icon_copy.gif\" alt=\"Symbol: Kopieren\" title=\"Inhalt in einen neuen Newsletter übernehmen\" /></a></div></td>
 		<td valign=\"bottom\">".stripslashes($row['kategorien'])."</td>
 		<td valign=\"bottom\">".$data['username']."</td>
+		<td valign=\"bottom\" align=\"center\">".( (in_array($row['art'], array('m','y')) || $row['art'] == 'a' && $row['utimestamp'] > time() ) ? "<a href=\"#\" onclick=\"javascript:modulpopup('".$modul."','edit_letter','".$row['id']."','','',750,450);\"><img src=\"images/icons/icon_edit.gif\" alt=\"Bearbeiten - Stift\" title=\"Text bearbeiten\" style=\"border:0;\" /></a>" : "")."</td>
 		<td valign=\"bottom\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Archiveintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delarchiv&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 	</tr>";
 		}

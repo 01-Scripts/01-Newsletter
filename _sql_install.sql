@@ -1,10 +1,10 @@
--- 01-Newsletter - Copyright 2009-2016 by Michael Lorer - 01-Scripts.de
+-- 01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 -- Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
--- Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+-- Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 
 -- Modul:		01newsletter
 -- Dateiinfo:	SQL-Befehle für die Erstinstallation des 01-Newsletterscripts
--- #fv.132#
+-- #fv.140#
 --  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  **  *  *
 
 -- --------------------------------------------------------
@@ -27,9 +27,11 @@ INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formena
 ('#modul_idname#', 0, 3, 4, 'smtp_nl_username', 'SMTP Username','','text','50','','','',0,0),
 ('#modul_idname#', 0, 3, 5, 'smtp_nl_password', 'SMTP Password','Das SMTP Passwort wird aus technischen Gr&uuml;nden unverschl&uuml;sselt gespeichert.','text','50','','','',0,0),
 ('#modul_idname#', 0, 1, 9,  'use_cronjob','Newsletter per Cronjob versenden?','Legen Sie dazu einen regelm&auml;&szlig;igen Cronjob auf die Datei <i>01scripts/01module/#modul_idname#/_cronjob.php</i> an.<br /><a href=\"http://cronjob.01-scripts.de\" target=\"_blank\">Weitere Informationen zum Thema</a>','Ja|Nein','1|0','','0','0','0','0'),
-('#modul_idname#', 0, 1, 10, 'newslettersignatur', 'Signatur', 'Die Signatur wird automatisch an alle Newsletter angeh&auml;ngt.', 'textarea', '5|50', '', '', '', 0, 0),
-('#modul_idname#', 0, 1, 11, 'use_nutzungsbedingungen','Datenschutz / Nutzungsbedingungen aktivieren?','Beim Abonnieren des Newsletters muss den eingegebenen Datenschutz bzw. Nutzungsbedingungen zugestimmt werden.','Ja|Nein','1|0','','0','0','0','0'),
-('#modul_idname#', 0, 1, 12,'nutzungsbedingungen','Datenschutz / Nutzungsbedingungen','','textarea','5|50','','','','0','0'),
+('#modul_idname#', 0, 1, 10, 'use_recurrent','Wiederkehrenden Newsletterversand aktivieren?','Nur bei aktiviertem Cronjob-Versand m&ouml;glich.','function','1|0','','0','0',0,0),
+('#modul_idname#', 0, 1, 11, 'newslettersignatur', 'Signatur', 'Die Signatur wird automatisch an alle Newsletter angeh&auml;ngt.', 'textarea', '5|50', '', '', '', 0, 0),
+('#modul_idname#', 0, 1, 12, 'use_spamschutz','Spamschutz bei Registrierung aktivieren?','','Ja|Nein','1|0','','0','0',0,0),
+('#modul_idname#', 0, 1, 13, 'use_nutzungsbedingungen','Datenschutz / Nutzungsbedingungen aktivieren?','Beim Abonnieren des Newsletters muss den eingegebenen Datenschutz bzw. Nutzungsbedingungen zugestimmt werden.','Ja|Nein','1|0','','0','0','0','0'),
+('#modul_idname#', 0, 1, 14,'nutzungsbedingungen','Datenschutz / Nutzungsbedingungen','','textarea','5|50','','','','0','0'),
 ('#modul_idname#', 0, 1, 7, 'attachments','Dateianh&auml;nge verwenden?','','Ja|Nein','1|0','','1','1','0','0'),
 ('#modul_idname#', 0, 1, 8, 'use_html','HTML-Newsletter versenden?','','Ja|Nein','1|0','','0','0','0','0'),
 ('#modul_idname#', 0, 1, 1, 'newslettertitel', 'Titel des Newsletters', '', 'text', '50', '', '', '', 0, 0),
@@ -89,13 +91,14 @@ UPDATE `01prefix_user` SET `#modul_idname#_vorlagen` = '1' WHERE `01prefix_user`
 CREATE TABLE `01modulprefix_emailadressen` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `acode` varchar(32) NOT NULL DEFAULT '0',
-  `editcode` varchar(32) NOT NULL DEFAULT '0' COMMENT 'Code zur Bestätigung von Änderungen',
+  `editcode` varchar(32) NOT NULL DEFAULT '0',
   `delcode` varchar(32) NOT NULL DEFAULT '0',
   `timestamp_reg` int(15) NOT NULL DEFAULT '0',
   `email` varchar(50),
+  `name` varchar(50),
   `catids` varchar(100) NOT NULL DEFAULT '0',
-  `newcatids` varchar(100) NOT NULL DEFAULT '0' COMMENT 'Kategorieänderungen des Users werden bis zur Bestätigung hier zwischengespeichert.',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -147,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `01modulprefix_send_newsletter_temp` (
   `utimestamp` int(15) NOT NULL DEFAULT '0',
   `message_id` int(10) NOT NULL,
   `email` varchar(50) NOT NULL,
+  `name` varchar(50),
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 

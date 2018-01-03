@@ -1,6 +1,55 @@
 <?PHP
+// 1.3.2 --> 1.4.0
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "132_zu_140"){
+
+	// #742 - Zuerst Editcode versenden um Abonnement-Daten bearbeiten zu kˆnnen.
+	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." DROP `newcatids`");
+
+	// #192 - Mˆglichkeit einen Namen zu erfassen (optional)
+	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD  `name` VARCHAR( 50 ) NULL AFTER  `email`");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['temp_table']." ADD  `name` VARCHAR( 50 ) NULL AFTER  `email`");
+
+	// #279 - CSV Import von E-Mail-Adressen
+	$mysqli->query("UPDATE ".$mysql_tables['emailadds']." SET email=LOWER(email);");
+	$mysqli->query("DELETE t1 FROM ".$mysql_tables['emailadds']." t1, ".$mysql_tables['emailadds']." t2 WHERE t1.id < t2.id AND t1.email = t2.email;"); // Remove duplicate entries - keep newest one
+	$mysqli->query("ALTER TABLE ".$mysql_tables['emailadds']." ADD UNIQUE (email);");
+
+	// #757 - Paternoster-Mailing
+	// #753 - Optional: ReCaptcha bei der Registrierung verwenden
+	// Setting-Reihenfolge aktualisieren
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '11' WHERE `idname` = 'newslettersignatur' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '13' WHERE `idname` = 'use_nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	$mysqli->query("UPDATE `".$mysql_tables['settings']."` SET `sortid` = '14' WHERE `idname` = 'nutzungsbedingungen' AND `modul` = '".$mysqli->escape_string($modul)."' LIMIT 1");
+	// Neue Einstellungen anlegen:
+	$sql_insert = "INSERT INTO `".$mysql_tables['settings']."` (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
+				('".$mysqli->escape_string($modul)."','0','1','10','use_recurrent','Wiederkehrenden Newsletterversand aktivieren?','Nur bei aktiviertem Cronjob-Versand m&ouml;glich.','function','1|0','','0','0','0','0'),
+				('".$mysqli->escape_string($modul)."','0','1','12','use_spamschutz','Spamschutz bei Registrierung aktivieren?','','Ja|Nein','1|0','','0','0','0','0');";
+	$mysqli->query($sql_insert) OR die($mysqli->error);
+	
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '1.4.0' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 1.3.2 nach 1.4.0</h2>
+
+<div class="meldung_erfolg">
+	Das Update von Version 1.3.2 auf Version 1.4.0 wurde erfolgreich durchgef&uuml;hrt.<br />
+	<br />
+	<br />
+
+	<b>Mit dem Update wurden unter anderem folgende Funktionen hinzugef&uuml;gt oder verbessert:</b>
+	<ul>
+		<li><b>CSV Import von E-Mail-Adressen</b></li>
+		<li><b>CSV Export von E-Mail-Adressen</b></li>
+		<li><b>Pers&ouml;nliche Ansprache ihrer Abonnenten mit deren Namen m&ouml;glich</b></li>
+		<li>Automatisierter, regelm‰ﬂiger Newsletter-Versand per <a href="https://www.01-scripts.de/01newsletter.php#paternoster" target="_blank">Paternoster-Mailing-Funktion</a></li>
+		<li>Diverse Fehler behoben. Siehe <a href="https://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
+	</ul>
+	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
+</div>
+<?PHP
+}
 // 1.3.1 --> 1.3.2
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 
 	// #745 - CSS-Code aus Datenbank/Settings in Datei auslagern
 	$mysqli->query("UPDATE ".$mysql_tables['settings']." SET 
@@ -39,14 +88,14 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "131_zu_132"){
 		<li><b>Versand per SMTP hinzugef&uuml;gt</b> (neue Einstellungen erforderlich)</li>
 		<li>Seite zum Erstellen eines neuen Newsletters &uuml;berarbeitet</li>
 		<li>Archivierten Newsletter mit einem Klick als Vorlage f&uuml;r einen neuen Newsletter verwenden</li>
-		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
+		<li>Diverse Fehler behoben. Siehe <a href="https://www.01-scripts.de/down/01newsletter_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>
 	<a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a>
 </div>
 <?PHP
 }
 // 1.3.0 --> 1.3.1
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 
 	// Spaltenname 'timestamp' umbenennen in 'utimestamp' #694
 	$mysqli->query("ALTER TABLE ".$mysql_tables['archiv']." CHANGE `timestamp` `utimestamp` INT( 15 ) NOT NULL DEFAULT '0'");
@@ -65,7 +114,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "130_zu_131"){
 <?PHP
 }
 // 1.2.0 --> 1.3.0
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "120_zu_130"){
 	
 	// Neue Einstellungen anlegen:
 	$sql_insert = "INSERT INTO `".$mysql_tables['settings']."` (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES

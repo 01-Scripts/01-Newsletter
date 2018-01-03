@@ -2,11 +2,11 @@
 /*
 	01-Newsletter - Copyright 2009-2017 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+	Weitere Lizenzinformationen unter: https://www.01-scripts.de/lizenz.php
 
 	Modul:		01newsletter
 	Dateiinfo: 	Newsletter-Kategorieverwaltung
-	#fv.132#
+	#fv.140#
 */
 
 // Berechtigungsabfragen
@@ -75,7 +75,7 @@ while($row = $list->fetch_assoc()){
     $listcats = $mysqli->query("SELECT * FROM ".$mysql_tables['emailadds']." WHERE catids = '0' OR catids = ',0,' OR catids LIKE '%,".$row['id'].",%'");
 	echo "<tr id=\"id".$row['id']."\">
               <td align=\"left\"><input type=\"text\" name=\"catname_".$row['id']."\" value=\"".htmlentities($row['catname'],$htmlent_flags,$htmlent_encoding_acp)."\" size=\"40\" class=\"input_text\" /></td>
-			  <td align=\"center\">".$listcats->num_rows."</td>
+			  <td align=\"center\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=emails&amp;catid=".$row['id']."\">".$listcats->num_rows."</a></td>
 			  <td align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Eintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delcat&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
           </tr>";
     }
@@ -87,7 +87,6 @@ echo "<tr>
 <input type="hidden" name="action" value="rename_cats" />
 </form>
 <br />
-
 
 <?PHP
 }else $flag_loginerror = TRUE;
