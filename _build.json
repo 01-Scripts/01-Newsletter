@@ -7,8 +7,18 @@
     "modul.css"
   ],
   "Files2Delete": [
+    "dok/01acp_dropdown.gif",
+    "dok/01acp_module.gif",
+    "dok/01acp_moduleinstellungen.gif",
+    "dok/01newsletter_cronjob_settings.png",
+    "dok/01newsletter_paternoster.png",
+    "dok/01newsletter_paternoster2.png",
+    "dok/01newsletter_settings.png",
+    "dok/01newsletter_smtp_settings.png",
+    "dok/01newsletter_testnewsletter.png",
+    "dok/01newsletter_versanddatum.png",
     ".gitattributes",
-    "readme.textile",
+    "readme.md",
     "_build.json",
     "update_liesmich.txt"
   ],
