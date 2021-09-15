@@ -93,7 +93,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "datacheck" &&
 	isset($_POST['cols_max']) && is_numeric($_POST['cols_max']) && $_POST['cols_max'] >= 1 &&
 	isset($_POST['rows_max']) && is_numeric($_POST['rows_max']) && $_POST['rows_max'] >= 1){
 
-	// E-Mail und Namen(s) Spalten festlegen. Bei Mehrfach-Auswahl gelingt die Spalte am weitesten "links"
+	// E-Mail und Namen(s) Spalten festlegen. Bei Mehrfach-Auswahl gewinnt die Spalte am weitesten "links"
 	for ($col=($_POST['cols_max']-1); $col >= 0; $col--) {
 		if(isset($_POST['destination_col_'.$col]) && !empty($_POST['destination_col_'.$col])){
 	    	switch($_POST['destination_col_'.$col]){
@@ -118,6 +118,23 @@ elseif(isset($_POST['action']) && $_POST['action'] == "datacheck" &&
     	echo "<p class=\"meldung_error\"><b>Fehler:</b> Es wurden keine E-Mail-Adressen zum Import gew&auml;hlt</p>";
     }
     else{
+
+    if(isset($_POST['delimiter']) && !empty($_POST['delimiter']) && strlen($_POST['delimiter']) == 1)
+        $delimiter = $_POST['delimiter'];
+    else
+        $delimiter = ";";
+    if(isset($_POST['enclosure']) && !empty($_POST['enclosure']) && strlen($_POST['enclosure']) == 1)
+        $enclosure = $_POST['enclosure'];
+    else
+        $enclosure = '"';
+    if(isset($_POST['escape']) && !empty($_POST['escape']) && strlen($_POST['escape']) == 1)
+        $escape = $_POST['escape'];
+    else
+        $escape = "\\";
+    if(isset($_POST['skip']) && !empty($_POST['skip']) && is_numeric($_POST['skip']))
+        $skip = $_POST['skip'];
+    else
+        $skip = 0;
 ?>
 <h1>E-Mail-Adressen importieren (Schritt 3/3)</h1>
 
@@ -252,7 +269,7 @@ elseif(isset($_POST['action']) && $_POST['action'] == "doupload" && isset($_FILE
 
 	        echo "    <tr>\n";
 	        for ($col=0; $col < $num; $col++) {
-	        	echo "        <td><input type=\"text\" name=\"row_".$row."_col_".$col."\" value=\"".htmlentities($data[$col],$htmlent_flags,$htmlent_encoding_acp)."\" size=\"15\" class=\"input_text\" readonly=\"readonly\" /></td>\n";
+	        	echo "        <td><input type=\"text\" name=\"row_".$row."_col_".$col."\" value=\"".htmlentities($data[$col],$htmlent_flags,$htmlent_encoding_acp)."\" size=\"15\" class=\"input_text\" disabled=\"disabled\" /></td>\n";
 	        }
 	        echo "    </tr>\n";
 
@@ -263,7 +280,16 @@ elseif(isset($_POST['action']) && $_POST['action'] == "doupload" && isset($_FILE
 	@ini_set('auto_detect_line_endings',FALSE);
 ?>
 	<tr>
-        <td colspan="<?PHP echo ($num-1); ?>"><input type="hidden" name="cols_max" value="<?PHP echo $num; ?>" /><input type="hidden" name="rows_max" value="<?PHP echo $row; ?>" /><input type="hidden" name="action" value="datacheck" /></td>
+        <td colspan="<?PHP echo ($num-1); ?>">
+            <input type="hidden" name="csv_tmp_file" value="<?PHP echo $_FILES['csv_file']['tmp_name']; ?>" />
+            <input type="hidden" name="delimiter" value="<?PHP echo $delimiter; ?>" />
+            <input type="hidden" name="enclosure" value="<?PHP echo $enclosure; ?>" />
+            <input type="hidden" name="escape" value="<?PHP echo $escape; ?>" />
+            <input type="hidden" name="skip" value="<?PHP echo $skip; ?>" />
+            <input type="hidden" name="cols_max" value="<?PHP echo $num; ?>" />
+            <input type="hidden" name="rows_max" value="<?PHP echo $row; ?>" />
+            <input type="hidden" name="action" value="datacheck" />
+        </td>
         <td align="right"><input type="submit" value="Weiter &raquo;" class="input" /></td>
     </tr>
 
