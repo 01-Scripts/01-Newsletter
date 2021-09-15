@@ -55,7 +55,7 @@ $lang['mail_acode'] = $settings['newslettertitel'].": ".$lang['mail_acode'];
 $lang['mail_ecode'] = $settings['newslettertitel'].": ".$lang['mail_ecode'];
 $lang['mail_dcode'] = $settings['newslettertitel'].": ".$lang['mail_dcode'];
 
-$filename = $_SERVER['PHP_SELF'];
+$filename = $_SERVER['SCRIPT_NAME'];
 $meldung = "";
 
 // Notice: Undefined index: ... beheben
